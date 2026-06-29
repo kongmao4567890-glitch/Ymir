@@ -41,7 +41,7 @@ void SystemSettingsView::Display() {
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Region");
+    ImGui::SeparatorText("区域");
     ImGui::PopFont();
 
     if (ImGui::BeginTable("sys_region", 2, ImGuiTableFlags_SizingFixedFit)) {
@@ -51,7 +51,7 @@ void SystemSettingsView::Display() {
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Video standard");
+            ImGui::TextUnformatted("视频制式");
         }
         if (ImGui::TableNextColumn()) {
             MakeDirty(ui::widgets::VideoStandardSelector(m_context));
@@ -60,8 +60,8 @@ void SystemSettingsView::Display() {
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Region");
-            widgets::ExplanationTooltip("Changing this option will cause a hard reset", m_context.displayScale);
+            ImGui::TextUnformatted("区域");
+            widgets::ExplanationTooltip("更改此选项将导致硬重置", m_context.displayScale);
         }
         if (ImGui::TableNextColumn()) {
             ui::widgets::RegionSelector(m_context);
@@ -71,18 +71,17 @@ void SystemSettingsView::Display() {
     }
 
     bool autodetectRegion = settings.autodetectRegion.Get();
-    if (MakeDirty(ImGui::Checkbox("Autodetect region from loaded discs", &autodetectRegion))) {
+    if (MakeDirty(ImGui::Checkbox("从加载的光盘自动检测区域", &autodetectRegion))) {
         settings.autodetectRegion = autodetectRegion;
     }
     widgets::ExplanationTooltip(
-        "Whenever a game disc is loaded, the emulator will automatically switch the system region to match one of the "
-        "game's supported regions. The list below allows you to choose the preferred region order. If none of the "
-        "preferred regions is supported by the game, the emulator will pick the first region listed on the disc.",
+        "每当加载游戏光盘时，模拟器将自动切换系统区域以匹配游戏支持的某个区域。"
+        "下面的列表允许你选择首选区域顺序。如果游戏不支持任何首选区域，模拟器将选择光盘上列出的第一个区域。",
         m_context.displayScale);
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Preferred region order:");
-    widgets::ExplanationTooltip("Drag items to reorder", m_context.displayScale);
+    ImGui::TextUnformatted("首选区域顺序：");
+    widgets::ExplanationTooltip("拖动项目以重新排序", m_context.displayScale);
 
     std::vector<core::config::sys::Region> prefRgnOrder{};
     {
@@ -144,26 +143,26 @@ void SystemSettingsView::Display() {
     auto &rtc = smpc.GetRTC();
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Real-Time Clock");
+    ImGui::SeparatorText("实时时钟");
     ImGui::PopFont();
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Mode:");
-    widgets::ExplanationTooltip("- Host: Syncs the emulated RTC to your system's clock.\n"
-                                "- Virtual: Runs a virtual RTC synced to emulation speed.\n\n"
-                                "For deterministic behavior, use a virtual RTC synced to a fixed time point on reset.",
+    ImGui::TextUnformatted("模式：");
+    widgets::ExplanationTooltip("- 主机：将模拟的 RTC 同步到你系统的时钟。\n"
+                                "- 虚拟：运行与模拟速度同步的虚拟 RTC。\n\n"
+                                "为了获得确定性行为，请使用在重置时同步到固定时间点的虚拟 RTC。",
                                 m_context.displayScale);
     ImGui::SameLine();
-    if (MakeDirty(ImGui::RadioButton("Host##rtc", settings.rtc.mode == core::config::rtc::Mode::Host))) {
+    if (MakeDirty(ImGui::RadioButton("主机##rtc", settings.rtc.mode == core::config::rtc::Mode::Host))) {
         settings.rtc.mode = core::config::rtc::Mode::Host;
     }
     ImGui::SameLine();
-    if (MakeDirty(ImGui::RadioButton("Virtual##rtc", settings.rtc.mode == core::config::rtc::Mode::Virtual))) {
+    if (MakeDirty(ImGui::RadioButton("虚拟##rtc", settings.rtc.mode == core::config::rtc::Mode::Virtual))) {
         settings.rtc.mode = core::config::rtc::Mode::Virtual;
     }
 
     ImGui::AlignTextToFramePadding();
-    ImGui::Text("Current date/time:");
+    ImGui::Text("当前日期/时间：");
     ImGui::SameLine();
     auto dateTime = rtc.GetDateTime();
     if (widgets::DateTimeSelector("rtc_curr", dateTime)) {
@@ -173,31 +172,31 @@ void SystemSettingsView::Display() {
 
     if (settings.rtc.mode == core::config::rtc::Mode::Host) {
         ImGui::AlignTextToFramePadding();
-        ImGui::TextUnformatted("Host time offset:");
+        ImGui::TextUnformatted("主机时间偏移：");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(150.0f * m_context.displayScale);
         if (ImGui::DragScalar("##rtc_host_offset", ImGuiDataType_S64, &rtc.HostTimeOffset())) {
             smpc.PersistData();
         }
         ImGui::SameLine();
-        ImGui::TextUnformatted("seconds");
+        ImGui::TextUnformatted("秒");
         ImGui::SameLine();
-        if (ImGui::Button("Reset")) {
+        if (ImGui::Button("重置")) {
             rtc.HostTimeOffset() = 0;
             smpc.PersistData();
         }
     } else if (settings.rtc.mode == core::config::rtc::Mode::Virtual) {
         // TODO: request emulator to update date/time so that it is updated in real time
         widgets::ExplanationTooltip(
-            "This may occasionally stop updating because the virtual RTC is only updated when the game reads from it.",
+            "这可能偶尔会停止更新，因为虚拟 RTC 仅在游戏读取时才更新。",
             m_context.displayScale);
 
-        if (ImGui::Button("Set to host time##curr_time")) {
+        if (ImGui::Button("设为主机时间##curr_time")) {
             rtc.SetDateTime(util::datetime::host());
             smpc.PersistData();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Set to starting point##curr_time")) {
+        if (ImGui::Button("设为起始点##curr_time")) {
             rtc.SetDateTime(util::datetime::from_timestamp(settings.rtc.virtHardResetTimestamp));
             smpc.PersistData();
         }
@@ -213,18 +212,18 @@ void SystemSettingsView::Display() {
         };
 
         ImGui::AlignTextToFramePadding();
-        ImGui::TextUnformatted("Hard reset behavior:");
-        widgets::ExplanationTooltip("Specifies how the virtual RTC behaves on a hard reset.", m_context.displayScale);
+        ImGui::TextUnformatted("硬重置行为：");
+        widgets::ExplanationTooltip("指定虚拟 RTC 在硬重置时的行为。", m_context.displayScale);
 
-        hardResetOption("Preserve current time", HardResetStrategy::Preserve,
-                        "The virtual RTC will continue counting from the time point prior to the reset.\n"
-                        "The date/time persists between executions of the emulator.");
+        hardResetOption("保留当前时间", HardResetStrategy::Preserve,
+                        "虚拟 RTC 将从重置前的时间点继续计数。\n"
+                        "日期/时间在模拟器的多次运行之间保持不变。");
 
-        hardResetOption("Sync to host time", HardResetStrategy::SyncToHost,
-                        "The virtual RTC will reset to the current host RTC time.");
+        hardResetOption("同步到主机时间", HardResetStrategy::SyncToHost,
+                        "虚拟 RTC 将重置为当前主机 RTC 时间。");
 
-        hardResetOption("Reset to starting point", HardResetStrategy::ResetToFixedTime,
-                        "The virtual RTC will reset to the specified starting point.");
+        hardResetOption("重置到起始点", HardResetStrategy::ResetToFixedTime,
+                        "虚拟 RTC 将重置到指定的起始点。");
 
         ImGui::Indent();
         {
@@ -232,7 +231,7 @@ void SystemSettingsView::Display() {
             if (MakeDirty(widgets::DateTimeSelector("virt_base_time", dateTime))) {
                 settings.rtc.virtHardResetTimestamp = util::datetime::to_timestamp(dateTime);
             }
-            if (MakeDirty(ImGui::Button("Set to host time##virt_base_time"))) {
+            if (MakeDirty(ImGui::Button("设为主机时间##virt_base_time"))) {
                 settings.rtc.virtHardResetTimestamp = util::datetime::to_timestamp(util::datetime::host());
             }
         }
@@ -242,15 +241,15 @@ void SystemSettingsView::Display() {
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Internal backup memory");
+    ImGui::SeparatorText("内部备份内存");
     ImGui::PopFont();
 
     if (MakeDirty(
-            ImGui::Checkbox("Create internal backup memory images per game", &settings.internalBackupRAMPerGame))) {
+            ImGui::Checkbox("为每个游戏创建内部备份内存镜像", &settings.internalBackupRAMPerGame))) {
         m_context.EnqueueEvent(events::emu::LoadInternalBackupMemory());
     }
     widgets::ExplanationTooltip(
-        fmt::format("When enabled, separate internal backup memory images will be created for each game under {}",
+        fmt::format("启用后，将在 {} 下为每个游戏创建单独的内部备份内存镜像",
                     m_context.profile.GetPath(ProfilePath::BackupMemory) / "games")
             .c_str(),
         m_context.displayScale);
@@ -259,7 +258,7 @@ void SystemSettingsView::Display() {
         ImGui::BeginDisabled();
     }
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Image path");
+    ImGui::TextUnformatted("镜像路径");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(-(fileSelectorButtonWidth + itemSpacingWidth));
     std::string imagePath = fmt::format("{}", settings.internalBackupRAMImagePath);
@@ -270,11 +269,11 @@ void SystemSettingsView::Display() {
     ImGui::SameLine();
     if (ImGui::Button("...##bup_image_path")) {
         m_context.EnqueueEvent(events::gui::OpenFile({
-            .dialogTitle = "Load backup memory image",
+            .dialogTitle = "加载备份内存镜像",
             .defaultPath = settings.internalBackupRAMImagePath.empty()
                                ? m_context.profile.GetPath(ProfilePath::PersistentState) / "bup-int.bin"
                                : settings.internalBackupRAMImagePath,
-            .filters = {{"Backup memory image files (*.bin, *.sav)", "bin;sav"}, {"All files (*.*)", "*"}},
+            .filters = {{"备份内存镜像文件 (*.bin, *.sav)", "bin;sav"}, {"所有文件 (*.*)", "*"}},
             .userdata = this,
             .callback = util::WrapSingleSelectionCallback<&SystemSettingsView::ProcessLoadBackupImage,
                                                           &util::NoopCancelFileDialogCallback,
@@ -289,7 +288,7 @@ void SystemSettingsView::Display() {
     if (!dirty) {
         ImGui::BeginDisabled();
     }
-    if (ImGui::Button("Load")) {
+    if (ImGui::Button("加载")) {
         m_context.EnqueueEvent(events::emu::LoadInternalBackupMemory());
         m_bupSettingsDirty = false;
     }
@@ -297,16 +296,16 @@ void SystemSettingsView::Display() {
         ImGui::EndDisabled();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Open backup memory manager")) {
+    if (ImGui::Button("打开备份内存管理器")) {
         m_context.EnqueueEvent(events::gui::OpenBackupMemoryManager());
     }
 
     if (settings.internalBackupRAMPerGame) {
         const std::filesystem::path intBupPath = m_context.GetInternalBackupRAMPath();
         ImGui::PushTextWrapPos(ImGui::GetContentRegionAvail().x);
-        ImGui::Text("Currently using internal backup memory image from %s", fmt::format("{}", intBupPath).c_str());
+        ImGui::Text("当前使用的内部备份内存镜像来自 %s", fmt::format("{}", intBupPath).c_str());
         ImGui::PopTextWrapPos();
-        if (ImGui::Button("Open containing directory##int_bup")) {
+        if (ImGui::Button("打开所在目录##int_bup")) {
             SDL_OpenURL(fmt::format("file:///{}", intBupPath.parent_path()).c_str());
         }
     }
@@ -337,25 +336,25 @@ void SystemSettingsView::LoadBackupImage(std::filesystem::path file) {
                 MakeDirty();
             } else {
                 m_context.EnqueueEvent(
-                    events::gui::ShowError(fmt::format("Could not load backup memory image: Invalid image size")));
+                    events::gui::ShowError(fmt::format("无法加载备份内存镜像：镜像大小无效")));
             }
             break;
         case bup::BackupMemoryImageLoadResult::FilesystemError:
             if (error) {
                 m_context.EnqueueEvent(
-                    events::gui::ShowError(fmt::format("Could not load backup memory image: {}", error.message())));
+                    events::gui::ShowError(fmt::format("无法加载备份内存镜像：{}", error.message())));
             } else {
                 m_context.EnqueueEvent(events::gui::ShowError(
-                    fmt::format("Could not load backup memory image: Unspecified file system error")));
+                    fmt::format("无法加载备份内存镜像：未指定的文件系统错误")));
             }
             break;
         case bup::BackupMemoryImageLoadResult::InvalidSize:
             m_context.EnqueueEvent(
-                events::gui::ShowError(fmt::format("Could not load backup memory image: Invalid image size")));
+                events::gui::ShowError(fmt::format("无法加载备份内存镜像：镜像大小无效")));
             break;
         default:
             m_context.EnqueueEvent(
-                events::gui::ShowError(fmt::format("Could not load backup memory image: Unexpected error")));
+                events::gui::ShowError(fmt::format("无法加载备份内存镜像：意外错误")));
             break;
         }
     } else {
@@ -368,7 +367,7 @@ void SystemSettingsView::LoadBackupImage(std::filesystem::path file) {
 }
 
 void SystemSettingsView::ShowLoadBackupImageError(const char *message) {
-    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("Could not load backup memory image: {}", message)));
+    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("无法加载备份内存镜像：{}", message)));
 }
 
 } // namespace app::ui

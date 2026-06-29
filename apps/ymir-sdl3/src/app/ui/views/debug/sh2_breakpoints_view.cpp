@@ -36,10 +36,10 @@ void SH2BreakpointsView::Display() {
     ImGui::BeginGroup();
 
     if (!m_context.saturn.IsDebugTracingEnabled()) {
-        ImGui::TextColored(m_context.colors.warn, "Debug tracing is disabled.");
-        ImGui::TextColored(m_context.colors.warn, "Breakpoints will not work.");
+        ImGui::TextColored(m_context.colors.warn, "调试跟踪已禁用。");
+        ImGui::TextColored(m_context.colors.warn, "断点将无法工作。");
         ImGui::SameLine();
-        if (ImGui::SmallButton("Enable##debug_tracing")) {
+        if (ImGui::SmallButton("启用##debug_tracing")) {
             m_context.EnqueueEvent(events::emu::SetDebugTrace(true));
         }
     }
@@ -61,7 +61,7 @@ void SH2BreakpointsView::Display() {
         m_context.debuggers.MakeDirty();
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Add");
+        ImGui::TextUnformatted("添加");
         ImGui::EndTooltip();
     }
 
@@ -72,7 +72,7 @@ void SH2BreakpointsView::Display() {
         m_context.debuggers.MakeDirty();
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Remove");
+        ImGui::TextUnformatted("移除");
         ImGui::EndTooltip();
     }
 
@@ -83,12 +83,12 @@ void SH2BreakpointsView::Display() {
         m_context.debuggers.MakeDirty();
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Clear all");
+        ImGui::TextUnformatted("全部清除");
         ImGui::EndTooltip();
     }
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
-    ImGui::SeparatorText("Active breakpoints");
+    ImGui::SeparatorText("活跃断点");
     ImGui::PopFont();
 
     if (ImGui::BeginTable("bkpts", 4, ImGuiTableFlags_SizingFixedFit)) {
@@ -105,7 +105,7 @@ void SH2BreakpointsView::Display() {
                 m_context.debuggers.MakeDirty();
             }
             if (ImGui::BeginItemTooltip()) {
-                ImGui::TextUnformatted("Enable/disable breakpoint");
+                ImGui::TextUnformatted("启用/禁用断点");
                 ImGui::EndTooltip();
             }
 
@@ -121,7 +121,7 @@ void SH2BreakpointsView::Display() {
                 m_model.JumpTo(baseAddress);
             }
             if (ImGui::BeginItemTooltip()) {
-                ImGui::TextUnformatted("Jump to address");
+                ImGui::TextUnformatted("跳转到地址");
                 ImGui::EndTooltip();
             }
 
@@ -132,7 +132,7 @@ void SH2BreakpointsView::Display() {
                 m_context.debuggers.MakeDirty();
             }
             if (ImGui::BeginItemTooltip()) {
-                ImGui::TextUnformatted("Remove");
+                ImGui::TextUnformatted("移除");
                 ImGui::EndTooltip();
             }
         }

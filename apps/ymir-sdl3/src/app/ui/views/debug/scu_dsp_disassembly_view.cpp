@@ -29,8 +29,8 @@ void SCUDSPDisassemblyView::Display() {
     }
     if (ImGui::BeginTable("dsp_disasm", 3, tableFlags)) {
         ImGui::TableSetupColumn("PC", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 2);
-        ImGui::TableSetupColumn("Opcode", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 8);
-        ImGui::TableSetupColumn("Instructions", ImGuiTableColumnFlags_WidthFixed,
+        ImGui::TableSetupColumn("操作码", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 8);
+        ImGui::TableSetupColumn("指令", ImGuiTableColumnFlags_WidthFixed,
                                 paddingWidth * 2 + hexCharWidth * (3 + 10 + 10 + 10 + 10 + 14) +
                                     m_style.disasm.instrSeparation * 5);
         ImGui::TableSetupScrollFreeze(1, 1);
@@ -64,7 +64,7 @@ void SCUDSPDisassemblyView::Display() {
                     }
                 };
 
-                auto drawIllegalMnemonic = [&] { ImGui::TextColored(m_colors.disasm.illegalMnemonic, "(illegal)"); };
+                auto drawIllegalMnemonic = [&] { ImGui::TextColored(m_colors.disasm.illegalMnemonic, "(非法)"); };
 
                 auto drawComma = [&] {
                     ImGui::SameLine(0, 0);

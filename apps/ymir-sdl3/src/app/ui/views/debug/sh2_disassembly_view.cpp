@@ -74,26 +74,26 @@ SH2DisassemblyView::SH2DisassemblyView(SharedContext &context, ymir::sh2::SH2 &s
 
 void SH2DisassemblyView::Display() {
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("Disassembly")) {
-            ImGui::MenuItem("Display opcode bytes", nullptr, &m_model.settings.displayOpcodeBytes);
-            ImGui::MenuItem("Display opcode ASCII", nullptr, &m_model.settings.displayOpcodeAscii);
+        if (ImGui::BeginMenu("反汇编")) {
+            ImGui::MenuItem("显示操作码字节", nullptr, &m_model.settings.displayOpcodeBytes);
+            ImGui::MenuItem("显示操作码 ASCII", nullptr, &m_model.settings.displayOpcodeAscii);
 
             ImGui::Separator();
 
-            ImGui::MenuItem("Alternate line colors", nullptr, &m_model.settings.altLineColors);
+            ImGui::MenuItem("交替行颜色", nullptr, &m_model.settings.altLineColors);
             ImGui::Indent();
-            ImGui::MenuItem("Based on addresses", nullptr, &m_model.settings.altLineAddresses);
+            ImGui::MenuItem("基于地址", nullptr, &m_model.settings.altLineAddresses);
             ImGui::Unindent();
 
             ImGui::Separator();
 
-            ImGui::MenuItem("Colorize mnemonics by type", nullptr, &m_model.settings.colorizeMnemonicsByType);
+            ImGui::MenuItem("按类型着色助记符", nullptr, &m_model.settings.colorizeMnemonicsByType);
 
             ImGui::EndMenu();
         }
-        if (ImGui::BeginMenu("Stack")) {
-            ImGui::MenuItem("Display data stack", nullptr, &m_model.settings.displayDataStack);
-            ImGui::MenuItem("Display call stack", nullptr, &m_model.settings.displayCallStack);
+        if (ImGui::BeginMenu("栈")) {
+            ImGui::MenuItem("显示数据栈", nullptr, &m_model.settings.displayDataStack);
+            ImGui::MenuItem("显示调用栈", nullptr, &m_model.settings.displayCallStack);
 
             ImGui::EndMenu();
         }
@@ -334,8 +334,8 @@ void SH2DisassemblyView::Display() {
                     if (ImGui::BeginItemTooltip()) {
                         ImGui::Separator();
                         ImGui::PushFont(m_context.fonts.sansSerif.regular, m_context.fontSizes.medium);
-                        ImGui::TextUnformatted("Click to toggle breakpoint (F9, B)");
-                        ImGui::TextUnformatted("Shift-click to enable/disable breakpoint (Shift-F9, Shift-B)");
+                        ImGui::TextUnformatted("点击切换断点 (F9, B)");
+                        ImGui::TextUnformatted("Shift+点击启用/禁用断点 (Shift-F9, Shift-B)");
                         ImGui::PopFont();
                         ImGui::EndTooltip();
                     }
@@ -376,7 +376,7 @@ void SH2DisassemblyView::Display() {
                     if (ImGui::BeginItemTooltip()) {
                         ImGui::Separator();
                         ImGui::PushFont(m_context.fonts.sansSerif.regular, m_context.fontSizes.medium);
-                        ImGui::TextUnformatted("Click to set PR here");
+                        ImGui::TextUnformatted("点击在此设置 PR");
                         ImGui::PopFont();
                         ImGui::EndTooltip();
                     }
@@ -421,7 +421,7 @@ void SH2DisassemblyView::Display() {
                     if (ImGui::BeginItemTooltip()) {
                         ImGui::Separator();
                         ImGui::PushFont(m_context.fonts.sansSerif.regular, m_context.fontSizes.medium);
-                        ImGui::TextUnformatted("Click to set PC here");
+                        ImGui::TextUnformatted("点击在此设置 PC");
                         ImGui::PopFont();
                         ImGui::EndTooltip();
                     }
@@ -529,7 +529,7 @@ void SH2DisassemblyView::Display() {
 
             auto drawIllegalMnemonic = [&] {
                 ImGui::SameLine(0, 0);
-                ImGui::TextColored(m_model.colors.disasm.illegalMnemonic, "(illegal)");
+                ImGui::TextColored(m_model.colors.disasm.illegalMnemonic, "(非法)");
             };
 
             auto drawUnknownMnemonic = [&] {
@@ -1032,23 +1032,23 @@ void SH2DisassemblyView::Display() {
 
                     ImGui::PushFont(m_context.fonts.sansSerif.regular, m_context.fontSizes.medium);
                     if (prevDisasm.hasDelaySlot && !disasm.validInDelaySlot) {
-                        ImGui::TextColored(m_model.colors.disasm.illegalMnemonic, "Illegal delay slot instruction");
+                        ImGui::TextColored(m_model.colors.disasm.illegalMnemonic, "非法延迟槽指令");
                     }
                     if (isBreakpointSet) {
                         drawSepOnce();
-                        ImGui::TextColored(m_model.colors.disasm.bkptHoveredIconColor, "Breakpoint set");
+                        ImGui::TextColored(m_model.colors.disasm.bkptHoveredIconColor, "已设置断点");
                         if (!isBreakpointEnabled) {
                             ImGui::SameLine();
-                            ImGui::TextDisabled("(disabled)");
+                            ImGui::TextDisabled("(已禁用)");
                         }
                     }
                     if (address == pr) {
                         drawSepOnce();
-                        ImGui::TextColored(m_model.colors.disasm.prHoveredIconColor, "PR points here");
+                        ImGui::TextColored(m_model.colors.disasm.prHoveredIconColor, "PR 指向此处");
                     }
                     if (address == pc) {
                         drawSepOnce();
-                        ImGui::TextColored(m_model.colors.disasm.pcHoveredIconColor, "PC points here");
+                        ImGui::TextColored(m_model.colors.disasm.pcHoveredIconColor, "PC 指向此处");
                     }
                     ImGui::PopFont();
 

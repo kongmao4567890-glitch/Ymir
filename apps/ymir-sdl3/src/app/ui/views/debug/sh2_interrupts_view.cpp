@@ -27,7 +27,7 @@ void SH2InterruptsView::Display() {
 
     // --- INTC and SR ---------------------------------------------------------
     {
-        ImGui::SeparatorText("INTC and SR");
+        ImGui::SeparatorText("INTC 与 SR");
 
         ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
         ImGui::SetNextItemWidth(ImGui::GetStyle().FramePadding.x * 2 + hexCharWidth * 4);
@@ -65,12 +65,12 @@ void SH2InterruptsView::Display() {
 
     // --- Interrupt signals ---------------------------------------------------
     {
-        ImGui::SeparatorText("Interrupt signals");
+        ImGui::SeparatorText("中断信号");
 
         if (ImGui::BeginTable("intr_signals", 3, ImGuiTableFlags_SizingFixedFit)) {
-            ImGui::TableSetupColumn("Signal");
-            ImGui::TableSetupColumn("Vector");
-            ImGui::TableSetupColumn("Level");
+            ImGui::TableSetupColumn("信号");
+            ImGui::TableSetupColumn("向量");
+            ImGui::TableSetupColumn("级别");
             ImGui::TableHeadersRow();
 
             auto drawRow = [&](std::initializer_list<std::pair<sh2::InterruptSource, const char *>> sources,
@@ -196,7 +196,7 @@ void SH2InterruptsView::Display() {
 
     // --- External interrupt --------------------------------------------------
     {
-        ImGui::SeparatorText("External interrupt");
+        ImGui::SeparatorText("外部中断");
 
         ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
         ImGui::SetNextItemWidth(ImGui::GetStyle().FramePadding.x * 2 + hexCharWidth * 2);
@@ -204,7 +204,7 @@ void SH2InterruptsView::Display() {
         ImGui::PopFont();
         ImGui::SameLine();
         ImGui::AlignTextToFramePadding();
-        ImGui::TextUnformatted("Vector");
+        ImGui::TextUnformatted("向量");
 
         ImGui::SameLine();
 
@@ -216,11 +216,11 @@ void SH2InterruptsView::Display() {
         ImGui::PopFont();
         ImGui::SameLine();
         ImGui::AlignTextToFramePadding();
-        ImGui::TextUnformatted("Level");
+        ImGui::TextUnformatted("级别");
 
         ImGui::SameLine();
 
-        if (ImGui::Button("Trigger##ext_intr")) {
+        if (ImGui::Button("触发##ext_intr")) {
             intc.externalVector = m_extIntrVector;
             intc.SetLevel(sh2::InterruptSource::IRL, m_extIntrLevel);
             intc.UpdateIRLVector();
@@ -230,14 +230,14 @@ void SH2InterruptsView::Display() {
 
     // --- Pending interrupt ---------------------------------------------------
     {
-        ImGui::SeparatorText("Pending interrupt");
+        ImGui::SeparatorText("待处理中断");
 
         if (intc.pending.level == 0) {
             ImGui::BeginDisabled();
-            ImGui::TextUnformatted("No pending interrupts");
+            ImGui::TextUnformatted("无待处理中断");
             ImGui::EndDisabled();
         } else {
-            ImGui::Text("Next: %s, level 0x%X", sh2::GetInterruptSourceName(intc.pending.source).data(),
+            ImGui::Text("下一个: %s, 级别 0x%X", sh2::GetInterruptSourceName(intc.pending.source).data(),
                         intc.pending.level);
         }
     }

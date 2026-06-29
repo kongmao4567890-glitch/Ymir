@@ -13,37 +13,37 @@ void UnboundActionsWidget::Display() {
 
     const bool plural = m_unboundActions.size() > 1;
     ImGui::TextColored(m_context.colors.warn, "%zu %s", m_unboundActions.size(),
-                       (plural ? "actions were unbound" : "action was unbound"));
+                       (plural ? "个操作已解除绑定" : "个操作已解除绑定"));
     ImGui::SameLine();
-    if (ImGui::SmallButton("View")) {
-        ImGui::OpenPopup("Unbound actions");
+    if (ImGui::SmallButton("查看")) {
+        ImGui::OpenPopup("已解除绑定的操作");
     }
     ImGui::SameLine();
-    if (ImGui::SmallButton("Clear")) {
+    if (ImGui::SmallButton("清除")) {
         m_unboundActions.clear();
     }
 
-    if (ImGui::BeginPopup("Unbound actions")) {
+    if (ImGui::BeginPopup("已解除绑定的操作")) {
         for (auto &action : m_unboundActions) {
             const char *category;
             if (action.context == nullptr) {
-                category = "Hotkeys";
+                category = "快捷键";
             } else if (action.context == &m_context.controlPadInputs[0] ||
                        action.context == &m_context.analogPadInputs[0] ||
                        action.context == &m_context.arcadeRacerInputs[0] ||
                        action.context == &m_context.missionStickInputs[0] ||
                        action.context == &m_context.virtuaGunInputs[0] ||
                        action.context == &m_context.shuttleMouseInputs[0]) {
-                category = "Peripheral port 1";
+                category = "外设端口 1";
             } else if (action.context == &m_context.controlPadInputs[1] ||
                        action.context == &m_context.analogPadInputs[1] ||
                        action.context == &m_context.arcadeRacerInputs[1] ||
                        action.context == &m_context.missionStickInputs[1] ||
                        action.context == &m_context.virtuaGunInputs[1] ||
                        action.context == &m_context.shuttleMouseInputs[1]) {
-                category = "Peripheral port 2";
+                category = "外设端口 2";
             } else {
-                category = "Unknown";
+                category = "未知";
             }
             ImGui::Text("%s - %s - %s", category, action.action.group, action.action.name);
         }

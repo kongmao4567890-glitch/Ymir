@@ -44,29 +44,29 @@ void CDDriveStateTraceView::Display() {
 
     ImGui::BeginGroup();
 
-    ImGui::Checkbox("Enable", &m_tracer.traceStateUpdates);
+    ImGui::Checkbox("启用", &m_tracer.traceStateUpdates);
     ImGui::SameLine();
     ImGui::TextDisabled("(?)");
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("You must also enable tracing in Debug > Enable tracing (F11)");
+        ImGui::TextUnformatted("你还必须在 调试 > 启用跟踪 (F11) 中启用跟踪");
         ImGui::EndTooltip();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Clear")) {
+    if (ImGui::Button("清除")) {
         m_tracer.ClearStateUpdates();
     }
     if (!settings.cdblock.useLLE) {
         ImGui::PushTextWrapPos(ImGui::GetContentRegionAvail().x);
-        ImGui::TextColored(m_context.colors.notice, "CD Block LLE is disabled. Nothing will be traced here.");
+        ImGui::TextColored(m_context.colors.notice, "CD Block LLE 已禁用。此处不会跟踪任何内容。");
         ImGui::PopTextWrapPos();
     }
 
     if (ImGui::BeginTable("cdblock_cmd_trace", 3,
                           ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable)) {
         ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_PreferSortDescending);
-        ImGui::TableSetupColumn("Command", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("命令", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * (2 * 13 + 1 * 12));
-        ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("状态", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * (2 * 13 + 1 * 12));
         ImGui::TableSetupScrollFreeze(1, 1);
         ImGui::TableHeadersRow();

@@ -38,10 +38,10 @@ void SH2WatchpointsView::Display() {
     ImGui::BeginGroup();
 
     if (!m_context.saturn.IsDebugTracingEnabled()) {
-        ImGui::TextColored(m_context.colors.warn, "Debug tracing is disabled.");
-        ImGui::TextColored(m_context.colors.warn, "Watchpoints will not work.");
+        ImGui::TextColored(m_context.colors.warn, "调试跟踪已禁用。");
+        ImGui::TextColored(m_context.colors.warn, "监视点将无法工作。");
         ImGui::SameLine();
-        if (ImGui::SmallButton("Enable##debug_tracing")) {
+        if (ImGui::SmallButton("启用##debug_tracing")) {
             m_context.EnqueueEvent(events::emu::SetDebugTrace(true));
         }
     }
@@ -55,12 +55,12 @@ void SH2WatchpointsView::Display() {
     }
 
     ImGui::TableNextColumn();
-    ImGui::Checkbox("Read", &m_read);
+    ImGui::Checkbox("读取", &m_read);
     ImGui::SameLine();
-    ImGui::Checkbox("Write", &m_write);
+    ImGui::Checkbox("写入", &m_write);
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Address");
+    ImGui::TextUnformatted("地址");
     ImGui::SameLine();
     if (drawHex32("addr", m_address)) {
         if (ImGui::IsKeyPressed(ImGuiKey_Enter) || ImGui::IsKeyPressed(ImGuiKey_KeypadEnter) ||
@@ -78,7 +78,7 @@ void SH2WatchpointsView::Display() {
         m_context.debuggers.MakeDirty();
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Add");
+        ImGui::TextUnformatted("添加");
         ImGui::EndTooltip();
     }
 
@@ -89,7 +89,7 @@ void SH2WatchpointsView::Display() {
         m_context.debuggers.MakeDirty();
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Remove");
+        ImGui::TextUnformatted("移除");
         ImGui::EndTooltip();
     }
 
@@ -100,12 +100,12 @@ void SH2WatchpointsView::Display() {
         m_context.debuggers.MakeDirty();
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Clear all");
+        ImGui::TextUnformatted("全部清除");
         ImGui::EndTooltip();
     }
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
-    ImGui::SeparatorText("Active watchpoints");
+    ImGui::SeparatorText("活跃监视点");
     ImGui::PopFont();
 
     std::map<uint32, SH2Watchpoint> watchpoints = m_wtptManager.GetWatchpoints();
@@ -122,7 +122,7 @@ void SH2WatchpointsView::Display() {
 
         {
             ImGui::NewLine();
-            centerTextWithOffset("Address", flagCheckboxWidth + flagsSpacing, hexFieldWidth);
+            centerTextWithOffset("地址", flagCheckboxWidth + flagsSpacing, hexFieldWidth);
             float offset = baseOffset;
             centerTextWithOffset("R", offset, flagCheckboxWidth);
             offset += flagCheckboxWidth + flagsSpacing;
@@ -141,7 +141,7 @@ void SH2WatchpointsView::Display() {
                 m_context.debuggers.MakeDirty();
             }
             if (ImGui::BeginItemTooltip()) {
-                ImGui::TextUnformatted("Enable/disable watchpoint");
+                ImGui::TextUnformatted("启用/禁用监视点");
                 ImGui::EndTooltip();
             }
 
@@ -172,15 +172,15 @@ void SH2WatchpointsView::Display() {
                 }
             };
 
-            flag("r", "Read", debug::WatchpointFlags::Read);
-            flag("w", "Write", debug::WatchpointFlags::Write);
+            flag("r", "读取", debug::WatchpointFlags::Read);
+            flag("w", "写入", debug::WatchpointFlags::Write);
             ImGui::SameLine();
             if (ImGui::Button(fmt::format(ICON_MS_DELETE "##{}", i).c_str())) {
                 std::unique_lock lock{m_context.locks.watchpoints};
                 m_wtptManager.ClearWatchpoint(address);
                 m_context.debuggers.MakeDirty();
             }
-            ImGui::SetItemTooltip("Remove");
+            ImGui::SetItemTooltip("移除");
 
             ++i;
         }

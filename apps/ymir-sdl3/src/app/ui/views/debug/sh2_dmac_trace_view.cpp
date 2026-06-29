@@ -19,7 +19,7 @@ void SH2DMAControllerChannelTraceView::Display() {
 }
 
 void SH2DMAControllerChannelTraceView::DisplayStatistics() {
-    ImGui::SeparatorText(fmt::format("Channel {} statistics", m_index).c_str());
+    ImGui::SeparatorText(fmt::format("通道 {} 统计", m_index).c_str());
 
     const auto &stats = m_tracer.dmaStats[m_index];
 
@@ -31,7 +31,7 @@ void SH2DMAControllerChannelTraceView::DisplayStatistics() {
             ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
             ImGui::Text("%" PRIu64, stats.numTransfers);
             ImGui::PopFont();
-            ImGui::TextUnformatted("transfers");
+            ImGui::TextUnformatted("次传输");
         }
 
         if (ImGui::TableNextColumn()) {
@@ -45,17 +45,17 @@ void SH2DMAControllerChannelTraceView::DisplayStatistics() {
             } else if (stats.bytesTransferred >= 1_KiB) {
                 ImGui::Text("%0.2lf KiB", util::BytesToKiB(stats.bytesTransferred));
             } else {
-                ImGui::Text("%" PRIu64 " bytes", stats.bytesTransferred);
+                ImGui::Text("%" PRIu64 " 字节", stats.bytesTransferred);
             }
             ImGui::PopFont();
-            ImGui::TextUnformatted("transferred");
+            ImGui::TextUnformatted("已传输");
         }
 
         if (ImGui::TableNextColumn()) {
             ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
             ImGui::Text("%" PRIu64, stats.interrupts);
             ImGui::PopFont();
-            ImGui::TextUnformatted("interrupts");
+            ImGui::TextUnformatted("个中断");
         }
 
         ImGui::EndTable();
@@ -69,11 +69,11 @@ void SH2DMAControllerChannelTraceView::DisplayTrace() {
     const float hexCharWidth = ImGui::CalcTextSize("F").x;
     ImGui::PopFont();
 
-    ImGui::SeparatorText(fmt::format("Channel {} trace", m_index).c_str());
+    ImGui::SeparatorText(fmt::format("通道 {} 跟踪", m_index).c_str());
 
     ImGui::BeginGroup();
 
-    if (ImGui::Button(fmt::format("Clear##dmac{}", m_index).c_str())) {
+    if (ImGui::Button(fmt::format("清除##dmac{}", m_index).c_str())) {
         m_tracer.dmaTransfers[m_index].Clear();
         m_tracer.dmaStats[m_index].Clear();
         m_tracer.ResetDMACounter(m_index);
@@ -82,13 +82,13 @@ void SH2DMAControllerChannelTraceView::DisplayTrace() {
     if (ImGui::BeginTable(fmt::format("dmac{}_trace", m_index).c_str(), 6,
                           ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable)) {
         ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_PreferSortDescending);
-        ImGui::TableSetupColumn("Source", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("源", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 11);
-        ImGui::TableSetupColumn("Destination", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("目标", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 11);
-        ImGui::TableSetupColumn("Count", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("计数", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 6);
-        ImGui::TableSetupColumn("Unit size", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("单元大小", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 6);
         ImGui::TableSetupColumn("IRQ", ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_NoSort);
         ImGui::TableSetupScrollFreeze(1, 1);
@@ -143,11 +143,11 @@ void SH2DMAControllerChannelTraceView::DisplayTrace() {
                 ImGui::PopFont();
             }
             if (ImGui::TableNextColumn()) {
-                ImGui::Text("%X byte%s", trace.unitSize, (trace.unitSize != 1 ? "s" : ""));
+                ImGui::Text("%X 字节", trace.unitSize);
             }
             if (ImGui::TableNextColumn()) {
                 if (trace.irqRaised) {
-                    ImGui::TextUnformatted("raised");
+                    ImGui::TextUnformatted("已触发");
                 }
             }
         }

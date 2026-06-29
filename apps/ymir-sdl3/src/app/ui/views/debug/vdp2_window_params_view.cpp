@@ -18,8 +18,8 @@ void VDP2WindowParamsView::Display() {
 
     if (ImGui::BeginTable("windows", 3, ImGuiTableFlags_SizingFixedFit)) {
         ImGui::TableSetupColumn("");
-        ImGui::TableSetupColumn("Dimensions", ImGuiTableColumnFlags_WidthFixed, 120.0f * m_context.displayScale);
-        ImGui::TableSetupColumn("Line window table");
+        ImGui::TableSetupColumn("尺寸", ImGuiTableColumnFlags_WidthFixed, 120.0f * m_context.displayScale);
+        ImGui::TableSetupColumn("行窗口表");
         ImGui::TableHeadersRow();
 
         const auto &windowParams = regs2.windowParams;

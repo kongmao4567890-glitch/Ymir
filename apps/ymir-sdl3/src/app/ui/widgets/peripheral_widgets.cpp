@@ -32,7 +32,7 @@ bool PeripheralSelector(SharedContext &ctx, uint32 portIndex) {
             if (ImGui::TableNextColumn()) {
                 ImGui::AlignTextToFramePadding();
                 // TODO: multitap -- ImGui::Text("Slot %u:", slotIndex);
-                ImGui::TextUnformatted("Peripheral:");
+                ImGui::TextUnformatted("外设：");
             }
             if (ImGui::TableNextColumn()) {
                 ImGui::SetNextItemWidth(-1);
@@ -51,7 +51,7 @@ bool PeripheralSelector(SharedContext &ctx, uint32 portIndex) {
                 if (isNone) {
                     ImGui::BeginDisabled();
                 }
-                if (ImGui::Button(fmt::format("Configure##{}_{}", portIndex, slotIndex).c_str())) {
+                if (ImGui::Button(fmt::format("配置##{}_{}", portIndex, slotIndex).c_str())) {
                     ctx.EnqueueEvent(events::gui::OpenPeripheralBindsEditor(portIndex - 1, slotIndex));
                 }
                 if (isNone) {

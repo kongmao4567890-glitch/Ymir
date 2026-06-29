@@ -25,16 +25,16 @@ void VDP2DebugOverlayView::Display() {
 
     auto overlayName = [](OverlayType type) {
         switch (type) {
-        case OverlayType::None: return "No overlay";
-        case OverlayType::SingleLayer: return "Single layer";
-        case OverlayType::LayerStack: return "Layer stack";
-        case OverlayType::PriorityStack: return "Priority stack";
-        case OverlayType::Windows: return "Windows";
-        case OverlayType::RotParams: return "RBG0 rotation parameters";
-        case OverlayType::ColorCalc: return "Color calculations";
-        case OverlayType::ColorGradation: return "Color gradation";
-        case OverlayType::Shadow: return "Shadows";
-        default: return "Invalid";
+        case OverlayType::None: return "无覆盖层";
+        case OverlayType::SingleLayer: return "单图层";
+        case OverlayType::LayerStack: return "图层堆栈";
+        case OverlayType::PriorityStack: return "优先级堆栈";
+        case OverlayType::Windows: return "窗口";
+        case OverlayType::RotParams: return "RBG0 旋转参数";
+        case OverlayType::ColorCalc: return "颜色计算";
+        case OverlayType::ColorGradation: return "颜色渐变";
+        case OverlayType::Shadow: return "阴影";
+        default: return "无效";
         }
     };
 
@@ -51,14 +51,14 @@ void VDP2DebugOverlayView::Display() {
 
     // TODO: enqueue events
     // TODO: persist parameters
-    ImGui::Checkbox("Enable debug rendering", &m_vdp.vdp2DebugRenderOptions.overlay.enable);
+    ImGui::Checkbox("启用调试渲染", &m_vdp.vdp2DebugRenderOptions.overlay.enable);
 
     if (!m_vdp.vdp2DebugRenderOptions.overlay.enable) {
         ImGui::BeginDisabled();
     }
 
-    ImGui::SeparatorText("Overlay");
-    if (ImGui::BeginCombo("Type##overlay", overlayName(overlay.type), ImGuiComboFlags_HeightLargest)) {
+    ImGui::SeparatorText("覆盖层");
+    if (ImGui::BeginCombo("类型##overlay", overlayName(overlay.type), ImGuiComboFlags_HeightLargest)) {
         auto option = [&](OverlayType type) {
             if (ImGui::Selectable(overlayName(type), overlay.type == type)) {
                 overlay.type = type;
@@ -92,20 +92,20 @@ void VDP2DebugOverlayView::Display() {
     {
         auto layerName = [](uint8 index) {
             switch (index) {
-            case 0: return "Sprite";
+            case 0: return "精灵";
             case 1: return "RBG0";
             case 2: return "NBG0/RBG1";
             case 3: return "NBG1/EXBG";
             case 4: return "NBG2";
             case 5: return "NBG3";
-            case 6: return "Back screen";
-            case 7: return "Line color screen";
-            case 8: return "Transparent mesh sprites";
-            case 9: return "Color gradation screen";
-            default: return "Invalid";
+            case 6: return "背景屏幕";
+            case 7: return "行颜色屏幕";
+            case 8: return "透明网格精灵";
+            case 9: return "颜色渐变屏幕";
+            default: return "无效";
             }
         };
-        if (ImGui::BeginCombo("Layer##single", layerName(overlay.singleLayerIndex), ImGuiComboFlags_HeightLargest)) {
+        if (ImGui::BeginCombo("图层##single", layerName(overlay.singleLayerIndex), ImGuiComboFlags_HeightLargest)) {
             for (uint32 i = 0; i <= 9; ++i) {
                 const std::string label = fmt::format("{}##single_layer", layerName(i));
                 if (ImGui::Selectable(label.c_str(), overlay.singleLayerIndex == i)) {
@@ -120,15 +120,15 @@ void VDP2DebugOverlayView::Display() {
     {
         static constexpr uint8 kMinStackIndex = 0;
         static constexpr uint8 kMaxStackIndex = 2;
-        ImGui::SliderScalar("Layer level##vdp2_overlay_layer_stack", ImGuiDataType_U8, &overlay.layerStackIndex,
+        ImGui::SliderScalar("图层级别##vdp2_overlay_layer_stack", ImGuiDataType_U8, &overlay.layerStackIndex,
                             &kMinStackIndex, &kMaxStackIndex, nullptr, ImGuiSliderFlags_AlwaysClamp);
-        colorPicker("Sprite##layer_stack", overlay.layerColors[0]);
+        colorPicker("精灵##layer_stack", overlay.layerColors[0]);
         colorPicker("RBG0##layer_stack", overlay.layerColors[1]);
         colorPicker("NBG0/RBG1##layer_stack", overlay.layerColors[2]);
         colorPicker("NBG1/EXBG##layer_stack", overlay.layerColors[3]);
         colorPicker("NBG2##layer_stack", overlay.layerColors[4]);
         colorPicker("NBG3##layer_stack", overlay.layerColors[5]);
-        colorPicker("Back##layer_stack", overlay.layerColors[6]);
+        colorPicker("背景##layer_stack", overlay.layerColors[6]);
         // colorPicker("Line color", overlay.layerColors[7]);
         break;
     }
@@ -136,7 +136,7 @@ void VDP2DebugOverlayView::Display() {
     {
         static constexpr uint8 kMinStackIndex = 0;
         static constexpr uint8 kMaxStackIndex = 2;
-        ImGui::SliderScalar("Layer level##vdp2_overlay_priority_stack", ImGuiDataType_U8, &overlay.priorityStackIndex,
+        ImGui::SliderScalar("图层级别##vdp2_overlay_priority_stack", ImGuiDataType_U8, &overlay.priorityStackIndex,
                             &kMinStackIndex, &kMaxStackIndex, nullptr, ImGuiSliderFlags_AlwaysClamp);
         for (uint32 i = 0; i < 8; ++i) {
             colorPicker(fmt::format("{}##layer_stack", i).c_str(), overlay.priorityColors[i]);
@@ -147,19 +147,19 @@ void VDP2DebugOverlayView::Display() {
     {
         auto windowLayerName = [](uint8 index) {
             switch (index) {
-            case 0: return "Sprite";
+            case 0: return "精灵";
             case 1: return "RBG0";
             case 2: return "NBG0/RBG1";
             case 3: return "NBG1/EXBG";
             case 4: return "NBG2";
             case 5: return "NBG3";
-            case 6: return "Rotation parameters";
-            case 7: return "Color calculations";
-            default: return "Custom";
+            case 6: return "旋转参数";
+            case 7: return "颜色计算";
+            default: return "自定义";
             }
         };
 
-        if (ImGui::BeginCombo("Layer##window", windowLayerName(overlay.windowLayerIndex),
+        if (ImGui::BeginCombo("图层##window", windowLayerName(overlay.windowLayerIndex),
                               ImGuiComboFlags_HeightLargest)) {
             for (uint32 i = 0; i <= 8; ++i) {
                 const std::string label = fmt::format("{}##window_layer", windowLayerName(i));
@@ -179,12 +179,12 @@ void VDP2DebugOverlayView::Display() {
                     ImGui::AlignTextToFramePadding();
                     ImGui::TextUnformatted("W0");
                     ImGui::TableNextColumn();
-                    ImGui::Checkbox("Enable", &overlay.customWindowSet.enabled[i]);
+                    ImGui::Checkbox("启用", &overlay.customWindowSet.enabled[i]);
                     ImGui::SameLine();
-                    ImGui::Checkbox("Invert", &overlay.customWindowSet.inverted[i]);
+                    ImGui::Checkbox("反转", &overlay.customWindowSet.inverted[i]);
                     if (i < 2) {
                         ImGui::SameLine();
-                        ImGui::Checkbox("Line table:", &overlay.customLineWindowTableEnable[i]);
+                        ImGui::Checkbox("行表:", &overlay.customLineWindowTableEnable[i]);
                         ImGui::SameLine();
                         ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
                         ImGui::SetNextItemWidth(5 * hexCharWidth + 2 * paddingWidth);
@@ -199,7 +199,7 @@ void VDP2DebugOverlayView::Display() {
             }
 
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Combine:");
+            ImGui::TextUnformatted("组合:");
             ImGui::SameLine();
             if (ImGui::RadioButton("OR", overlay.customWindowSet.logic == vdp::WindowLogic::Or)) {
                 overlay.customWindowSet.logic = vdp::WindowLogic::Or;
@@ -209,8 +209,8 @@ void VDP2DebugOverlayView::Display() {
                 overlay.customWindowSet.logic = vdp::WindowLogic::And;
             }
         }
-        colorPicker("Inside##window", overlay.windowInsideColor);
-        colorPicker("Outside##window", overlay.windowOutsideColor);
+        colorPicker("内部##window", overlay.windowInsideColor);
+        colorPicker("外部##window", overlay.windowOutsideColor);
         break;
     }
     case OverlayType::RotParams: //
@@ -221,26 +221,26 @@ void VDP2DebugOverlayView::Display() {
     {
         static constexpr uint8 kMinLayerStackIndex = 0;
         static constexpr uint8 kMaxLayerStackIndex = 1;
-        ImGui::SliderScalar("Layer level##vdp2_overlay_color_calc", ImGuiDataType_U8, &overlay.colorCalcStackIndex,
+        ImGui::SliderScalar("图层级别##vdp2_overlay_color_calc", ImGuiDataType_U8, &overlay.colorCalcStackIndex,
                             &kMinLayerStackIndex, &kMaxLayerStackIndex, nullptr, ImGuiSliderFlags_AlwaysClamp);
-        colorPicker("Disabled##color_grad", overlay.colorCalcDisableColor);
-        colorPicker("Enabled##color_grad", overlay.colorCalcEnableColor);
+        colorPicker("已禁用##color_grad", overlay.colorCalcDisableColor);
+        colorPicker("已启用##color_grad", overlay.colorCalcEnableColor);
         break;
     }
     case OverlayType::ColorGradation: //
     {
         static constexpr uint8 kMinLayerStackIndex = 0;
         static constexpr uint8 kMaxLayerStackIndex = 1;
-        ImGui::SliderScalar("Layer level##vdp2_overlay_color_grad", ImGuiDataType_U8, &overlay.colorGradStackIndex,
+        ImGui::SliderScalar("图层级别##vdp2_overlay_color_grad", ImGuiDataType_U8, &overlay.colorGradStackIndex,
                             &kMinLayerStackIndex, &kMaxLayerStackIndex, nullptr, ImGuiSliderFlags_AlwaysClamp);
-        colorPicker("Disabled##color_grad", overlay.colorGradDisableColor);
-        colorPicker("Enabled##color_grad", overlay.colorGradEnableColor);
+        colorPicker("已禁用##color_grad", overlay.colorGradDisableColor);
+        colorPicker("已启用##color_grad", overlay.colorGradEnableColor);
         break;
     }
     case OverlayType::Shadow: //
     {
-        colorPicker("Disabled##shadow", overlay.shadowDisableColor);
-        colorPicker("Enabled##shadow", overlay.shadowEnableColor);
+        colorPicker("已禁用##shadow", overlay.shadowDisableColor);
+        colorPicker("已启用##shadow", overlay.shadowEnableColor);
         break;
     }
     default: break;

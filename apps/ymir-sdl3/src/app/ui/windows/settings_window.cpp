@@ -18,7 +18,7 @@ SettingsWindow::SettingsWindow(SharedContext &context)
     , m_cdblockSettingsView(context)
     , m_tweaksSettingsView(context) {
 
-    m_windowConfig.name = "Settings";
+    m_windowConfig.name = "设置";
 }
 
 void SettingsWindow::OpenTab(SettingsTab tab) {
@@ -49,19 +49,19 @@ void SettingsWindow::DrawContents() {
 
     m_windowConfig.allowClosingWithGamepad = true;
     if (ImGui::BeginTabBar("settings_tabs")) {
-        if (ImGui::BeginTabItem("General", nullptr, tabFlag(SettingsTab::General))) {
+        if (ImGui::BeginTabItem("常规", nullptr, tabFlag(SettingsTab::General))) {
             m_generalSettingsView.Display();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("GUI", nullptr, tabFlag(SettingsTab::GUI))) {
+        if (ImGui::BeginTabItem("界面", nullptr, tabFlag(SettingsTab::GUI))) {
             m_guiSettingsView.Display();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Hotkeys", nullptr, tabFlag(SettingsTab::Hotkeys))) {
+        if (ImGui::BeginTabItem("快捷键", nullptr, tabFlag(SettingsTab::Hotkeys))) {
             m_hotkeysSettingsView.Display();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("System", nullptr, tabFlag(SettingsTab::System))) {
+        if (ImGui::BeginTabItem("系统", nullptr, tabFlag(SettingsTab::System))) {
             m_systemSettingsView.Display();
             ImGui::EndTabItem();
         }
@@ -69,20 +69,20 @@ void SettingsWindow::DrawContents() {
             m_iplSettingsView.Display();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Input", nullptr, tabFlag(SettingsTab::Input))) {
+        if (ImGui::BeginTabItem("输入", nullptr, tabFlag(SettingsTab::Input))) {
             // m_windowConfig.allowClosingWithGamepad = false;
             m_inputSettingsView.Display();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Video", nullptr, tabFlag(SettingsTab::Video))) {
+        if (ImGui::BeginTabItem("视频", nullptr, tabFlag(SettingsTab::Video))) {
             m_videoSettingsView.Display();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Audio", nullptr, tabFlag(SettingsTab::Audio))) {
+        if (ImGui::BeginTabItem("音频", nullptr, tabFlag(SettingsTab::Audio))) {
             m_audioSettingsView.Display();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Cartridge", nullptr, tabFlag(SettingsTab::Cartridge))) {
+        if (ImGui::BeginTabItem("卡带", nullptr, tabFlag(SettingsTab::Cartridge))) {
             m_cartSettingsView.Display();
             ImGui::EndTabItem();
         }
@@ -90,7 +90,7 @@ void SettingsWindow::DrawContents() {
             m_cdblockSettingsView.Display();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Tweaks", nullptr, tabFlag(SettingsTab::Tweaks))) {
+        if (ImGui::BeginTabItem("调整", nullptr, tabFlag(SettingsTab::Tweaks))) {
             m_tweaksSettingsView.Display();
             ImGui::EndTabItem();
         }

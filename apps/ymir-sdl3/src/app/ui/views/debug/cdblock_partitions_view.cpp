@@ -37,14 +37,14 @@ void CDBlockPartitionsView::Display() {
     ImGui::ProgressBar((float)buffers / cdblock::kNumBuffers, ImVec2(350.0f * m_context.displayScale, 0.0f));
     ImGui::SameLine();
     ImGui::AlignTextToFramePadding();
-    ImGui::Text("Buffer usage: %u of %u", buffers, cdblock::kNumBuffers);
+    ImGui::Text("缓冲使用: %u / %u", buffers, cdblock::kNumBuffers);
 
     static constexpr int kNumBuffersPerLine = 16;
 
     if (ImGui::BeginTable("cdblock_partitions", 3, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, msCharWidth + paddingWidth * 2);
         ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth * 2);
-        ImGui::TableSetupColumn("Buffers", ImGuiTableColumnFlags_WidthFixed,
+        ImGui::TableSetupColumn("缓冲", ImGuiTableColumnFlags_WidthFixed,
                                 hexCharWidth * 7 * kNumBuffersPerLine + paddingWidth * 2);
         ImGui::TableSetupScrollFreeze(2, 0);
         ImGui::TableHeadersRow();
@@ -72,7 +72,7 @@ void CDBlockPartitionsView::Display() {
                     // TODO: make these clickable, opening a memory viewer window on the disc at the target sector
                     ImGui::Text("%06X", buffer.frameAddress);
                 } else {
-                    ImGui::Text("<data>");
+                    ImGui::Text("<数据>");
                 }
             }
             ImGui::PopFont();

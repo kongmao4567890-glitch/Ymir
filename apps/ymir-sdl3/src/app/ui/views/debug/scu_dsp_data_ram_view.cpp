@@ -19,7 +19,7 @@ void SCUDSPDataRAMView::Display() {
     ImGui::BeginGroup();
 
     if (ImGui::BeginTable("dsp_data_ram", 5, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY)) {
-        ImGui::TableSetupColumn("Address", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2);
+        ImGui::TableSetupColumn("地址", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2);
         ImGui::TableSetupColumn("Bank 0", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 8);
         ImGui::TableSetupColumn("Bank 1", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 8);
         ImGui::TableSetupColumn("Bank 2", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 8);

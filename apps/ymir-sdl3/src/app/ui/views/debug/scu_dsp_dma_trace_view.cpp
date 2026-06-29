@@ -14,26 +14,26 @@ void SCUDSPDMATraceView::Display() {
 
     ImGui::BeginGroup();
 
-    ImGui::Checkbox("Enable", &m_tracer.traceDSPDMA);
+    ImGui::Checkbox("启用", &m_tracer.traceDSPDMA);
     ImGui::SameLine();
     ImGui::TextDisabled("(?)");
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("You must also enable tracing in Debug > Enable tracing (F11)");
+        ImGui::TextUnformatted("你还必须在 调试 > 启用跟踪 (F11) 中启用跟踪");
         ImGui::EndTooltip();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Clear")) {
+    if (ImGui::Button("清除")) {
         m_tracer.ClearDSPDMATransfers();
     }
 
     if (ImGui::BeginTable("dsp_dma_trace", 4,
                           ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable)) {
         ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_PreferSortDescending);
-        ImGui::TableSetupColumn("Source", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("源", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 10);
-        ImGui::TableSetupColumn("Destination", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("目标", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 10);
-        ImGui::TableSetupColumn("Len", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("长度", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 3);
         ImGui::TableSetupScrollFreeze(1, 1);
         ImGui::TableHeadersRow();
@@ -57,11 +57,11 @@ void SCUDSPDMATraceView::Display() {
             if (ImGui::TableNextColumn()) {
                 if (trace.toD0) {
                     switch (trace.addrDSP) {
-                    case 0: ImGui::TextUnformatted("Data RAM 0"); break;
-                    case 1: ImGui::TextUnformatted("Data RAM 1"); break;
-                    case 2: ImGui::TextUnformatted("Data RAM 2"); break;
-                    case 3: ImGui::TextUnformatted("Data RAM 3"); break;
-                    default: ImGui::Text("Invalid (%u)", trace.addrDSP); break;
+                    case 0: ImGui::TextUnformatted("数据 RAM 0"); break;
+                    case 1: ImGui::TextUnformatted("数据 RAM 1"); break;
+                    case 2: ImGui::TextUnformatted("数据 RAM 2"); break;
+                    case 3: ImGui::TextUnformatted("数据 RAM 3"); break;
+                    default: ImGui::Text("无效 (%u)", trace.addrDSP); break;
                     }
                 } else {
                     ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
@@ -100,12 +100,12 @@ void SCUDSPDMATraceView::Display() {
                     ImGui::PopFont();
                 } else {
                     switch (trace.addrDSP) {
-                    case 0: ImGui::TextUnformatted("Data RAM 0"); break;
-                    case 1: ImGui::TextUnformatted("Data RAM 1"); break;
-                    case 2: ImGui::TextUnformatted("Data RAM 2"); break;
-                    case 3: ImGui::TextUnformatted("Data RAM 3"); break;
-                    case 4: ImGui::TextUnformatted("Program RAM"); break;
-                    default: ImGui::Text("Invalid (%u)", trace.addrDSP); break;
+                    case 0: ImGui::TextUnformatted("数据 RAM 0"); break;
+                    case 1: ImGui::TextUnformatted("数据 RAM 1"); break;
+                    case 2: ImGui::TextUnformatted("数据 RAM 2"); break;
+                    case 3: ImGui::TextUnformatted("数据 RAM 3"); break;
+                    case 4: ImGui::TextUnformatted("程序 RAM"); break;
+                    default: ImGui::Text("无效 (%u)", trace.addrDSP); break;
                     }
                 }
             }

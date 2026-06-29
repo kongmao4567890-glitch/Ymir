@@ -25,7 +25,7 @@ void InputSettingsView::Display() {
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
             ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-            ImGui::SeparatorText("Port 1");
+            ImGui::SeparatorText("端口 1");
             ImGui::PopFont();
 
             if (MakeDirty(widgets::Port1PeripheralSelector(m_context))) {
@@ -34,7 +34,7 @@ void InputSettingsView::Display() {
         }
         if (ImGui::TableNextColumn()) {
             ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-            ImGui::SeparatorText("Port 2");
+            ImGui::SeparatorText("端口 2");
             ImGui::PopFont();
 
             if (MakeDirty(widgets::Port2PeripheralSelector(m_context))) {
@@ -47,7 +47,7 @@ void InputSettingsView::Display() {
     // -------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Mouse");
+    ImGui::SeparatorText("鼠标");
     ImGui::PopFont();
 
     auto mouseCaptureModeRadio = [&](const char *name, Settings::Input::Mouse::CaptureMode value,
@@ -59,39 +59,31 @@ void InputSettingsView::Display() {
     };
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Capture mode:");
+    ImGui::TextUnformatted("捕获模式：");
     ImGui::SameLine();
     mouseCaptureModeRadio(
-        "System cursor", Settings::Input::Mouse::CaptureMode::SystemCursor,
-        "Binds the system mouse cursor to a single Virtua Gun controller.\n"
+        "系统光标", Settings::Input::Mouse::CaptureMode::SystemCursor,
+        "将系统鼠标光标绑定到单个 Virtua Gun 控制器。\n"
         "\n"
-        "This mode gives the smoothest experience - you simply point the cursor at the display and click to shoot. "
-        "The cursor is still free to interact with the user interface.\n"
+        "此模式提供最流畅的体验 - 你只需将光标指向显示器并点击即可射击。光标仍可自由地与用户界面交互。\n"
         "\n"
-        "To bind a controller to the mouse, click the screen. The first available controller will be bound. You cannot "
-        "bind the mouse to more than one controller in this mode.\n"
+        "要将控制器绑定到鼠标，请点击屏幕。将绑定第一个可用的控制器。在此模式下，你无法将鼠标绑定到多个控制器。\n"
         "\n"
-        "This mode only works with Virtua Gun controllers. If a Shuttle Mouse is connected to any port, the mode "
-        "selection is ignored and mouse capture behaves as if using the Physical mouse mode.");
+        "此模式仅适用于 Virtua Gun 控制器。如果任何端口连接了 Shuttle Mouse，将忽略模式选择，鼠标捕获的行为与使用物理鼠标模式相同。");
     ImGui::SameLine();
     mouseCaptureModeRadio(
-        "Physical mouse", Settings::Input::Mouse::CaptureMode::PhysicalMouse,
-        "Binds a physical mouse to a Virtua Gun controller.\n"
+        "物理鼠标", Settings::Input::Mouse::CaptureMode::PhysicalMouse,
+        "将物理鼠标绑定到 Virtua Gun 控制器。\n"
         "\n"
-        "This mode allows you to simultaneously bind multiple mice to many controllers.\n"
+        "此模式允许你同时将多个鼠标绑定到多个控制器。\n"
         "\n"
-        "To bind controllers, first you must capture the mouse cursor by clicking the display with any mouse. While in "
-        "this mode, click with the mice you wish to bind to controllers. The first available controller will be bound "
-        "to each mouse.\n"
+        "要绑定控制器，首先必须通过用任意鼠标点击显示器来捕获鼠标光标。在此模式下，用要绑定到控制器的鼠标点击。每个鼠标将绑定到第一个可用的控制器。\n"
         "\n"
-        "While any mouse is captured, the system cursor will be completely disabled. You can press ESC to release all "
-        "mice and regain control of the system cursor.\n"
-        "The system cursor is reenabled if Ymir loses focus or a window is opened by other means, such as opening the "
-        "Settings window with the shortcut or triggering a debugger breakpoint.");
+        "当任何鼠标被捕获时，系统光标将完全禁用。你可以按 ESC 释放所有鼠标并重新获得系统光标的控制权。\n"
+        "如果 Ymir 失去焦点或通过其他方式打开窗口（例如使用快捷键打开设置窗口或触发调试器断点），系统光标将重新启用。");
 
-    MakeDirty(ImGui::Checkbox("Lock mouse cursor to window", &settings.mouse.lockToDisplay));
-    widgets::ExplanationTooltip("When this option is enabled, if using system cursor capture mode, the mouse cursor "
-                                "will be constrained to the window area.",
+    MakeDirty(ImGui::Checkbox("将鼠标光标锁定到窗口", &settings.mouse.lockToDisplay));
+    widgets::ExplanationTooltip("启用此选项后，如果使用系统光标捕获模式，鼠标光标将被限制在窗口区域内。",
                                 m_context.displayScale);
 
     // TODO: preferred device capture order
@@ -99,30 +91,30 @@ void InputSettingsView::Display() {
     // -------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Gamepads");
+    ImGui::SeparatorText("手柄");
     ImGui::PopFont();
 
     if (m_context.gameControllerDBCount == 0) {
-        ImGui::TextUnformatted("Game controller database not found or empty");
+        ImGui::TextUnformatted("未找到游戏控制器数据库或数据库为空");
     } else {
-        ImGui::Text("Game controller database: %d controllers", m_context.gameControllerDBCount);
+        ImGui::Text("游戏控制器数据库：%d 个控制器", m_context.gameControllerDBCount);
     }
-    ImGui::TextUnformatted("Database paths:");
+    ImGui::TextUnformatted("数据库路径：");
     ImGui::Indent();
-    ImGui::Text("Included with emulator: %s",
+    ImGui::Text("模拟器内置：%s",
                 fmt::format("{}", Profile::GetPortableProfilePath() / kGameControllerDBFile).c_str());
-    ImGui::Text("Your profile: %s",
+    ImGui::Text("你的配置文件：%s",
                 fmt::format("{}", m_context.profile.GetPath(ProfilePath::Root) / kGameControllerDBFile).c_str());
     ImGui::Unindent();
-    if (ImGui::Button("Open emulator folder##gamecontrollerdb")) {
+    if (ImGui::Button("打开模拟器文件夹##gamecontrollerdb")) {
         SDL_OpenURL(fmt::format("file:///{}", Profile::GetPortableProfilePath()).c_str());
     }
     ImGui::SameLine();
-    if (ImGui::Button("Open profile folder##gamecontrollerdb")) {
+    if (ImGui::Button("打开配置文件文件夹##gamecontrollerdb")) {
         SDL_OpenURL(fmt::format("file:///{}", m_context.profile.GetPath(ProfilePath::Root)).c_str());
     }
     ImGui::SameLine();
-    if (ImGui::Button("Reload database")) {
+    if (ImGui::Button("重新加载数据库")) {
         m_context.EnqueueEvent(events::gui::ReloadGameControllerDatabase());
     }
 
@@ -132,9 +124,9 @@ void InputSettingsView::Display() {
 
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
-            ImGui::TextUnformatted("Left stick deadzone");
-            widgets::ExplanationTooltip("Adjusts the deadzone for the left stick.\n"
-                                        "The active range is mapped linearly from 0 to 1.",
+            ImGui::TextUnformatted("左摇杆死区");
+            widgets::ExplanationTooltip("调整左摇杆的死区。\n"
+                                        "有效范围从 0 到 1 线性映射。",
                                         m_context.displayScale);
         }
         if (ImGui::TableNextColumn()) {
@@ -148,9 +140,9 @@ void InputSettingsView::Display() {
 
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
-            ImGui::TextUnformatted("Right stick deadzone");
-            widgets::ExplanationTooltip("Adjusts the deadzone for the right stick.\n"
-                                        "The active range is mapped linearly from 0 to 1.",
+            ImGui::TextUnformatted("右摇杆死区");
+            widgets::ExplanationTooltip("调整右摇杆的死区。\n"
+                                        "有效范围从 0 到 1 线性映射。",
                                         m_context.displayScale);
         }
         if (ImGui::TableNextColumn()) {
@@ -164,8 +156,8 @@ void InputSettingsView::Display() {
 
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
-            ImGui::TextUnformatted("Analog to digital sensitivity");
-            widgets::ExplanationTooltip("Affects how far analog inputs must be pushed to trigger buttons.",
+            ImGui::TextUnformatted("模拟转数字灵敏度");
+            widgets::ExplanationTooltip("影响模拟输入需要推动多远才能触发按钮。",
                                         m_context.displayScale);
         }
         if (ImGui::TableNextColumn()) {
@@ -371,12 +363,12 @@ void InputSettingsView::Display() {
         };
 
         ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
-        ImGui::Text("Gamepad %u", id + 1);
+        ImGui::Text("手柄 %u", id + 1);
         ImGui::PopFont();
         ImGui::PushID(id);
-        drawStick("Left Stick", lsx, lsy, settings.gamepad.lsDeadzone, settings.gamepad.analogToDigitalSensitivity);
+        drawStick("左摇杆", lsx, lsy, settings.gamepad.lsDeadzone, settings.gamepad.analogToDigitalSensitivity);
         ImGui::SameLine();
-        drawStick("Right Stick", rsx, rsy, settings.gamepad.rsDeadzone, settings.gamepad.analogToDigitalSensitivity);
+        drawStick("右摇杆", rsx, rsy, settings.gamepad.rsDeadzone, settings.gamepad.analogToDigitalSensitivity);
         ImGui::SameLine();
         drawTrigger("LT", lt, settings.gamepad.analogToDigitalSensitivity);
         ImGui::SameLine();

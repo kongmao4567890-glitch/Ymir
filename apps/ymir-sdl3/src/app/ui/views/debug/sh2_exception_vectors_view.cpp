@@ -14,20 +14,20 @@ SH2ExceptionVectorsView::SH2ExceptionVectorsView(SharedContext &context, sh2::SH
 
 void SH2ExceptionVectorsView::Display() {
     if (ImGui::BeginMenuBar()) {
-        if (ImGui::BeginMenu("Layout")) {
-            if (ImGui::MenuItem("Narrow", nullptr, m_columnShift == 0)) {
+        if (ImGui::BeginMenu("布局")) {
+            if (ImGui::MenuItem("窄", nullptr, m_columnShift == 0)) {
                 m_columnShift = 0;
             }
-            if (ImGui::MenuItem("Tall", nullptr, m_columnShift == 1)) {
+            if (ImGui::MenuItem("高", nullptr, m_columnShift == 1)) {
                 m_columnShift = 1;
             }
-            if (ImGui::MenuItem("Balanced", nullptr, m_columnShift == 2)) {
+            if (ImGui::MenuItem("均衡", nullptr, m_columnShift == 2)) {
                 m_columnShift = 2;
             }
-            if (ImGui::MenuItem("Wide", nullptr, m_columnShift == 3)) {
+            if (ImGui::MenuItem("宽", nullptr, m_columnShift == 3)) {
                 m_columnShift = 3;
             }
-            if (ImGui::MenuItem("Extra-wide", nullptr, m_columnShift == 4)) {
+            if (ImGui::MenuItem("超宽", nullptr, m_columnShift == 4)) {
                 m_columnShift = 4;
             }
             ImGui::EndMenu();
@@ -63,10 +63,10 @@ void SH2ExceptionVectorsView::Display() {
 
     if (baseVecAddrWidgetInOneLine) {
         ImGui::AlignTextToFramePadding();
-        ImGui::TextUnformatted("Base vector address:");
+        ImGui::TextUnformatted("基础向量地址:");
         ImGui::SameLine();
     } else {
-        ImGui::TextUnformatted("Base vector address");
+        ImGui::TextUnformatted("基础向量地址");
     }
 
     if (baseVecAddrOptionsInOneLine) {
@@ -77,7 +77,7 @@ void SH2ExceptionVectorsView::Display() {
         drawHex32("vbr", vbr);
 
         ImGui::SameLine();
-        if (ImGui::RadioButton("Custom:", !m_useVBR)) {
+        if (ImGui::RadioButton("自定义:", !m_useVBR)) {
             m_useVBR = false;
         }
         ImGui::SameLine();
@@ -96,7 +96,7 @@ void SH2ExceptionVectorsView::Display() {
 
             ImGui::TableNextRow();
             if (ImGui::TableNextColumn()) {
-                if (ImGui::RadioButton("Custom", !m_useVBR)) {
+                if (ImGui::RadioButton("自定义", !m_useVBR)) {
                     m_useVBR = false;
                 }
             }

@@ -12,19 +12,19 @@ HotkeysSettingsView::HotkeysSettingsView(SharedContext &context)
 void HotkeysSettingsView::Display() {
     auto &settings = GetSettings();
 
-    if (ImGui::Button("Restore defaults")) {
+    if (ImGui::Button("恢复默认")) {
         m_unboundActionsWidget.Capture(settings.ResetHotkeys());
         MakeDirty();
     }
 
-    ImGui::TextUnformatted("Left-click a button to assign a hotkey. Right-click to clear.");
+    ImGui::TextUnformatted("左键点击按钮以分配快捷键。右键点击以清除。");
     m_unboundActionsWidget.Display();
     if (ImGui::BeginTable("hotkeys", 2 + input::kNumBindsPerInput,
                           ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY)) {
-        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 80.0f * m_context.displayScale);
-        ImGui::TableSetupColumn("Command", ImGuiTableColumnFlags_WidthFixed, 200.0f * m_context.displayScale);
+        ImGui::TableSetupColumn("类型", ImGuiTableColumnFlags_WidthFixed, 80.0f * m_context.displayScale);
+        ImGui::TableSetupColumn("命令", ImGuiTableColumnFlags_WidthFixed, 200.0f * m_context.displayScale);
         for (size_t i = 0; i < input::kNumBindsPerInput; i++) {
-            ImGui::TableSetupColumn(fmt::format("Hotkey {}", i + 1).c_str(), ImGuiTableColumnFlags_WidthStretch, 1.0f);
+            ImGui::TableSetupColumn(fmt::format("快捷键 {}", i + 1).c_str(), ImGuiTableColumnFlags_WidthStretch, 1.0f);
         }
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableHeadersRow();

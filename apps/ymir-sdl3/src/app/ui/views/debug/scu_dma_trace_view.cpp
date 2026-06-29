@@ -14,29 +14,29 @@ void SCUDMATraceView::Display() {
 
     ImGui::BeginGroup();
 
-    ImGui::Checkbox("Enable", &m_tracer.traceDMA);
+    ImGui::Checkbox("启用", &m_tracer.traceDMA);
     ImGui::SameLine();
     ImGui::TextDisabled("(?)");
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("You must also enable tracing in Debug > Enable tracing (F11)");
+        ImGui::TextUnformatted("你还必须在 调试 > 启用跟踪 (F11) 中启用跟踪");
         ImGui::EndTooltip();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Clear")) {
+    if (ImGui::Button("清除")) {
         m_tracer.ClearDMATransfers();
     }
 
     if (ImGui::BeginTable("dma_trace", 6,
                           ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable)) {
         ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_PreferSortDescending);
-        ImGui::TableSetupColumn("Ch", ImGuiTableColumnFlags_PreferSortDescending);
-        ImGui::TableSetupColumn("Indirect", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("通道", ImGuiTableColumnFlags_PreferSortDescending);
+        ImGui::TableSetupColumn("间接", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 7);
-        ImGui::TableSetupColumn("Source", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("源", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 10);
-        ImGui::TableSetupColumn("Destination", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("目标", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 10);
-        ImGui::TableSetupColumn("Length", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("长度", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 7);
         ImGui::TableSetupScrollFreeze(1, 1);
         ImGui::TableHeadersRow();
@@ -68,7 +68,7 @@ void SCUDMATraceView::Display() {
                     ImGui::Text("%07X", trace.indirectAddr);
                     ImGui::PopFont();
                 } else {
-                    ImGui::TextUnformatted("no");
+                    ImGui::TextUnformatted("否");
                 }
             }
             if (ImGui::TableNextColumn()) {

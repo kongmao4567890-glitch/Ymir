@@ -25,18 +25,18 @@ void CDBlockFiltersView::Display() {
 
     if (ImGui::BeginTable("cdblock_filters", 10, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY)) {
         ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth * 2);
-        ImGui::TableSetupColumn("CD connection", ImGuiTableColumnFlags_WidthFixed, msCharWidth + paddingWidth * 2);
-        ImGui::TableSetupColumn("File number", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth * 2);
-        ImGui::TableSetupColumn("Channel number", ImGuiTableColumnFlags_WidthFixed,
+        ImGui::TableSetupColumn("CD 连接", ImGuiTableColumnFlags_WidthFixed, msCharWidth + paddingWidth * 2);
+        ImGui::TableSetupColumn("文件编号", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth * 2);
+        ImGui::TableSetupColumn("通道编号", ImGuiTableColumnFlags_WidthFixed,
                                 hexCharWidth * 2 + paddingWidth * 2);
-        ImGui::TableSetupColumn("Submode", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 8 + paddingWidth * 2);
-        ImGui::TableSetupColumn("Coding info", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 8 + paddingWidth * 2);
-        ImGui::TableSetupColumn("Invert subheader conditions", ImGuiTableColumnFlags_WidthFixed,
+        ImGui::TableSetupColumn("子模式", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 8 + paddingWidth * 2);
+        ImGui::TableSetupColumn("编码信息", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 8 + paddingWidth * 2);
+        ImGui::TableSetupColumn("反转子头条件", ImGuiTableColumnFlags_WidthFixed,
                                 hexCharWidth * 3 + paddingWidth * 2);
-        ImGui::TableSetupColumn("Frame address", ImGuiTableColumnFlags_WidthFixed,
+        ImGui::TableSetupColumn("帧地址", ImGuiTableColumnFlags_WidthFixed,
                                 hexCharWidth * 13 + paddingWidth * 2);
-        ImGui::TableSetupColumn("Pass", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth * 2);
-        ImGui::TableSetupColumn("Fail", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth * 2);
+        ImGui::TableSetupColumn("通过", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth * 2);
+        ImGui::TableSetupColumn("失败", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth * 2);
         ImGui::TableSetupScrollFreeze(1, 1);
         ImGui::TableHeadersRow();
 
@@ -111,9 +111,9 @@ void CDBlockFiltersView::Display() {
                 ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
                 if (bit::extract<0, 3>(filter.mode) != 0) {
                     if (bit::test<4>(filter.mode)) {
-                        ImGui::TextUnformatted("yes");
+                        ImGui::TextUnformatted("是");
                     } else {
-                        ImGui::TextUnformatted("no");
+                        ImGui::TextUnformatted("否");
                     }
                 } else {
                     ImGui::TextDisabled("-");

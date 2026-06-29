@@ -24,25 +24,25 @@ void AudioSettingsView::Display() {
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("General");
+    ImGui::SeparatorText("常规");
     ImGui::PopFont();
 
     static constexpr float kMinVolume = 0.0f;
     static constexpr float kMaxVolume = 100.0f;
     float volumePct = settings.volume * 100.0f;
-    if (MakeDirty(ImGui::SliderScalar("Volume", ImGuiDataType_Float, &volumePct, &kMinVolume, &kMaxVolume, "%.1lf%%",
+    if (MakeDirty(ImGui::SliderScalar("音量", ImGuiDataType_Float, &volumePct, &kMinVolume, &kMaxVolume, "%.1lf%%",
                                       ImGuiSliderFlags_AlwaysClamp))) {
         settings.volume = volumePct * 0.01f;
     }
     bool mute = settings.mute;
-    if (MakeDirty(ImGui::Checkbox("Mute", &mute))) {
+    if (MakeDirty(ImGui::Checkbox("静音", &mute))) {
         settings.mute = mute;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Quality");
+    ImGui::SeparatorText("质量");
     ImGui::PopFont();
 
     widgets::settings::audio::InterpolationMode(m_context);
@@ -62,18 +62,18 @@ void AudioSettingsView::Display() {
         supportsVirtual = true;
     }
 
-    ImGui::Text("Using %s MIDI API.", RtMidi::getApiDisplayName(api).c_str());
+    ImGui::Text("使用 %s MIDI API。", RtMidi::getApiDisplayName(api).c_str());
 
     // INPUT PORTS
 
     auto *midiInput = midiService.GetInput();
     const std::string inputPortName = midiService.GetMidiInputPortName();
-    const std::string inputLabel = fmt::format("Input port {}", midiInput->isPortOpen() ? "(open)" : "");
+    const std::string inputLabel = fmt::format("输入端口 {}", midiInput->isPortOpen() ? "(已打开)" : "");
 
     auto inputPort = settings.midiInputPort.Get();
 
     if (ImGui::BeginCombo(inputLabel.c_str(), inputPortName.c_str())) {
-        if (MakeDirty(ImGui::Selectable("None", inputPort.type == MidiPortType::None))) {
+        if (MakeDirty(ImGui::Selectable("无", inputPort.type == MidiPortType::None))) {
             settings.midiInputPort = Settings::Audio::MidiPort{.id = {}, .type = MidiPortType::None};
         }
 
@@ -102,12 +102,12 @@ void AudioSettingsView::Display() {
 
     auto *midiOutput = midiService.GetOutput();
     const std::string outputPortName = midiService.GetMidiOutputPortName();
-    const std::string outputLabel = fmt::format("Output port {}", midiOutput->isPortOpen() ? "(open)" : "");
+    const std::string outputLabel = fmt::format("输出端口 {}", midiOutput->isPortOpen() ? "(已打开)" : "");
 
     auto outputPort = settings.midiOutputPort.Get();
 
     if (ImGui::BeginCombo(outputLabel.c_str(), outputPortName.c_str())) {
-        if (MakeDirty(ImGui::Selectable("None", outputPort.type == MidiPortType::None))) {
+        if (MakeDirty(ImGui::Selectable("无", outputPort.type == MidiPortType::None))) {
             settings.midiOutputPort = Settings::Audio::MidiPort{.id = {}, .type = MidiPortType::None};
         }
 
@@ -135,7 +135,7 @@ void AudioSettingsView::Display() {
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Accuracy");
+    ImGui::SeparatorText("精度");
     ImGui::PopFont();
 
     widgets::settings::audio::StepGranularity(m_context);
@@ -143,7 +143,7 @@ void AudioSettingsView::Display() {
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Performance");
+    ImGui::SeparatorText("性能");
     ImGui::PopFont();
 
     widgets::settings::audio::ThreadedSCSP(m_context);

@@ -27,11 +27,11 @@ namespace app::ui {
 
 static const char *GetCartTypeName(Settings::Cartridge::Type type) {
     switch (type) {
-    case Settings::Cartridge::Type::None: return "None";
-    case Settings::Cartridge::Type::BackupRAM: return "Backup RAM";
+    case Settings::Cartridge::Type::None: return "无";
+    case Settings::Cartridge::Type::BackupRAM: return "备份 RAM";
     case Settings::Cartridge::Type::DRAM: return "DRAM";
     case Settings::Cartridge::Type::ROM: return "ROM";
-    default: return "Unknown";
+    default: return "未知";
     }
 }
 
@@ -52,7 +52,7 @@ void CartridgeSettingsView::Display() {
 
     ImGui::PushTextWrapPos(ImGui::GetContentRegionMax().x);
 
-    ImGui::TextUnformatted("Current cartridge: ");
+    ImGui::TextUnformatted("当前卡带：");
     ImGui::SameLine(0, 0);
     widgets::CartridgeInfo(m_context);
     {
@@ -60,32 +60,31 @@ void CartridgeSettingsView::Display() {
         auto &cart = m_context.saturn.GetCartridge();
         if (cart.GetType() == cart::CartType::BackupMemory) {
             auto &bupCart = *cart.As<cart::CartType::BackupMemory>();
-            ImGui::Text("Image path: %s", fmt::format("{}", bupCart.GetBackupMemory().GetPath()).c_str());
+            ImGui::Text("镜像路径：%s", fmt::format("{}", bupCart.GetBackupMemory().GetPath()).c_str());
         }
     }
 
-    MakeDirty(ImGui::Checkbox("Automatically switch to recommended cartridges", &settings.autoLoadGameCarts));
+    MakeDirty(ImGui::Checkbox("自动切换到推荐的卡带", &settings.autoLoadGameCarts));
     widgets::ExplanationTooltip(
-        fmt::format("Certain games require specific cartridges to work:\n"
-                    "- The King of Fighters '95 and Ultraman need their respective ROM cartridges\n"
-                    "- Some other games need a DRAM cartridge to start up\n"
+        fmt::format("某些游戏需要特定的卡带才能运行：\n"
+                    "- The King of Fighters '95 和 Ultraman 需要各自的 ROM 卡带\n"
+                    "- 其他一些游戏需要 DRAM 卡带才能启动\n"
                     "\n"
-                    "With this option enabled, the correct cartridge is automatically inserted when a game with these "
-                    "requirements is loaded.\n"
+                    "启用此选项后，当加载有这些需求的游戏时，会自动插入正确的卡带。\n"
                     "\n"
-                    "For ROM cartridges, make sure you add the required files to {}.",
+                    "对于 ROM 卡带，请确保将所需文件添加到 {}。",
                     m_context.profile.GetPath(ProfilePath::ROMCartImages))
             .c_str(),
         m_context.displayScale);
 
-    if (ImGui::Button("Open ROM cartridge images directory")) {
+    if (ImGui::Button("打开 ROM 卡带镜像目录")) {
         SDL_OpenURL(fmt::format("file:///{}", m_context.profile.GetPath(ProfilePath::ROMCartImages)).c_str());
     }
 
     ImGui::Separator();
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Cartridge type:");
+    ImGui::TextUnformatted("卡带类型：");
     ImGui::SameLine();
     if (ImGui::BeginCombo("##cart_type", GetCartTypeName(settings.type), ImGuiComboFlags_WidthFitPreview)) {
         for (auto type : kCartTypes) {
@@ -97,7 +96,7 @@ void CartridgeSettingsView::Display() {
         ImGui::EndCombo();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Insert")) {
+    if (ImGui::Button("插入")) {
         m_context.EnqueueEvent(events::emu::InsertCartridgeFromSettings());
     }
 
@@ -134,33 +133,33 @@ void CartridgeSettingsView::Display() {
 
             switch (gameInfo->GetCartridge()) {
             case db::Cartridge::DRAM8Mbit:
-                ImGui::TextColored(color, "The currently loaded game requires an 8 Mbit DRAM cartridge.");
+                ImGui::TextColored(color, "当前加载的游戏需要 8 Mbit DRAM 卡带。");
                 break;
             case db::Cartridge::DRAM32Mbit:
-                ImGui::TextColored(color, "The currently loaded game requires a 32 Mbit DRAM cartridge.");
+                ImGui::TextColored(color, "当前加载的游戏需要 32 Mbit DRAM 卡带。");
                 break;
             case db::Cartridge::DRAM48Mbit:
-                ImGui::TextColored(color, "The currently loaded game requires a 48 Mbit DRAM dev cartridge.");
+                ImGui::TextColored(color, "当前加载的游戏需要 48 Mbit DRAM 开发卡带。");
                 break;
             case db::Cartridge::ROM_KOF95:
-                ImGui::TextColored(color, "The currently loaded game requires the King of Fighters '95 ROM cartridge.");
+                ImGui::TextColored(color, "当前加载的游戏需要 King of Fighters '95 ROM 卡带。");
                 break;
             case db::Cartridge::ROM_Ultraman:
-                ImGui::TextColored(color, "The currently loaded game requires the Ultraman ROM cartridge.");
+                ImGui::TextColored(color, "当前加载的游戏需要 Ultraman ROM 卡带。");
                 break;
             case db::Cartridge::BackupRAM:
-                ImGui::TextColored(color, "A Backup RAM cartridge is recommended for this game.");
+                ImGui::TextColored(color, "此游戏推荐使用备份 RAM 卡带。");
                 break;
             default: break;
             }
             ImGui::SameLine();
 
-            if (MakeDirty(ImGui::Button("Insert##recommended_cart"))) {
+            if (MakeDirty(ImGui::Button("插入##recommended_cart"))) {
                 m_context.EnqueueEvent(events::gui::LoadRecommendedGameCartridge());
             }
 
             if (gameInfo->cartReason) {
-                ImGui::TextColored(color, "Reason: %s", gameInfo->cartReason);
+                ImGui::TextColored(color, "原因：%s", gameInfo->cartReason);
             }
         }
     }
@@ -197,9 +196,9 @@ void CartridgeSettingsView::DrawBackupRAMSettings() {
     }
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Capacity:");
+    ImGui::TextUnformatted("容量：");
     widgets::ExplanationTooltip(
-        "This will automatically adjust if you load an existing image from the file selector below.",
+        "如果你从下面的文件选择器加载现有镜像，这将自动调整。",
         m_context.displayScale);
     ImGui::SameLine();
     if (ImGui::BeginCombo("##bup_capacity", BupCapacityLongName(settings.capacity), ImGuiComboFlags_WidthFitPreview)) {
@@ -212,7 +211,7 @@ void CartridgeSettingsView::DrawBackupRAMSettings() {
     }
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Image path:");
+    ImGui::TextUnformatted("镜像路径：");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(-(fileSelectorButtonWidth + itemSpacingWidth * 2));
     std::string imagePath = fmt::format("{}", settings.imagePath);
@@ -226,11 +225,11 @@ void CartridgeSettingsView::DrawBackupRAMSettings() {
     ImGui::SameLine();
     if (ImGui::Button("...##bup_image_path")) {
         m_context.EnqueueEvent(events::gui::SaveFile({
-            .dialogTitle = "Load backup memory image",
+            .dialogTitle = "加载备份内存镜像",
             .defaultPath = settings.imagePath.empty()
                                ? m_context.profile.GetPath(ProfilePath::PersistentState) / "bup-ext.bin"
                                : settings.imagePath,
-            .filters = {{"Backup memory image files (*.bin, *.sav)", "bin;sav"}, {"All files (*.*)", "*"}},
+            .filters = {{"备份内存镜像文件 (*.bin, *.sav)", "bin;sav"}, {"所有文件 (*.*)", "*"}},
             .userdata = this,
             .callback = util::WrapSingleSelectionCallback<&CartridgeSettingsView::ProcessLoadBackupImage,
                                                           &util::NoopCancelFileDialogCallback,
@@ -238,13 +237,13 @@ void CartridgeSettingsView::DrawBackupRAMSettings() {
         }));
     }
 
-    if (ImGui::Button("Open backup memory manager")) {
+    if (ImGui::Button("打开备份内存管理器")) {
         m_context.EnqueueEvent(events::gui::OpenBackupMemoryManager());
     }
 
     if (currSize != 0 && CapacityToSize(settings.capacity) != currSize && !currPath.empty() &&
         !settings.imagePath.empty() && currPath == settings.imagePath) {
-        ImGui::TextUnformatted("WARNING: Changing the size of the backup memory image will format it!");
+        ImGui::TextUnformatted("警告：更改备份内存镜像的大小将格式化它！");
     }
 }
 
@@ -254,9 +253,9 @@ void CartridgeSettingsView::DrawDRAMSettings() {
     using DRAMCap = Settings::Cartridge::DRAM::Capacity;
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Capacity:");
+    ImGui::TextUnformatted("容量：");
     ImGui::SameLine();
-    if (MakeDirty(ImGui::RadioButton("48 Mbit (6 MiB) (dev)", settings.capacity == DRAMCap::_48Mbit))) {
+    if (MakeDirty(ImGui::RadioButton("48 Mbit (6 MiB)（开发）", settings.capacity == DRAMCap::_48Mbit))) {
         settings.capacity = DRAMCap::_48Mbit;
     }
     ImGui::SameLine();
@@ -277,7 +276,7 @@ void CartridgeSettingsView::DrawROMSettings() {
     const float fileSelectorButtonWidth = ImGui::CalcTextSize("...").x + paddingWidth * 2;
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Image path:");
+    ImGui::TextUnformatted("镜像路径：");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(-(fileSelectorButtonWidth + itemSpacingWidth * 2));
     std::string imagePath = fmt::format("{}", settings.imagePath);
@@ -287,10 +286,10 @@ void CartridgeSettingsView::DrawROMSettings() {
     ImGui::SameLine();
     if (ImGui::Button("...##rom_image_path")) {
         m_context.EnqueueEvent(events::gui::OpenFile({
-            .dialogTitle = "Load ROM cartridge image",
+            .dialogTitle = "加载 ROM 卡带镜像",
             .defaultPath =
                 settings.imagePath.empty() ? m_context.profile.GetPath(ProfilePath::ROMCartImages) : settings.imagePath,
-            .filters = {{"ROM cartridge image files (*.bin, *.ic1)", "bin;ic1"}, {"All files (*.*)", "*"}},
+            .filters = {{"ROM 卡带镜像文件 (*.bin, *.ic1)", "bin;ic1"}, {"所有文件 (*.*)", "*"}},
             .userdata = this,
             .callback = util::WrapSingleSelectionCallback<&CartridgeSettingsView::ProcessLoadROMImage,
                                                           &util::NoopCancelFileDialogCallback,
@@ -332,19 +331,19 @@ void CartridgeSettingsView::LoadBackupImage(std::filesystem::path file) {
         case bup::BackupMemoryImageLoadResult::FilesystemError:
             if (error) {
                 m_context.EnqueueEvent(
-                    events::gui::ShowError(fmt::format("Could not load backup memory image: {}", error.message())));
+                    events::gui::ShowError(fmt::format("无法加载备份内存镜像：{}", error.message())));
             } else {
                 m_context.EnqueueEvent(events::gui::ShowError(
-                    fmt::format("Could not load backup memory image: Unspecified file system error")));
+                    fmt::format("无法加载备份内存镜像：未指定的文件系统错误")));
             }
             break;
         case bup::BackupMemoryImageLoadResult::InvalidSize:
             m_context.EnqueueEvent(
-                events::gui::ShowError(fmt::format("Could not load backup memory image: Invalid image size")));
+                events::gui::ShowError(fmt::format("无法加载备份内存镜像：镜像大小无效")));
             break;
         default:
             m_context.EnqueueEvent(
-                events::gui::ShowError(fmt::format("Could not load backup memory image: Unexpected error")));
+                events::gui::ShowError(fmt::format("无法加载备份内存镜像：意外错误")));
             break;
         }
     } else {
@@ -357,7 +356,7 @@ void CartridgeSettingsView::LoadBackupImage(std::filesystem::path file) {
         bupMem.CreateFrom(file, false, error, CapacityToBupSize(settings.capacity));
         if (error) {
             m_context.EnqueueEvent(
-                events::gui::ShowError(fmt::format("Could not load backup memory image: {}", error.message())));
+                events::gui::ShowError(fmt::format("无法加载备份内存镜像：{}", error.message())));
         } else {
             settings.imagePath = file;
             m_context.EnqueueEvent(events::emu::InsertCartridgeFromSettings());
@@ -367,7 +366,7 @@ void CartridgeSettingsView::LoadBackupImage(std::filesystem::path file) {
 }
 
 void CartridgeSettingsView::ShowLoadBackupImageError(const char *message) {
-    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("Could not load backup memory image: {}", message)));
+    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("无法加载备份内存镜像：{}", message)));
 }
 
 void CartridgeSettingsView::ProcessLoadROMImage(void *userdata, std::filesystem::path file, int filter) {
@@ -387,7 +386,7 @@ void CartridgeSettingsView::LoadROMImage(std::filesystem::path file) {
     // Check that the file exists
     if (!std::filesystem::is_regular_file(file)) {
         m_context.EnqueueEvent(
-            events::gui::ShowError(fmt::format("Could not load ROM cartridge image: {} is not a file", file)));
+            events::gui::ShowError(fmt::format("无法加载 ROM 卡带镜像：{} 不是文件", file)));
         return;
     }
 
@@ -395,14 +394,14 @@ void CartridgeSettingsView::LoadROMImage(std::filesystem::path file) {
     const auto size = std::filesystem::file_size(file);
     if (size == 0) {
         m_context.EnqueueEvent(
-            events::gui::ShowError("Could not load ROM cartridge image: file is empty or could not be read."));
+            events::gui::ShowError("无法加载 ROM 卡带镜像：文件为空或无法读取。"));
         return;
     }
 
     // Check that the image is not larger than the ROM cartridge capacity
     if (size > cart::kROMCartSize) {
         m_context.EnqueueEvent(events::gui::ShowError(fmt::format(
-            "Could not load ROM cartridge image: file is too large ({} > {} bytes)", size, cart::kROMCartSize)));
+            "无法加载 ROM 卡带镜像：文件太大（{} > {} 字节）", size, cart::kROMCartSize)));
         return;
     }
 
@@ -415,7 +414,7 @@ void CartridgeSettingsView::LoadROMImage(std::filesystem::path file) {
 }
 
 void CartridgeSettingsView::ShowLoadROMImageError(const char *message) {
-    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("Could not load ROM cartridge image: {}", message)));
+    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("无法加载 ROM 卡带镜像：{}", message)));
 }
 
 } // namespace app::ui

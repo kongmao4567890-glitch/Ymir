@@ -29,18 +29,18 @@ void SCUDMAStateView::Display(uint8 channel) {
     if (enabled && active) {
         if (indirect) {
             const uint32 currIndirectAddr = probe.GetCurrentDMAIndirectSourceAddress(channel);
-            ImGui::Text("Indirect transfer from ");
+            ImGui::Text("间接传输自 ");
             ImGui::SameLine();
             ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
             ImGui::Text("%07X", currIndirectAddr);
             ImGui::PopFont();
         } else {
-            ImGui::Text("Direct transfer in progress");
+            ImGui::Text("直接传输进行中");
         }
     } else if (enabled) {
-        ImGui::TextUnformatted("Idle");
+        ImGui::TextUnformatted("空闲");
     } else {
-        ImGui::TextUnformatted("Disabled");
+        ImGui::TextUnformatted("已禁用");
     }
 
     if (!active) {
@@ -82,7 +82,7 @@ void SCUDMAStateView::Display(uint8 channel) {
     ImGui::Text("%X", currXferCount);
     ImGui::PopFont();
     ImGui::SameLine();
-    ImGui::TextUnformatted("bytes remaining");
+    ImGui::TextUnformatted("字节剩余");
 
     if (!active) {
         ImGui::EndDisabled();

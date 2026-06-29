@@ -21,14 +21,14 @@ void VDP2BGLayerParamsView::Display() {
 
     auto printYesNo = [&](bool value) {
         if (value) {
-            ImGui::TextUnformatted("yes");
+            ImGui::TextUnformatted("是");
         } else {
-            ImGui::TextUnformatted("no");
+            ImGui::TextUnformatted("否");
         }
     };
 
     bool dispEnable = regs2.TVMD.DISP;
-    ImGui::Checkbox("Display enabled", &dispEnable);
+    ImGui::Checkbox("显示已启用", &dispEnable);
     ImGui::SameLine();
     ImGui::AlignTextToFramePadding();
     ImGui::Text("VCNT: %d", regs2.ReadVCNT());
@@ -36,10 +36,10 @@ void VDP2BGLayerParamsView::Display() {
     auto [width, height] = probe.GetResolution();
     auto interlaceMode = probe.GetInterlaceMode();
 
-    static constexpr const char *kInterlaceNames[]{"progressive", "(invalid)", "single-density interlace",
-                                                   "double-density interlace"};
+    static constexpr const char *kInterlaceNames[]{"逐行", "(无效)", "单密度隔行",
+                                                   "双密度隔行"};
 
-    ImGui::TextUnformatted("Resolution:");
+    ImGui::TextUnformatted("分辨率:");
     ImGui::SameLine();
     ImGui::Text("%ux%u %s", width, height, kInterlaceNames[static_cast<uint8>(interlaceMode)]);
 
@@ -57,15 +57,15 @@ void VDP2BGLayerParamsView::Display() {
 
         auto printType = [&](bool bitmap) {
             if (bitmap) {
-                ImGui::TextUnformatted("Bitmap");
+                ImGui::TextUnformatted("位图");
             } else {
-                ImGui::TextUnformatted("Scroll");
+                ImGui::TextUnformatted("滚动");
             }
         };
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Type");
+        ImGui::TextUnformatted("类型");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -91,7 +91,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Plane/bitmap size");
+        ImGui::TextUnformatted("平面/位图大小");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -118,7 +118,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Char. pattern size");
+        ImGui::TextUnformatted("字符模式大小");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -136,7 +136,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Reduction");
+        ImGui::TextUnformatted("缩小");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -160,9 +160,9 @@ void VDP2BGLayerParamsView::Display() {
 
         auto printColorFormat = [&](vdp::ColorFormat colorFormat) {
             switch (colorFormat) {
-            case vdp::ColorFormat::Palette16: ImGui::TextUnformatted("Pal 16"); break;
-            case vdp::ColorFormat::Palette256: ImGui::TextUnformatted("Pal 256"); break;
-            case vdp::ColorFormat::Palette2048: ImGui::TextUnformatted("Pal 2048"); break;
+            case vdp::ColorFormat::Palette16: ImGui::TextUnformatted("调色板 16"); break;
+            case vdp::ColorFormat::Palette256: ImGui::TextUnformatted("调色板 256"); break;
+            case vdp::ColorFormat::Palette2048: ImGui::TextUnformatted("调色板 2048"); break;
             case vdp::ColorFormat::RGB555: ImGui::TextUnformatted("RGB 5:5:5"); break;
             case vdp::ColorFormat::RGB888: ImGui::TextUnformatted("RGB 8:8:8"); break;
             }
@@ -170,7 +170,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Color format");
+        ImGui::TextUnformatted("颜色格式");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -188,7 +188,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Transparency");
+        ImGui::TextUnformatted("透明度");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -206,7 +206,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Shadow");
+        ImGui::TextUnformatted("阴影");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -224,7 +224,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Gradation");
+        ImGui::TextUnformatted("灰度渐变");
         static constexpr vdp::ColorGradScreen kColorGradScreens[] = {
             vdp::ColorGradScreen::NBG0_RBG1, vdp::ColorGradScreen::NBG1_EXBG, vdp::ColorGradScreen::NBG2,
             vdp::ColorGradScreen::NBG3,      vdp::ColorGradScreen::RBG0,      vdp::ColorGradScreen::NBG0_RBG1,
@@ -256,7 +256,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Mosaic");
+        ImGui::TextUnformatted("马赛克");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -276,7 +276,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Priority number");
+        ImGui::TextUnformatted("优先级编号");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -294,16 +294,16 @@ void VDP2BGLayerParamsView::Display() {
 
         auto printPriorityMode = [&](vdp::PriorityMode priorityMode) {
             switch (priorityMode) {
-            case vdp::PriorityMode::PerScreen: ImGui::TextUnformatted("Screen"); break;
-            case vdp::PriorityMode::PerCharacter: ImGui::TextUnformatted("Character"); break;
-            case vdp::PriorityMode::PerDot: ImGui::TextUnformatted("Dot"); break;
-            default: ImGui::TextUnformatted("Illegal"); break;
+            case vdp::PriorityMode::PerScreen: ImGui::TextUnformatted("屏幕"); break;
+            case vdp::PriorityMode::PerCharacter: ImGui::TextUnformatted("字符"); break;
+            case vdp::PriorityMode::PerDot: ImGui::TextUnformatted("像素点"); break;
+            default: ImGui::TextUnformatted("非法"); break;
             }
         };
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Priority mode");
+        ImGui::TextUnformatted("优先级模式");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -329,7 +329,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Color calc. ratio");
+        ImGui::TextUnformatted("颜色计算比率");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -348,10 +348,10 @@ void VDP2BGLayerParamsView::Display() {
         auto printColorCalcMode = [&](const vdp::BGParams &params) {
             if (params.colorCalcEnable) {
                 switch (params.specialColorCalcMode) {
-                case vdp::SpecialColorCalcMode::PerScreen: ImGui::TextUnformatted("Screen"); break;
-                case vdp::SpecialColorCalcMode::PerCharacter: ImGui::TextUnformatted("Character"); break;
-                case vdp::SpecialColorCalcMode::PerDot: ImGui::TextUnformatted("Dot"); break;
-                case vdp::SpecialColorCalcMode::ColorDataMSB: ImGui::TextUnformatted("Color MSB"); break;
+                case vdp::SpecialColorCalcMode::PerScreen: ImGui::TextUnformatted("屏幕"); break;
+                case vdp::SpecialColorCalcMode::PerCharacter: ImGui::TextUnformatted("字符"); break;
+                case vdp::SpecialColorCalcMode::PerDot: ImGui::TextUnformatted("像素点"); break;
+                case vdp::SpecialColorCalcMode::ColorDataMSB: ImGui::TextUnformatted("颜色 MSB"); break;
                 }
             } else {
                 ImGui::TextUnformatted("-");
@@ -360,7 +360,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Color calc. mode");
+        ImGui::TextUnformatted("颜色计算模式");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -378,7 +378,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("LNCL insertion");
+        ImGui::TextUnformatted("LNCL 插入");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -404,7 +404,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Special function");
+        ImGui::TextUnformatted("特殊功能");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -422,7 +422,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Vert. cell scroll");
+        ImGui::TextUnformatted("垂直单元格滚动");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -444,7 +444,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("X line scroll");
+        ImGui::TextUnformatted("X 行滚动");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -466,7 +466,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Y line scroll");
+        ImGui::TextUnformatted("Y 行滚动");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -488,7 +488,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Line zoom");
+        ImGui::TextUnformatted("行缩放");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -510,7 +510,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Scroll X");
+        ImGui::TextUnformatted("滚动 X");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -529,7 +529,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Scroll Y");
+        ImGui::TextUnformatted("滚动 Y");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -547,7 +547,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Scroll X inc.");
+        ImGui::TextUnformatted("滚动 X 增量");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -565,7 +565,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Scroll Y inc.");
+        ImGui::TextUnformatted("滚动 Y 增量");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -593,7 +593,7 @@ void VDP2BGLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Windows");
+        ImGui::TextUnformatted("窗口");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {

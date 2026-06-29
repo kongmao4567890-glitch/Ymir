@@ -21,9 +21,9 @@ void VDP2SpriteLayerParamsView::Display() {
 
     auto printYesNo = [&](bool value) {
         if (value) {
-            ImGui::TextUnformatted("yes");
+            ImGui::TextUnformatted("是");
         } else {
-            ImGui::TextUnformatted("no");
+            ImGui::TextUnformatted("否");
         }
     };
 
@@ -32,50 +32,50 @@ void VDP2SpriteLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Format");
+        ImGui::TextUnformatted("格式");
 
         ImGui::TableNextColumn();
         ImGui::Text("Type %u, ", spriteParams.type);
         ImGui::SameLine(0, 0);
         if (spriteParams.mixedFormat) {
-            ImGui::TextUnformatted("Palette/RGB");
+            ImGui::TextUnformatted("调色板/RGB");
         } else {
-            ImGui::TextUnformatted("Palette only");
+            ImGui::TextUnformatted("仅调色板");
         }
         if (spriteParams.lineColorScreenEnable) {
             ImGui::SameLine(0, 0);
-            ImGui::TextUnformatted(", LNCL insertion");
+            ImGui::TextUnformatted(", LNCL 插入");
         }
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Color calc.");
+        ImGui::TextUnformatted("颜色计算");
         ImGui::TableNextColumn();
         if (spriteParams.colorCalcEnable) {
             switch (spriteParams.colorCalcCond) {
             case vdp::SpriteColorCalculationCondition::PriorityLessThanOrEqual:
-                ImGui::Text("priority <= %u", spriteParams.colorCalcValue);
+                ImGui::Text("优先级 <= %u", spriteParams.colorCalcValue);
                 break;
             case vdp::SpriteColorCalculationCondition::PriorityEqual:
-                ImGui::Text("priority == %u", spriteParams.colorCalcValue);
+                ImGui::Text("优先级 == %u", spriteParams.colorCalcValue);
                 break;
             case vdp::SpriteColorCalculationCondition::PriorityGreaterThanOrEqual:
-                ImGui::Text("priority >= %u", spriteParams.colorCalcValue);
+                ImGui::Text("优先级 >= %u", spriteParams.colorCalcValue);
                 break;
-            case vdp::SpriteColorCalculationCondition::MsbEqualsOne: ImGui::TextUnformatted("color MSB == 1"); break;
+            case vdp::SpriteColorCalculationCondition::MsbEqualsOne: ImGui::TextUnformatted("颜色 MSB == 1"); break;
             }
             ImGui::SameLine(0, 0);
             ImGui::Text(
-                ", ratios: %u %u %u %u %u %u %u %u", spriteParams.colorCalcRatios[0], spriteParams.colorCalcRatios[1],
+                ", 比率: %u %u %u %u %u %u %u %u", spriteParams.colorCalcRatios[0], spriteParams.colorCalcRatios[1],
                 spriteParams.colorCalcRatios[2], spriteParams.colorCalcRatios[3], spriteParams.colorCalcRatios[4],
                 spriteParams.colorCalcRatios[5], spriteParams.colorCalcRatios[6], spriteParams.colorCalcRatios[7]);
         } else {
-            ImGui::TextUnformatted("no");
+            ImGui::TextUnformatted("否");
         }
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Priorities");
+        ImGui::TextUnformatted("优先级");
         ImGui::TableNextColumn();
         for (uint32 i = 0; i < 8; ++i) {
             if (i > 0) {
@@ -86,7 +86,7 @@ void VDP2SpriteLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Windows");
+        ImGui::TextUnformatted("窗口");
         ImGui::TableNextColumn();
         const auto &windowSet = spriteParams.windowSet;
         WindowSetPrinter printer{windowSet.logic};
@@ -97,7 +97,7 @@ void VDP2SpriteLayerParamsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Sprite window");
+        ImGui::TextUnformatted("精灵窗口");
         ImGui::TableNextColumn();
         printYesNo(spriteParams.useSpriteWindow);
 

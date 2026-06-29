@@ -19,15 +19,15 @@ void SCUDSPDMARegistersView::Display() {
 
     auto fmtRAMOp = [&](uint8 value, bool allowProgramRAM) {
         switch (value) {
-        case 0: return "Data RAM 0";
-        case 1: return "Data RAM 1";
-        case 2: return "Data RAM 2";
-        case 3: return "Data RAM 3";
-        case 4: return allowProgramRAM ? "Program RAM" : "Invalid (4)";
-        case 5: return "Invalid (5)";
-        case 6: return "Invalid (6)";
-        case 7: return "Invalid (7)";
-        default: return "Invalid";
+        case 0: return "数据 RAM 0";
+        case 1: return "数据 RAM 1";
+        case 2: return "数据 RAM 2";
+        case 3: return "数据 RAM 3";
+        case 4: return allowProgramRAM ? "程序 RAM" : "无效 (4)";
+        case 5: return "无效 (5)";
+        case 6: return "无效 (6)";
+        case 7: return "无效 (7)";
+        default: return "无效";
         }
     };
 
@@ -35,7 +35,7 @@ void SCUDSPDMARegistersView::Display() {
         if (dsp.dmaToD0) {
             ImGui::BeginGroup();
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("From");
+            ImGui::TextUnformatted("从");
             ImGui::SameLine();
             if (ImGui::BeginCombo("##src", fmtRAMOp(dsp.dmaSrc, false), ImGuiComboFlags_WidthFitPreview)) {
                 for (uint32 i = 0; i < 4; i++) {
@@ -50,7 +50,7 @@ void SCUDSPDMARegistersView::Display() {
             ImGui::SameLine();
 
             ImGui::BeginGroup();
-            ImGui::TextUnformatted("to");
+            ImGui::TextUnformatted("至");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(ImGui::GetStyle().FramePadding.x * 2 + hexCharWidth * 7);
             ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
@@ -63,7 +63,7 @@ void SCUDSPDMARegistersView::Display() {
         } else {
             ImGui::BeginGroup();
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("From");
+            ImGui::TextUnformatted("从");
             ImGui::SameLine();
             ImGui::SetNextItemWidth(ImGui::GetStyle().FramePadding.x * 2 + hexCharWidth * 7);
             ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
@@ -77,7 +77,7 @@ void SCUDSPDMARegistersView::Display() {
             ImGui::SameLine();
 
             ImGui::BeginGroup();
-            ImGui::TextUnformatted("to");
+            ImGui::TextUnformatted("至");
             ImGui::SameLine();
             if (ImGui::BeginCombo("##dst", fmtRAMOp(dsp.dmaDst, true), ImGuiComboFlags_WidthFitPreview)) {
                 for (uint32 i = 0; i < 5; i++) {
@@ -90,7 +90,7 @@ void SCUDSPDMARegistersView::Display() {
             ImGui::EndGroup();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Swap")) {
+        if (ImGui::Button("交换")) {
             dsp.dmaToD0 = !dsp.dmaToD0;
             if (!dsp.dmaToD0) {
                 dsp.dmaAddrInc = std::min(dsp.dmaAddrInc, 4u);
@@ -101,7 +101,7 @@ void SCUDSPDMARegistersView::Display() {
     {
         ImGui::BeginGroup();
         ImGui::AlignTextToFramePadding();
-        ImGui::TextUnformatted("Increment address by");
+        ImGui::TextUnformatted("地址递增");
         ImGui::SameLine();
         if (ImGui::BeginCombo("##addr_inc", fmt::format("{}", dsp.dmaAddrInc).c_str(),
                               ImGuiComboFlags_WidthFitPreview)) {
@@ -124,13 +124,13 @@ void SCUDSPDMARegistersView::Display() {
         }
         ImGui::EndGroup();
         ImGui::SameLine();
-        ImGui::Checkbox("Hold", &dsp.dmaHold);
+        ImGui::Checkbox("保持", &dsp.dmaHold);
     }
 
     {
         ImGui::BeginGroup();
         ImGui::AlignTextToFramePadding();
-        ImGui::TextUnformatted("Count:");
+        ImGui::TextUnformatted("计数:");
         ImGui::SameLine();
         ImGui::SetNextItemWidth(ImGui::GetStyle().FramePadding.x * 2 + hexCharWidth * 2);
         ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
@@ -138,10 +138,10 @@ void SCUDSPDMARegistersView::Display() {
                            ImGuiInputTextFlags_CharsHexadecimal);
         ImGui::PopFont();
         ImGui::SameLine();
-        ImGui::TextUnformatted("longwords");
+        ImGui::TextUnformatted("长字");
         ImGui::EndGroup();
         ImGui::SameLine();
-        if (ImGui::Button("Run transfer")) {
+        if (ImGui::Button("运行传输")) {
             dsp.dmaRun = true;
         }
     }

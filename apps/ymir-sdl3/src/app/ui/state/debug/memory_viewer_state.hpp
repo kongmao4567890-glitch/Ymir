@@ -179,14 +179,14 @@ namespace regions {
 
     inline void SH2CacheAddressHover(uint32 address, MemoryViewerState * /*state*/) {
         if (ImGui::BeginTooltip()) {
-            ImGui::Text("Entry %u, way %u", (address >> 4) & 63, (address >> 2) & 3);
+            ImGui::Text("条目 %u, Way %u", (address >> 4) & 63, (address >> 2) & 3);
             ImGui::EndTooltip();
         }
     }
 
     inline void SH2CacheDataHover(uint32 address, MemoryViewerState * /*state*/) {
         if (ImGui::BeginTooltip()) {
-            ImGui::Text("Way %u, line %u", (address >> 10) & 3, (address >> 4) & 63);
+            ImGui::Text("Way %u, 行 %u", (address >> 10) & 3, (address >> 4) & 63);
             ImGui::EndTooltip();
         }
     }
@@ -198,7 +198,7 @@ namespace regions {
         if (!emulateSH2Cache) {
             ImGui::BeginDisabled();
         }
-        ImGui::Checkbox("Bypass cache", &state->bypassSH2Cache);
+        ImGui::Checkbox("绕过缓存", &state->bypassSH2Cache);
         if (!emulateSH2Cache) {
             ImGui::EndDisabled();
         }
@@ -219,64 +219,64 @@ namespace regions {
 
     // clang-format off
     inline constexpr Region kMainRegions[] = {
-        { .name = "Main address space",          .addressBlockName = "Main", .baseAddress = 0x0000000, .size = 0x8000000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "Boot ROM / IPL",              .addressBlockName = "Main", .baseAddress = 0x0000000, .size =  0x100000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SMPC registers",              .addressBlockName = "Main", .baseAddress = 0x0100000, .size =      0x80, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "Internal backup RAM",         .addressBlockName = "Main", .baseAddress = 0x0180000, .size =   0x10000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "Low Work RAM",                .addressBlockName = "Main", .baseAddress = 0x0200000, .size =  0x100000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "MINIT area",                  .addressBlockName = "Main", .baseAddress = 0x1000000, .size =  0x800000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SINIT area",                  .addressBlockName = "Main", .baseAddress = 0x1800000, .size =  0x800000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "主地址空间",                .addressBlockName = "Main", .baseAddress = 0x0000000, .size = 0x8000000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "引导 ROM / IPL",             .addressBlockName = "Main", .baseAddress = 0x0000000, .size =  0x100000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SMPC 寄存器",                 .addressBlockName = "Main", .baseAddress = 0x0100000, .size =      0x80, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "内部备份 RAM",                .addressBlockName = "Main", .baseAddress = 0x0180000, .size =   0x10000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "低工作 RAM",                  .addressBlockName = "Main", .baseAddress = 0x0200000, .size =  0x100000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "MINIT 区域",                  .addressBlockName = "Main", .baseAddress = 0x1000000, .size =  0x800000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SINIT 区域",                  .addressBlockName = "Main", .baseAddress = 0x1800000, .size =  0x800000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
         { .name = "SCU A-Bus",                   .addressBlockName = "Main", .baseAddress = 0x2000000, .size = 0x4000000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SCU A-Bus CS0 (cartridge)",   .addressBlockName = "Main", .baseAddress = 0x2000000, .size = 0x2000000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SCU A-Bus CS1 (cartridge)",   .addressBlockName = "Main", .baseAddress = 0x4000000, .size = 0x1000000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SCU A-Bus CS0 (卡带)",        .addressBlockName = "Main", .baseAddress = 0x2000000, .size = 0x2000000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SCU A-Bus CS1 (卡带)",        .addressBlockName = "Main", .baseAddress = 0x4000000, .size = 0x1000000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
         { .name = "SCU A-Bus CS2",               .addressBlockName = "Main", .baseAddress = 0x5800000, .size =  0x100000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "CD Block registers",          .addressBlockName = "Main", .baseAddress = 0x5890000, .size =      0x40, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "CD Block 寄存器",              .addressBlockName = "Main", .baseAddress = 0x5890000, .size =      0x40, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
         { .name = "SCU B-Bus",                   .addressBlockName = "Main", .baseAddress = 0x5A00000, .size =  0x5C0000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "68000 Work RAM",              .addressBlockName = "Main", .baseAddress = 0x5A00000, .size =   0x80000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SCSP registers",              .addressBlockName = "Main", .baseAddress = 0x5B00000, .size =    0x1000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "68000 工作 RAM",              .addressBlockName = "Main", .baseAddress = 0x5A00000, .size =   0x80000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SCSP 寄存器",                  .addressBlockName = "Main", .baseAddress = 0x5B00000, .size =    0x1000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
         { .name = "VDP1 VRAM",                   .addressBlockName = "Main", .baseAddress = 0x5C00000, .size =   0x80000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "VDP1 framebuffer",            .addressBlockName = "Main", .baseAddress = 0x5C80000, .size =   0x40000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "VDP1 registers",              .addressBlockName = "Main", .baseAddress = 0x5D00000, .size =      0x20, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "VDP1 帧缓冲",                 .addressBlockName = "Main", .baseAddress = 0x5C80000, .size =   0x40000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "VDP1 寄存器",                  .addressBlockName = "Main", .baseAddress = 0x5D00000, .size =      0x20, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
         { .name = "VDP2 VRAM",                   .addressBlockName = "Main", .baseAddress = 0x5E00000, .size =   0x80000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
         { .name = "VDP2 CRAM",                   .addressBlockName = "Main", .baseAddress = 0x5F00000, .size =    0x1000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "VDP2 registers",              .addressBlockName = "Main", .baseAddress = 0x5F80000, .size =     0x200, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SCU registers",               .addressBlockName = "Main", .baseAddress = 0x5FE0000, .size =     0x100, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "High Work RAM",               .addressBlockName = "Main", .baseAddress = 0x6000000, .size =  0x100000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "VDP2 寄存器",                  .addressBlockName = "Main", .baseAddress = 0x5F80000, .size =     0x200, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SCU 寄存器",                   .addressBlockName = "Main", .baseAddress = 0x5FE0000, .size =     0x100, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "高工作 RAM",                  .addressBlockName = "Main", .baseAddress = 0x6000000, .size =  0x100000, .readFn = MainBusRead, .writeFn = MainBusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
     };
 
     inline constexpr Region kMSH2Regions[] = {
-        { .name = "MSH2 cached address space",   .addressBlockName = "MSH2", .baseAddress = 0x00000000, .size = 0x8000000, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2BusBgColor<true>,    .paramsFn = SH2CachedAreaParams, .hoverFn = nullptr              },
-        { .name = "MSH2 uncached address space", .addressBlockName = "MSH2", .baseAddress = 0x20000000, .size = 0x8000000, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2BusBgColor<true>,    .paramsFn = nullptr,             .hoverFn = nullptr              },
-        { .name = "MSH2 cache address array",    .addressBlockName = "MSH2", .baseAddress = 0x60000000, .size =     0x400, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2CacheAddressBgColor, .paramsFn = nullptr,             .hoverFn = SH2CacheAddressHover },
-        { .name = "MSH2 cache data array",       .addressBlockName = "MSH2", .baseAddress = 0xC0000000, .size =    0x1000, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2CacheDataBgColor,    .paramsFn = nullptr,             .hoverFn = SH2CacheDataHover    },
-        { .name = "MSH2 on-chip registers",      .addressBlockName = "MSH2", .baseAddress = 0xFFFFFE00, .size =     0x200, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2BusBgColor<true>,    .paramsFn = nullptr,             .hoverFn = nullptr              },
+        { .name = "MSH2 缓存地址空间",           .addressBlockName = "MSH2", .baseAddress = 0x00000000, .size = 0x8000000, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2BusBgColor<true>,    .paramsFn = SH2CachedAreaParams, .hoverFn = nullptr              },
+        { .name = "MSH2 非缓存地址空间",         .addressBlockName = "MSH2", .baseAddress = 0x20000000, .size = 0x8000000, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2BusBgColor<true>,    .paramsFn = nullptr,             .hoverFn = nullptr              },
+        { .name = "MSH2 缓存地址数组",           .addressBlockName = "MSH2", .baseAddress = 0x60000000, .size =     0x400, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2CacheAddressBgColor, .paramsFn = nullptr,             .hoverFn = SH2CacheAddressHover },
+        { .name = "MSH2 缓存数据数组",           .addressBlockName = "MSH2", .baseAddress = 0xC0000000, .size =    0x1000, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2CacheDataBgColor,    .paramsFn = nullptr,             .hoverFn = SH2CacheDataHover    },
+        { .name = "MSH2 片上寄存器",             .addressBlockName = "MSH2", .baseAddress = 0xFFFFFE00, .size =     0x200, .readFn = SH2BusRead<true>, .writeFn = SH2BusWrite<true>, .bgColorFn = SH2BusBgColor<true>,    .paramsFn = nullptr,             .hoverFn = nullptr              },
     };
 
     inline constexpr Region kSSH2Regions[] = {
-        { .name = "SSH2 cached address space",   .addressBlockName = "SSH2", .baseAddress = 0x00000000, .size = 0x8000000, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2BusBgColor<false>,   .paramsFn = SH2CachedAreaParams, .hoverFn = nullptr              },
-        { .name = "SSH2 uncached address space", .addressBlockName = "SSH2", .baseAddress = 0x20000000, .size = 0x8000000, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2BusBgColor<false>,   .paramsFn = nullptr,             .hoverFn = nullptr              },
-        { .name = "SSH2 cache address array",    .addressBlockName = "SSH2", .baseAddress = 0x60000000, .size =     0x400, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2CacheAddressBgColor, .paramsFn = nullptr,             .hoverFn = SH2CacheAddressHover },
-        { .name = "SSH2 cache data array",       .addressBlockName = "SSH2", .baseAddress = 0xC0000000, .size =    0x1000, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2CacheDataBgColor,    .paramsFn = nullptr,             .hoverFn = SH2CacheDataHover    },
-        { .name = "SSH2 on-chip registers",      .addressBlockName = "SSH2", .baseAddress = 0xFFFFFE00, .size =     0x200, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2BusBgColor<false>,   .paramsFn = nullptr,             .hoverFn = nullptr              },
+        { .name = "SSH2 缓存地址空间",           .addressBlockName = "SSH2", .baseAddress = 0x00000000, .size = 0x8000000, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2BusBgColor<false>,   .paramsFn = SH2CachedAreaParams, .hoverFn = nullptr              },
+        { .name = "SSH2 非缓存地址空间",         .addressBlockName = "SSH2", .baseAddress = 0x20000000, .size = 0x8000000, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2BusBgColor<false>,   .paramsFn = nullptr,             .hoverFn = nullptr              },
+        { .name = "SSH2 缓存地址数组",           .addressBlockName = "SSH2", .baseAddress = 0x60000000, .size =     0x400, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2CacheAddressBgColor, .paramsFn = nullptr,             .hoverFn = SH2CacheAddressHover },
+        { .name = "SSH2 缓存数据数组",           .addressBlockName = "SSH2", .baseAddress = 0xC0000000, .size =    0x1000, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2CacheDataBgColor,    .paramsFn = nullptr,             .hoverFn = SH2CacheDataHover    },
+        { .name = "SSH2 片上寄存器",             .addressBlockName = "SSH2", .baseAddress = 0xFFFFFE00, .size =     0x200, .readFn = SH2BusRead<false>, .writeFn = SH2BusWrite<false>, .bgColorFn = SH2BusBgColor<false>,   .paramsFn = nullptr,             .hoverFn = nullptr              },
     };
 
     inline constexpr Region kSH1Regions[] = {
-        { .name = "SH1 address space",               .addressBlockName = "SH1", .baseAddress = 0x00000000, .size = 0x8000000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SH1 on-chip ROM",                 .addressBlockName = "SH1", .baseAddress = 0x00000000, .size =   0x10000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SH1 on-chip supporting modules",  .addressBlockName = "SH1", .baseAddress = 0x05FFFE00, .size =     0x200, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "CD block DRAM",                   .addressBlockName = "SH1", .baseAddress = 0x09000000, .size =   0x80000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "YGR registers (CD drive)",        .addressBlockName = "SH1", .baseAddress = 0x0A000000, .size =      0x20, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "YGR registers (MPEG card, low)",  .addressBlockName = "SH1", .baseAddress = 0x0A100000, .size =      0x40, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "YGR registers (MPEG card, high)", .addressBlockName = "SH1", .baseAddress = 0x0A180000, .size =      0x10, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "MPEG card ROM",                   .addressBlockName = "SH1", .baseAddress = 0x0E000000, .size =   0x80000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
-        { .name = "SH1 on-chip RAM",                 .addressBlockName = "SH1", .baseAddress = 0x0F000000, .size =    0x1000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SH1 地址空间",                  .addressBlockName = "SH1", .baseAddress = 0x00000000, .size = 0x8000000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SH1 片上 ROM",                  .addressBlockName = "SH1", .baseAddress = 0x00000000, .size =   0x10000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SH1 片上支持模块",              .addressBlockName = "SH1", .baseAddress = 0x05FFFE00, .size =     0x200, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "CD Block DRAM",                .addressBlockName = "SH1", .baseAddress = 0x09000000, .size =   0x80000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "YGR 寄存器 (CD 驱动器)",        .addressBlockName = "SH1", .baseAddress = 0x0A000000, .size =      0x20, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "YGR 寄存器 (MPEG 卡, 低位)",    .addressBlockName = "SH1", .baseAddress = 0x0A100000, .size =      0x40, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "YGR 寄存器 (MPEG 卡, 高位)",    .addressBlockName = "SH1", .baseAddress = 0x0A180000, .size =      0x10, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "MPEG 卡 ROM",                  .addressBlockName = "SH1", .baseAddress = 0x0E000000, .size =   0x80000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
+        { .name = "SH1 片上 RAM",                  .addressBlockName = "SH1", .baseAddress = 0x0F000000, .size =    0x1000, .readFn = SH1BusRead, .writeFn = SH1BusWrite, .bgColorFn = MainBusBgColor, .paramsFn = nullptr, .hoverFn = nullptr },
     };
 
     inline constexpr RegionGroup kRegionGroups[] = {
-        { .name = "Main address space", .regions = kMainRegions },
-        { .name = "Master SH-2",        .regions = kMSH2Regions },
-        { .name = "Slave SH-2",         .regions = kSSH2Regions },
-        { .name = "CD block SH-1",      .regions = kSH1Regions  },
+        { .name = "主地址空间", .regions = kMainRegions },
+        { .name = "主 SH-2",        .regions = kMSH2Regions },
+        { .name = "从 SH-2",         .regions = kSSH2Regions },
+        { .name = "CD Block SH-1",      .regions = kSH1Regions  },
     };
     // clang-format on
 

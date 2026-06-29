@@ -19,7 +19,7 @@ void SCSPKeyOnExecuteTraceView::Display() {
 
     if (ImGui::BeginTable("kyonex_trace", 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY)) {
         ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("KYONB 0 to 31", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 32);
+        ImGui::TableSetupColumn("KYONB 0 至 31", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 32);
         ImGui::TableSetupScrollFreeze(1, 1);
         ImGui::TableHeadersRow();
 

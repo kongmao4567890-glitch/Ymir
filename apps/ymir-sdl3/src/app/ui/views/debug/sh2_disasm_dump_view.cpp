@@ -41,7 +41,7 @@ void SH2DisasmDumpView::Display() {
     const float fieldWidth = framePadding * 2 + hexCharWidth * 8;
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Addresses:");
+    ImGui::TextUnformatted("地址:");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(fieldWidth);
@@ -53,7 +53,7 @@ void SH2DisasmDumpView::Display() {
     ImGui::PopFont();
 
     ImGui::SameLine();
-    ImGui::TextUnformatted("to");
+    ImGui::TextUnformatted("至");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(fieldWidth);
@@ -67,7 +67,7 @@ void SH2DisasmDumpView::Display() {
     m_startAddress &= ~1u;
     m_endAddress &= ~1u;
 
-    ImGui::Checkbox("Keep open", &m_keepOpen);
+    ImGui::Checkbox("保持打开", &m_keepOpen);
 
     auto disasmButton = [&](const char *name, bool disasmDump, bool binaryDump) {
         ImGui::SameLine();
@@ -81,10 +81,10 @@ void SH2DisasmDumpView::Display() {
     };
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Dump:");
-    disasmButton("Disassembly", true, false);
-    disasmButton("Binary", false, true);
-    disasmButton("Both", true, true);
+    ImGui::TextUnformatted("转储:");
+    disasmButton("反汇编", true, false);
+    disasmButton("二进制", false, true);
+    disasmButton("两者", true, true);
 
     ImGui::EndPopup();
 }

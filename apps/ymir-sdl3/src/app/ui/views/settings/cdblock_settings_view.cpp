@@ -21,16 +21,16 @@ void CDBlockSettingsView::Display() {
     const float paddingWidth = ImGui::GetStyle().FramePadding.x;
     const float itemSpacingWidth = ImGui::GetStyle().ItemSpacing.x;
     const float fileSelectorButtonWidth = ImGui::CalcTextSize("...").x + paddingWidth * 2;
-    const float reloadButtonWidth = ImGui::CalcTextSize("Reload").x + paddingWidth * 2;
-    const float useButtonWidth = ImGui::CalcTextSize("Use").x + paddingWidth * 2;
+    const float reloadButtonWidth = ImGui::CalcTextSize("重载").x + paddingWidth * 2;
+    const float useButtonWidth = ImGui::CalcTextSize("使用").x + paddingWidth * 2;
 
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Accuracy");
+    ImGui::SeparatorText("精度");
     ImGui::PopFont();
 
-    ImGui::TextUnformatted("NOTE: Changing any of these options will cause a hard reset");
+    ImGui::TextUnformatted("注意：更改这些选项中的任何一个都将导致硬重置");
 
     widgets::settings::cdblock::CDBlockLLE(m_context);
 
@@ -39,14 +39,14 @@ void CDBlockSettingsView::Display() {
     std::filesystem::path cdbRomsPaths = m_context.profile.GetPath(ProfilePath::CDBlockROMImages);
 
     ImGui::PushTextWrapPos(ImGui::GetContentRegionAvail().x);
-    ImGui::Text("CD block ROMs in %s", fmt::format("{}", cdbRomsPaths).c_str());
+    ImGui::Text("%s 中的 CD block ROM", fmt::format("{}", cdbRomsPaths).c_str());
     ImGui::PopTextWrapPos();
 
-    if (ImGui::Button("Open directory")) {
+    if (ImGui::Button("打开目录")) {
         SDL_OpenURL(fmt::format("file:///{}", cdbRomsPaths).c_str());
     }
     ImGui::SameLine();
-    if (ImGui::Button("Rescan")) {
+    if (ImGui::Button("重新扫描")) {
         {
             std::unique_lock lock{m_context.locks.romManager};
             m_context.romManager.ScanCDBlockROMs(cdbRomsPaths);
@@ -63,8 +63,8 @@ void CDBlockSettingsView::Display() {
                           ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti |
                               ImGuiTableFlags_SortTristate,
                           ImVec2(0, 150 * m_context.displayScale))) {
-        ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_DefaultSort, 0.0f);
-        ImGui::TableSetupColumn("Version", ImGuiTableColumnFlags_WidthFixed, 60 * m_context.displayScale);
+        ImGui::TableSetupColumn("路径", ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_DefaultSort, 0.0f);
+        ImGui::TableSetupColumn("版本", ImGuiTableColumnFlags_WidthFixed, 60 * m_context.displayScale);
         ImGui::TableSetupColumn("##use", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 useButtonWidth);
         ImGui::TableSetupScrollFreeze(0, 1);
@@ -129,7 +129,7 @@ void CDBlockSettingsView::Display() {
                 }
             }
             if (ImGui::TableNextColumn()) {
-                if (ImGui::Button(fmt::format("Use##{}", index).c_str())) {
+                if (ImGui::Button(fmt::format("使用##{}", index).c_str())) {
                     settings.overrideROM = true;
                     settings.romPath = cdbROM.path;
                     if (!settings.romPath.empty()) {
@@ -146,7 +146,7 @@ void CDBlockSettingsView::Display() {
 
     ImGui::Separator();
 
-    if (MakeDirty(ImGui::Checkbox("Override CD block ROM", &settings.overrideROM))) {
+    if (MakeDirty(ImGui::Checkbox("覆盖 CD block ROM", &settings.overrideROM))) {
         if (settings.overrideROM && !settings.romPath.empty()) {
             m_context.EnqueueEvent(events::gui::ReloadCDBlockROM());
             MakeDirty();
@@ -157,7 +157,7 @@ void CDBlockSettingsView::Display() {
         ImGui::BeginDisabled();
     }
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("CD block ROM path");
+    ImGui::TextUnformatted("CD block ROM 路径");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(-(fileSelectorButtonWidth + reloadButtonWidth + itemSpacingWidth * 2));
     std::string cdbPath = fmt::format("{}", settings.romPath);
@@ -167,8 +167,8 @@ void CDBlockSettingsView::Display() {
     ImGui::SameLine();
     if (ImGui::Button("...##cdb_path")) {
         m_context.EnqueueEvent(events::gui::OpenFile({
-            .dialogTitle = "Load CD block ROM",
-            .filters = {{"ROM files (*.bin, *.rom)", "bin;rom"}, {"All files (*.*)", "*"}},
+            .dialogTitle = "加载 CD block ROM",
+            .filters = {{"ROM 文件 (*.bin, *.rom)", "bin;rom"}, {"所有文件 (*.*)", "*"}},
             .userdata = this,
             .callback = util::WrapSingleSelectionCallback<&CDBlockSettingsView::ProcessLoadCDBlockROM,
                                                           &util::NoopCancelFileDialogCallback,
@@ -176,7 +176,7 @@ void CDBlockSettingsView::Display() {
         }));
     }
     ImGui::SameLine();
-    if (ImGui::Button("Reload")) {
+    if (ImGui::Button("重载")) {
         if (!settings.romPath.empty()) {
             m_context.EnqueueEvent(events::gui::ReloadCDBlockROM());
             MakeDirty();
@@ -189,23 +189,23 @@ void CDBlockSettingsView::Display() {
     ImGui::Separator();
 
     if (m_context.cdbRomPath.empty()) {
-        ImGui::TextUnformatted("No CD block ROM loaded");
+        ImGui::TextUnformatted("未加载 CD block ROM");
     } else {
         ImGui::PushTextWrapPos(ImGui::GetContentRegionAvail().x);
-        ImGui::Text("Currently using CD block ROM at %s", fmt::format("{}", m_context.cdbRomPath).c_str());
+        ImGui::Text("当前使用的 CD block ROM 位于 %s", fmt::format("{}", m_context.cdbRomPath).c_str());
         ImGui::PopTextWrapPos();
     }
     const db::CDBlockROMInfo *info = db::GetCDBlockROMInfo(m_context.saturn.GetCDBlockROMHash());
     if (info != nullptr) {
-        ImGui::Text("Version: %s", info->version.data());
+        ImGui::Text("版本：%s", info->version.data());
     } else {
-        ImGui::TextUnformatted("Unknown CD block ROM");
+        ImGui::TextUnformatted("未知 CD block ROM");
     }
 
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Tweaks");
+    ImGui::SeparatorText("调整");
     ImGui::PopFont();
 
     widgets::settings::cdblock::CDReadSpeed(m_context);
@@ -224,7 +224,7 @@ void CDBlockSettingsView::LoadCDBlockROM(std::filesystem::path file) {
 }
 
 void CDBlockSettingsView::ShowCDBlockROMLoadError(const char *message) {
-    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("Could not load CD block ROM: {}", message)));
+    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("无法加载 CD block ROM：{}", message)));
 }
 
 } // namespace app::ui

@@ -13,15 +13,15 @@ DebugOutputView::DebugOutputView(SharedContext &context)
     , m_tracer(context.tracers.SCU) {}
 
 void DebugOutputView::Display() {
-    if (ImGui::Button("Clear##debug_output")) {
+    if (ImGui::Button("清除##debug_output")) {
         m_tracer.ClearDebugMessages();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Save to file...##debug_output")) {
+    if (ImGui::Button("保存到文件...##debug_output")) {
         m_context.EnqueueEvent(events::gui::SaveFile(
-            {.dialogTitle = "Export debug output",
+            {.dialogTitle = "导出调试输出",
              .defaultPath = m_context.profile.GetPath(ProfilePath::Dumps) / "debug.txt",
-             .filters = {{.name = "Text files (*.txt)", .filters = "txt"}},
+             .filters = {{.name = "文本文件 (*.txt)", .filters = "txt"}},
              .userdata = this,
              .callback = util::WrapSingleSelectionCallback<&DebugOutputView::ProcessExportDebugOutput,
                                                            util::NoopCancelFileDialogCallback,

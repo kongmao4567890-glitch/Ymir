@@ -50,16 +50,16 @@ void SH2CallStackView::Display() {
             if (i == 0) {
                 ImGui::TextColored(m_model.colors.address, "%08X", pc);
                 ImGui::SameLine(0.0f, m_model.style.disasmSpacing * m_context.displayScale);
-                ImGui::TextColored(colors.pc, "<current PC>");
+                ImGui::TextColored(colors.pc, "<当前 PC>");
             } else {
                 auto it = callStack.rbegin() + (static_cast<size_t>(i) - 1);
                 auto &entry = *it;
                 ImGui::TextColored(m_model.colors.address, "%08X", entry.address);
                 ImGui::SameLine(0.0f, m_model.style.disasmSpacing * m_context.displayScale);
                 switch (entry.type) {
-                case SH2CallStackEntry::Type::Call: ImGui::TextColored(colors.call, "Call"); break;
-                case SH2CallStackEntry::Type::Trap: drawVec(colors.trap, "Trap ", entry.vecNum); break;
-                case SH2CallStackEntry::Type::Exception: drawVec(colors.exception, "Excpt", entry.vecNum); break;
+                case SH2CallStackEntry::Type::Call: ImGui::TextColored(colors.call, "调用"); break;
+                case SH2CallStackEntry::Type::Trap: drawVec(colors.trap, "陷阱", entry.vecNum); break;
+                case SH2CallStackEntry::Type::Exception: drawVec(colors.exception, "异常", entry.vecNum); break;
                 }
                 ImGui::SameLine(0, 0);
                 ImGui::TextColored(colors.target, " %08X", entry.target);

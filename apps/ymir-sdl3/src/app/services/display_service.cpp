@@ -196,27 +196,30 @@ void DisplayService::LoadFonts() {
         return font;
     };
 
-    auto mergeFont = [&](const char *path) {
+    // CJK glyph ranges for Chinese character support
+    const ImWchar *cjkRanges = io.Fonts->GetGlyphRangesChineseSimplifiedCommon();
+
+    auto mergeFont = [&](const char *path, const ImWchar *glyphRanges = nullptr) {
         ImFontConfig mergeConfig = config;
         mergeConfig.MergeMode = true;
 
         cmrc::file file = embedfs.open(path);
 
-        ImFont *font =
-            io.Fonts->AddFontFromMemoryTTF((void *)file.begin(), file.size(), style.FontSizeBase, &mergeConfig);
+        ImFont *font = io.Fonts->AddFontFromMemoryTTF((void *)file.begin(), file.size(), style.FontSizeBase,
+                                                      &mergeConfig, glyphRanges);
         IM_ASSERT(font != nullptr);
         return font;
     };
 
     m_context.fonts.sansSerif.regular = loadFont("SplineSans Medium", "fonts/SplineSans-Medium.ttf", true);
-    m_context.fonts.sansSerif.regular = mergeFont("fonts/MPLUSU-Bold.ttf");
+    m_context.fonts.sansSerif.regular = mergeFont("fonts/MPLUSU-Bold.ttf", cjkRanges);
     m_context.fonts.sansSerif.bold = loadFont("SplineSans Bold", "fonts/SplineSans-Bold.ttf", true);
-    m_context.fonts.sansSerif.bold = mergeFont("fonts/MPLUSU-ExtraBold.ttf");
+    m_context.fonts.sansSerif.bold = mergeFont("fonts/MPLUSU-ExtraBold.ttf", cjkRanges);
 
     m_context.fonts.monospace.regular = loadFont("SplineSansMono Medium", "fonts/SplineSansMono-Medium.ttf", false);
-    m_context.fonts.monospace.regular = mergeFont("fonts/MPLUSU-Bold.ttf");
+    m_context.fonts.monospace.regular = mergeFont("fonts/MPLUSU-Bold.ttf", cjkRanges);
     m_context.fonts.monospace.bold = loadFont("SplineSansMono Bold", "fonts/SplineSansMono-Bold.ttf", false);
-    m_context.fonts.monospace.bold = mergeFont("fonts/MPLUSU-ExtraBold.ttf");
+    m_context.fonts.monospace.bold = mergeFont("fonts/MPLUSU-ExtraBold.ttf", cjkRanges);
 
     m_context.fonts.display = loadFont("ZenDots Regular", "fonts/ZenDots-Regular.ttf", false);
 

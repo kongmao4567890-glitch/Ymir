@@ -29,7 +29,7 @@ void SCSPSlotsView::Display() {
 
     ImGui::BeginGroup();
 
-    ImGui::Checkbox("Color slots by SA", &m_colorSlotsBySA);
+    ImGui::Checkbox("按 SA 着色槽位", &m_colorSlotsBySA);
 
     const ImVec4 defaultColor = ImGui::GetStyle().Colors[ImGuiCol_Text];
 
@@ -39,9 +39,9 @@ void SCSPSlotsView::Display() {
         ImGui::TableSetupColumn("SA", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 5);
         ImGui::TableSetupColumn("LSA", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 4);
         ImGui::TableSetupColumn("LEA", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 4);
-        ImGui::TableSetupColumn("Sample offset", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 4);
+        ImGui::TableSetupColumn("采样偏移", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 4);
         ImGui::TableSetupColumn("LPCTL", ImGuiTableColumnFlags_WidthFixed, msCharWidth);
-        ImGui::TableSetupColumn("Bits", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2);
+        ImGui::TableSetupColumn("位", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2);
         ImGui::TableSetupColumn("SBCTL", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2);
         ImGui::TableSetupColumn("SSCTL", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 4 + paddingWidth);
         ImGui::TableSetupColumn("AR", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2);
@@ -53,8 +53,8 @@ void SCSPSlotsView::Display() {
         ImGui::TableSetupColumn("EGHOLD", ImGuiTableColumnFlags_WidthFixed, msCharWidth);
         ImGui::TableSetupColumn("LPSLNK", ImGuiTableColumnFlags_WidthFixed, msCharWidth);
         ImGui::TableSetupColumn("EGBYPASS", ImGuiTableColumnFlags_WidthFixed, msCharWidth);
-        ImGui::TableSetupColumn("EG state", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 3);
-        ImGui::TableSetupColumn("EG level", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 3 + paddingWidth);
+        ImGui::TableSetupColumn("EG 状态", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 3);
+        ImGui::TableSetupColumn("EG 电平", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 3 + paddingWidth);
         ImGui::TableSetupColumn("MDL", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 1);
         ImGui::TableSetupColumn("MDXSL", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2);
         ImGui::TableSetupColumn("MDYSL", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2);
@@ -74,7 +74,7 @@ void SCSPSlotsView::Display() {
         ImGui::TableSetupColumn("ISEL", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 1);
         ImGui::TableSetupColumn("DISDL", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 1);
         ImGui::TableSetupColumn("DIPAN", ImGuiTableColumnFlags_WidthFixed, hexCharWidth * 2 + paddingWidth);
-        ImGui::TableSetupColumn("Output", ImGuiTableColumnFlags_WidthFixed, wfSize.x);
+        ImGui::TableSetupColumn("输出", ImGuiTableColumnFlags_WidthFixed, wfSize.x);
 
         // TODO: EFSDL / EFPAN  (probably in DSP view)
         // - slots  0 to 15 = DSP.EFREG[0-15]
@@ -151,19 +151,19 @@ void SCSPSlotsView::Display() {
                 switch (slot.loopControl) {
                 case Off:
                     ImGui::TextColored(color, "%s", ICON_MS_KEYBOARD_TAB);
-                    ImGui::SetItemTooltip("No loop");
+                    ImGui::SetItemTooltip("无循环");
                     break;
                 case Normal:
                     ImGui::TextColored(color, "%s", ICON_MS_ARROW_RIGHT_ALT);
-                    ImGui::SetItemTooltip("Forward");
+                    ImGui::SetItemTooltip("正向");
                     break;
                 case Reverse:
                     ImGui::TextColored(color, "%s", ICON_MS_ARROW_LEFT_ALT);
-                    ImGui::SetItemTooltip("Reverse");
+                    ImGui::SetItemTooltip("反向");
                     break;
                 case Alternate:
                     ImGui::TextColored(color, "%s", ICON_MS_ARROW_RANGE);
-                    ImGui::SetItemTooltip("Alternate");
+                    ImGui::SetItemTooltip("交替");
                     break;
                 }
             }
@@ -183,23 +183,23 @@ void SCSPSlotsView::Display() {
                 // SSCTL
                 using enum scsp::Slot::SoundSource;
                 const char *soundSourceText = "????";
-                const char *soundSourceHint = "Unknown";
+                const char *soundSourceHint = "未知";
                 switch (slot.soundSource) {
                 case SoundRAM:
                     soundSourceText = "SRAM";
-                    soundSourceHint = "Sound RAM";
+                    soundSourceHint = "声音 RAM";
                     break;
                 case Noise:
                     soundSourceText = "LFSR";
-                    soundSourceHint = "Noise";
+                    soundSourceHint = "噪声";
                     break;
                 case Silence:
                     soundSourceText = "ZERO";
-                    soundSourceHint = "Silence";
+                    soundSourceHint = "静音";
                     break;
                 case Unknown:
                     soundSourceText = "????";
-                    soundSourceHint = "Unknown";
+                    soundSourceHint = "未知";
                     break;
                 }
 
@@ -249,35 +249,35 @@ void SCSPSlotsView::Display() {
                 // EGHOLD
                 if (slot.egHold) {
                     ImGui::TextColored(color, "%s", ICON_MS_MAXIMIZE);
-                    ImGui::SetItemTooltip("Enabled\n"
-                                          "EG level is set to maxium during attack phase.");
+                    ImGui::SetItemTooltip("已启用\n"
+                                          "EG 电平在起音阶段设置为最大值。");
                 } else {
                     ImGui::TextColored(color, "%s", ICON_MS_PEN_SIZE_2);
-                    ImGui::SetItemTooltip("Disabled\n"
-                                          "EG level follows attack rate during attack phase.");
+                    ImGui::SetItemTooltip("已禁用\n"
+                                          "EG 电平在起音阶段遵循起音速率。");
                 }
             }
             if (ImGui::TableNextColumn()) {
                 // LPSLNK
                 if (slot.loopStartLink) {
                     ImGui::TextColored(color, "%s", ICON_MS_LINK);
-                    ImGui::SetItemTooltip("Enabled\n"
-                                          "EG waits until loop start to switch from attack to decay 1 phase.");
+                    ImGui::SetItemTooltip("已启用\n"
+                                          "EG 等待直到循环开始才从起音切换到衰减 1 阶段。");
                 } else {
                     ImGui::Dummy(msCharSize);
                     ImGui::SetItemTooltip(
-                        "Disabled\n"
-                        "EG switches to decay 1 phase as soon as the level reaches the maximum value.");
+                        "已禁用\n"
+                        "EG 电平一达到最大值就切换到衰减 1 阶段。");
                 }
             }
             if (ImGui::TableNextColumn()) {
                 // EGBYPASS
                 if (slot.egBypass) {
                     ImGui::TextColored(color, "%s", ICON_MS_STEP_OVER);
-                    ImGui::SetItemTooltip("EG level is bypassed.");
+                    ImGui::SetItemTooltip("EG 电平被旁路。");
                 } else {
                     ImGui::Dummy(msCharSize);
-                    ImGui::SetItemTooltip("EG level is used.");
+                    ImGui::SetItemTooltip("使用 EG 电平。");
                 }
             }
             if (ImGui::TableNextColumn()) {
@@ -322,10 +322,10 @@ void SCSPSlotsView::Display() {
                 // STWINH
                 if (slot.egBypass) {
                     ImGui::TextColored(color, "%s", ICON_MS_EDIT_OFF);
-                    ImGui::SetItemTooltip("Slot output will not be written to sound stack.");
+                    ImGui::SetItemTooltip("槽位输出将不会写入声音栈。");
                 } else {
                     ImGui::Dummy(msCharSize);
-                    ImGui::SetItemTooltip("Slot output goes to sound stack.");
+                    ImGui::SetItemTooltip("槽位输出进入声音栈。");
                 }
             }
 
@@ -339,10 +339,10 @@ void SCSPSlotsView::Display() {
                 // SDIR
                 if (slot.soundDirect) {
                     ImGui::TextColored(color, "%s", ICON_MS_TRENDING_FLAT);
-                    ImGui::SetItemTooltip("Slot level bypasses EG, TL and ALFO.");
+                    ImGui::SetItemTooltip("槽位电平旁路 EG、TL 和 ALFO。");
                 } else {
                     ImGui::TextColored(color, "%s", ICON_MS_PLANNER_REVIEW);
-                    ImGui::SetItemTooltip("Slot level includes EG, TL and ALFO.");
+                    ImGui::SetItemTooltip("槽位电平包含 EG、TL 和 ALFO。");
                 }
             }
 
@@ -362,10 +362,10 @@ void SCSPSlotsView::Display() {
                 // MSK
                 if (slot.maskMode) {
                     ImGui::TextColored(color, "%s", ICON_MS_TEXTURE);
-                    ImGui::SetItemTooltip("Using short wave mask for slot sample addresses.");
+                    ImGui::SetItemTooltip("对槽位采样地址使用短波遮罩。");
                 } else {
                     ImGui::Dummy(msCharSize);
-                    ImGui::SetItemTooltip("Not masking sample addresses.");
+                    ImGui::SetItemTooltip("未遮罩采样地址。");
                 }
             }
 
@@ -386,10 +386,10 @@ void SCSPSlotsView::Display() {
 
                 ImGui::Dummy(msCharSize);
                 switch (waveform) {
-                case Saw: ImGui::SetItemTooltip("Saw wave"); break;
-                case Square: ImGui::SetItemTooltip("Square wave"); break;
-                case Triangle: ImGui::SetItemTooltip("Triangle wave"); break;
-                case Noise: ImGui::SetItemTooltip("Noise"); break;
+                case Saw: ImGui::SetItemTooltip("锯齿波"); break;
+                case Square: ImGui::SetItemTooltip("方波"); break;
+                case Triangle: ImGui::SetItemTooltip("三角波"); break;
+                case Noise: ImGui::SetItemTooltip("噪声"); break;
                 }
 
                 auto *drawList = ImGui::GetWindowDrawList();
@@ -508,10 +508,10 @@ void SCSPSlotsView::Display() {
                 // LFORE
                 if (slot.lfoReset) {
                     ImGui::TextColored(color, "%s", ICON_MS_REPLAY);
-                    ImGui::SetItemTooltip("LFO will be reset.");
+                    ImGui::SetItemTooltip("LFO 将被重置。");
                 } else {
                     ImGui::Dummy(msCharSize);
-                    ImGui::SetItemTooltip("LFO will increment normally.");
+                    ImGui::SetItemTooltip("LFO 将正常递增。");
                 }
             }
             if (ImGui::TableNextColumn()) {

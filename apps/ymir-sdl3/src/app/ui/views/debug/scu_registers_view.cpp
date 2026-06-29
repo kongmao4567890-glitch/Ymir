@@ -14,7 +14,7 @@ void SCURegistersView::Display() {
 
     bool wramSizeSelect = probe.GetWRAMSizeSelect();
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("WRAM size:");
+    ImGui::TextUnformatted("WRAM 大小:");
     ImGui::SameLine();
     if (ImGui::RadioButton("512 KiB (2x2 Mbit)", !wramSizeSelect)) {
         probe.SetWRAMSizeSelect(false);

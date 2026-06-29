@@ -60,28 +60,27 @@ void InputCaptureWidget::DrawCapturePopup() {
         case Trigger: [[fallthrough]];
         case RepeatableTrigger: [[fallthrough]];
         case Button:
-            ImGui::TextUnformatted("Press any key or gamepad button to map it.\n\n"
-                                   "Press Escape or click outside of this popup to cancel.");
+            ImGui::TextUnformatted("按任意键或手柄按钮进行映射。\n\n"
+                                   "按 Escape 键或点击此弹窗外取消。");
             break;
         case ComboTrigger:
-            ImGui::TextUnformatted("Press any key combo with at least one modifier key to map it.\n\n"
-                                   "Press Escape or click outside of this popup to cancel.");
+            ImGui::TextUnformatted("按任意包含至少一个修饰键的组合键进行映射。\n\n"
+                                   "按 Escape 键或点击此弹窗外取消。");
             break;
         case AbsoluteMonopolarAxis1D:
-            ImGui::TextUnformatted("Move any one-dimensional monopolar axis such as analog triggers to map it.\n\n"
-                                   "Press Escape or click outside of this popup to cancel.");
+            ImGui::TextUnformatted("移动任意一维单极性轴（如模拟扳机）进行映射。\n\n"
+                                   "按 Escape 键或点击此弹窗外取消。");
             break;
         case AbsoluteBipolarAxis1D: [[fallthrough]];
         case RelativeBipolarAxis1D:
-            ImGui::TextUnformatted("Move any one-dimensional bipolar axis such as analog wheels or one direction of an "
-                                   "analog stick to map it.\n\n"
-                                   "Press Escape or click outside of this popup to cancel.");
+            ImGui::TextUnformatted("移动任意一维双极性轴（如模拟方向盘或摇杆的一个方向）进行映射。\n\n"
+                                   "按 Escape 键或点击此弹窗外取消。");
             break;
         case AbsoluteBipolarAxis2D: [[fallthrough]];
         case RelativeBipolarAxis2D:
             ImGui::TextUnformatted(
-                "Move any two-dimensional bipolar axis such as analog sticks or D-Pads to map it.\n\n"
-                "Press Escape or click outside of this popup to cancel.");
+                "移动任意二维双极性轴（如摇杆或方向键）进行映射。\n\n"
+                "按 Escape 键或点击此弹窗外取消。");
             break;
         }
 

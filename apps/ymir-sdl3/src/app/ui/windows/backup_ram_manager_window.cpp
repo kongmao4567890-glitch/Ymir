@@ -11,12 +11,12 @@ namespace app::ui {
 
 BackupMemoryManagerWindow::BackupMemoryManagerWindow(SharedContext &context)
     : WindowBase(context)
-    , m_sysBupView(context, "System memory", false)
-    , m_cartBupView(context, "Cartridge memory", true) {
+    , m_sysBupView(context, "系统内存", false)
+    , m_cartBupView(context, "卡带内存", true) {
 
     m_sysBupView.SetBackupMemory(&m_context.saturn.GetSystemMemory().GetInternalBackupRAM());
 
-    m_windowConfig.name = "Backup memory manager";
+    m_windowConfig.name = "备份 RAM 管理器";
 }
 
 void BackupMemoryManagerWindow::PrepareWindow() {
@@ -34,7 +34,7 @@ void BackupMemoryManagerWindow::DrawContents() {
 
         ImGui::TableNextRow();
         if (ImGui::TableNextColumn()) {
-            ImGui::SeparatorText("System memory");
+            ImGui::SeparatorText("系统内存");
             ImGui::PushID("sys_bup");
             m_sysBupView.Display();
             ImGui::PopID();
@@ -51,7 +51,7 @@ void BackupMemoryManagerWindow::DrawContents() {
 
             // Center vertically
             ImGui::Dummy(ImVec2(0, (avail.y - totalHeight) * 0.5f));
-            ImGui::TextUnformatted("Copy");
+            ImGui::TextUnformatted("复制");
 
             if (!hasCartBup) {
                 ImGui::BeginDisabled();
@@ -102,7 +102,7 @@ void BackupMemoryManagerWindow::DrawContents() {
             }
         }
         if (ImGui::TableNextColumn()) {
-            ImGui::SeparatorText("Cartridge memory");
+            ImGui::SeparatorText("卡带内存");
 
             ImGui::PushID("cart_bup");
             std::unique_lock lock{m_context.locks.cart};

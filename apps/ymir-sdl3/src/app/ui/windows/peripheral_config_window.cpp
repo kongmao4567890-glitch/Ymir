@@ -29,7 +29,7 @@ void PeripheralConfigWindow::PrepareWindow() {
     auto &periph = port.GetPeripheral(/* TODO: m_slotIndex */);
 
     m_windowConfig.name =
-        fmt::format("Port {} {} configuration###periph_config_window", m_portIndex + 1, periph.GetName());
+        fmt::format("端口 {} {} 配置###periph_config_window", m_portIndex + 1, periph.GetName());
 
     // TODO: include slot index in title when multi-tap is supported
     // m_windowConfig.name = fmt::format("Port {} slot {} {} configuration###periph_config_window", m_portIndex + 1,

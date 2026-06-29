@@ -12,33 +12,33 @@ void MissionStickConfigView::Display(Settings::Input::Port::MissionStick &contro
     auto &binds = controllerSettings.binds;
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Mode:");
+    ImGui::TextUnformatted("模式：");
     ImGui::SameLine();
-    if (ImGui::RadioButton("Three-axis", !m_context.missionStickInputs[portIndex].sixAxisMode)) {
+    if (ImGui::RadioButton("三轴", !m_context.missionStickInputs[portIndex].sixAxisMode)) {
         m_context.missionStickInputs[portIndex].sixAxisMode = false;
     }
     ImGui::SameLine();
-    if (ImGui::RadioButton("Six-axis", m_context.missionStickInputs[portIndex].sixAxisMode)) {
+    if (ImGui::RadioButton("六轴", m_context.missionStickInputs[portIndex].sixAxisMode)) {
         m_context.missionStickInputs[portIndex].sixAxisMode = true;
     }
 
-    if (ImGui::Button("Restore defaults")) {
+    if (ImGui::Button("恢复默认")) {
         m_unboundActionsWidget.Capture(settings.ResetBinds(binds, true));
         MakeDirty();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Clear all")) {
+    if (ImGui::Button("全部清除")) {
         m_unboundActionsWidget.Capture(settings.ResetBinds(binds, false));
         MakeDirty();
     }
 
-    ImGui::TextUnformatted("Left-click a button to assign a hotkey. Right-click to clear.");
+    ImGui::TextUnformatted("左键点击按钮以分配快捷键。右键点击以清除。");
     m_unboundActionsWidget.Display();
     if (ImGui::BeginTable("hotkeys", 1 + input::kNumBindsPerInput,
                           ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY)) {
-        ImGui::TableSetupColumn("Button", ImGuiTableColumnFlags_WidthFixed, 120.0f * m_context.displayScale);
+        ImGui::TableSetupColumn("按钮", ImGuiTableColumnFlags_WidthFixed, 120.0f * m_context.displayScale);
         for (size_t i = 0; i < input::kNumBindsPerInput; i++) {
-            ImGui::TableSetupColumn(fmt::format("Hotkey {}", i + 1).c_str(), ImGuiTableColumnFlags_WidthStretch, 1.0f);
+            ImGui::TableSetupColumn(fmt::format("快捷键 {}", i + 1).c_str(), ImGuiTableColumnFlags_WidthStretch, 1.0f);
         }
         ImGui::TableHeadersRow();
 

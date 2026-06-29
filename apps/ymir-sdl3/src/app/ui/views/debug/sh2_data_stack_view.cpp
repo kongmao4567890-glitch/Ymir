@@ -36,18 +36,18 @@ void SH2DataStackView::Display() {
     auto drawEntry = [&](const SH2StackEntry &entry) {
         switch (entry.type) {
         case SH2StackEntry::Type::Unknown: break;
-        case SH2StackEntry::Type::Local: ImGui::TextColored(colors.local, "Local"); break;
-        case SH2StackEntry::Type::Register: ImGui::TextColored(colors.reg, "Saved R%u", entry.regNum); break;
-        case SH2StackEntry::Type::GBR: ImGui::TextColored(colors.reg, "Saved GBR"); break;
-        case SH2StackEntry::Type::VBR: ImGui::TextColored(colors.reg, "Saved VBR"); break;
-        case SH2StackEntry::Type::SR: ImGui::TextColored(colors.reg, "Saved SR"); break;
-        case SH2StackEntry::Type::MACH: ImGui::TextColored(colors.reg, "Saved MACH"); break;
-        case SH2StackEntry::Type::MACL: ImGui::TextColored(colors.reg, "Saved MACL"); break;
-        case SH2StackEntry::Type::PR: ImGui::TextColored(colors.reg, "Saved PR"); break;
-        case SH2StackEntry::Type::TrapPC: ImGui::TextColored(colors.trap, "Trap  PC"); break;
-        case SH2StackEntry::Type::TrapSR: ImGui::TextColored(colors.trap, "Trap  SR"); break;
-        case SH2StackEntry::Type::ExceptionPC: ImGui::TextColored(colors.exception, "Excpt PC"); break;
-        case SH2StackEntry::Type::ExceptionSR: ImGui::TextColored(colors.exception, "Excpt SR"); break;
+        case SH2StackEntry::Type::Local: ImGui::TextColored(colors.local, "局部"); break;
+        case SH2StackEntry::Type::Register: ImGui::TextColored(colors.reg, "已保存 R%u", entry.regNum); break;
+        case SH2StackEntry::Type::GBR: ImGui::TextColored(colors.reg, "已保存 GBR"); break;
+        case SH2StackEntry::Type::VBR: ImGui::TextColored(colors.reg, "已保存 VBR"); break;
+        case SH2StackEntry::Type::SR: ImGui::TextColored(colors.reg, "已保存 SR"); break;
+        case SH2StackEntry::Type::MACH: ImGui::TextColored(colors.reg, "已保存 MACH"); break;
+        case SH2StackEntry::Type::MACL: ImGui::TextColored(colors.reg, "已保存 MACL"); break;
+        case SH2StackEntry::Type::PR: ImGui::TextColored(colors.reg, "已保存 PR"); break;
+        case SH2StackEntry::Type::TrapPC: ImGui::TextColored(colors.trap, "陷阱  PC"); break;
+        case SH2StackEntry::Type::TrapSR: ImGui::TextColored(colors.trap, "陷阱  SR"); break;
+        case SH2StackEntry::Type::ExceptionPC: ImGui::TextColored(colors.exception, "异常 PC"); break;
+        case SH2StackEntry::Type::ExceptionSR: ImGui::TextColored(colors.exception, "异常 SR"); break;
         }
     };
 

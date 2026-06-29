@@ -12,8 +12,8 @@ namespace app::ui::widgets {
 bool DateTimeSelector(const char *id, util::datetime::DateTime &dateTime) {
     ImGui::PushID(id);
 
-    static constexpr const char *kMonths[] = {"January", "February", "March",     "April",   "May",      "June",
-                                              "July",    "August",   "September", "October", "November", "December"};
+    static constexpr const char *kMonths[] = {"1月", "2月", "3月",     "4月",   "5月",      "6月",
+                                              "7月", "8月", "9月", "10月", "11月", "12月"};
 
     const float framePadding = ImGui::GetStyle().FramePadding.x;
     const float frameHeight = ImGui::GetFrameHeight();

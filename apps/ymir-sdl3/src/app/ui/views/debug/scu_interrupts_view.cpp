@@ -24,17 +24,17 @@ void SCUInterruptsView::Display() {
                 const uint8 index = probe.GetPendingInterruptIndex();
                 if (index < 16) {
                     static constexpr const char *kNames[] = {
-                        "VDP2 VBlank IN",     "VDP2 VBlank OUT",      "VDP2 HBlank IN",      "SCU Timer 0",
-                        "SCU Timer 1",        "SCU DSP End",          "SCSP Sound Request",  "SMPC System Manager",
-                        "SMPC PAD Interrupt", "SCU Level 2 DMA End",  "SCU Level 1 DMA End", "SCU Level 0 DMA End",
-                        "SCU DMA-illegal",    "VDP1 Sprite Draw End", "Unknown (14)",        "Unknown (15)",
+                        "VDP2 VBlank 进入",     "VDP2 VBlank 退出",      "VDP2 HBlank 进入",      "SCU 定时器 0",
+                        "SCU 定时器 1",        "SCU DSP 结束",          "SCSP 声音请求",  "SMPC 系统管理器",
+                        "SMPC 手柄中断", "SCU Level 2 DMA 结束",  "SCU Level 1 DMA 结束", "SCU Level 0 DMA 结束",
+                        "SCU DMA 非法",    "VDP1 精灵绘制结束", "未知 (14)",        "未知 (15)",
                     };
-                    ImGui::Text("%s, level %X", kNames[index], pendingIntrLevel);
+                    ImGui::Text("%s, 级别 %X", kNames[index], pendingIntrLevel);
                 } else {
-                    ImGui::Text("External %X, level %X", index, pendingIntrLevel - 16);
+                    ImGui::Text("外部 %X, 级别 %X", index, pendingIntrLevel - 16);
                 }
             } else {
-                ImGui::TextDisabled("No pending interrupt");
+                ImGui::TextDisabled("无待处理中断");
             }
         }
         if (ImGui::TableNextColumn()) {
@@ -53,16 +53,16 @@ void SCUInterruptsView::DisplayInternalInterrupts() {
     ImGui::Separator();
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
-    ImGui::TextUnformatted("Internal");
+    ImGui::TextUnformatted("内部");
     ImGui::PopFont();
 
     if (ImGui::BeginTable("internal_intrs", 6, ImGuiTableFlags_SizingFixedFit)) {
-        ImGui::TableSetupColumn("St");
-        ImGui::TableSetupColumn("Msk");
-        ImGui::TableSetupColumn("Source");
-        ImGui::TableSetupColumn("Event");
-        ImGui::TableSetupColumn("Vec");
-        ImGui::TableSetupColumn("Lv");
+        ImGui::TableSetupColumn("状态");
+        ImGui::TableSetupColumn("掩码");
+        ImGui::TableSetupColumn("源");
+        ImGui::TableSetupColumn("事件");
+        ImGui::TableSetupColumn("向量");
+        ImGui::TableSetupColumn("级别");
         ImGui::TableHeadersRow();
 
         auto drawRow = [&](uint32 bit, std::string_view source, std::string_view name, uint8 vector, uint8 level) {
@@ -100,20 +100,20 @@ void SCUInterruptsView::DisplayInternalInterrupts() {
             }
         };
 
-        drawRow(0, "VDP2", "VBlank IN", 0x40, 0xF);
-        drawRow(1, "VDP2", "VBlank OUT", 0x41, 0xE);
-        drawRow(2, "VDP2", "HBlank IN", 0x42, 0xD);
-        drawRow(3, "SCU", "Timer 0", 0x43, 0xC);
-        drawRow(4, "SCU", "Timer 1", 0x44, 0xB);
-        drawRow(5, "SCU", "DSP End", 0x45, 0xA);
-        drawRow(6, "SCSP", "Sound Request", 0x46, 0x9);
-        drawRow(7, "SMPC", "System Manager", 0x47, 0x8);
-        drawRow(8, "SMPC", "PAD Interrupt", 0x48, 0x8);
-        drawRow(9, "SCU", "Level 2 DMA End", 0x49, 0x6);
-        drawRow(10, "SCU", "Level 1 DMA End", 0x4A, 0x6);
-        drawRow(11, "SCU", "Level 0 DMA End", 0x4B, 0x5);
-        drawRow(12, "SCU", "DMA-illegal", 0x4C, 0x3);
-        drawRow(13, "VDP1", "Sprite Draw End", 0x4D, 0x2);
+        drawRow(0, "VDP2", "VBlank 进入", 0x40, 0xF);
+        drawRow(1, "VDP2", "VBlank 退出", 0x41, 0xE);
+        drawRow(2, "VDP2", "HBlank 进入", 0x42, 0xD);
+        drawRow(3, "SCU", "定时器 0", 0x43, 0xC);
+        drawRow(4, "SCU", "定时器 1", 0x44, 0xB);
+        drawRow(5, "SCU", "DSP 结束", 0x45, 0xA);
+        drawRow(6, "SCSP", "声音请求", 0x46, 0x9);
+        drawRow(7, "SMPC", "系统管理器", 0x47, 0x8);
+        drawRow(8, "SMPC", "手柄中断", 0x48, 0x8);
+        drawRow(9, "SCU", "Level 2 DMA 结束", 0x49, 0x6);
+        drawRow(10, "SCU", "Level 1 DMA 结束", 0x4A, 0x6);
+        drawRow(11, "SCU", "Level 0 DMA 结束", 0x4B, 0x5);
+        drawRow(12, "SCU", "DMA 非法", 0x4C, 0x3);
+        drawRow(13, "VDP1", "精灵绘制结束", 0x4D, 0x2);
 
         // A-Bus external interrupts
         ImGui::TableNextRow();
@@ -134,7 +134,7 @@ void SCUInterruptsView::DisplayInternalInterrupts() {
             ImGui::TextUnformatted("A-Bus");
         }
         if (ImGui::TableNextColumn()) {
-            ImGui::TextUnformatted("External interrupts");
+            ImGui::TextUnformatted("外部中断");
         }
         if (ImGui::TableNextColumn()) {
             ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
@@ -153,15 +153,15 @@ void SCUInterruptsView::DisplayInternalInterrupts() {
 
 void SCUInterruptsView::DisplayExternalInterrupts() {
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
-    ImGui::TextUnformatted("External (A-Bus)");
+    ImGui::TextUnformatted("外部 (A-Bus)");
     ImGui::PopFont();
 
     if (ImGui::BeginTable("external_intrs", 5, ImGuiTableFlags_SizingFixedFit)) {
-        ImGui::TableSetupColumn("St");
-        ImGui::TableSetupColumn("Pnd");
+        ImGui::TableSetupColumn("状态");
+        ImGui::TableSetupColumn("待处理");
         ImGui::TableSetupColumn("#");
-        ImGui::TableSetupColumn("Vec");
-        ImGui::TableSetupColumn("Lv");
+        ImGui::TableSetupColumn("向量");
+        ImGui::TableSetupColumn("级别");
         ImGui::TableHeadersRow();
 
         auto &probe = m_scu.GetProbe();

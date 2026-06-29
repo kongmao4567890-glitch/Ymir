@@ -16,10 +16,10 @@ void ShuttleMouseConfigView::Display(Settings::Input::Port::ShuttleMouse &contro
     // -------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Behavior");
+    ImGui::SeparatorText("行为");
     ImGui::PopFont();
 
-    if (ImGui::Button("Restore defaults##speed")) {
+    if (ImGui::Button("恢复默认##speed")) {
         controllerSettings.speed = kDefaultSpeed;
         controllerSettings.speedBoostFactor = kDefaultSpeedBoostFactor;
         controllerSettings.sensitivity = kDefaultSensitivity;
@@ -27,16 +27,16 @@ void ShuttleMouseConfigView::Display(Settings::Input::Port::ShuttleMouse &contro
     }
 
     float speed = controllerSettings.speed.Get();
-    if (MakeDirty(ImGui::SliderFloat("Speed", &speed, kMinSpeed, kMaxSpeed, "%.0f", ImGuiSliderFlags_AlwaysClamp))) {
+    if (MakeDirty(ImGui::SliderFloat("速度", &speed, kMinSpeed, kMaxSpeed, "%.0f", ImGuiSliderFlags_AlwaysClamp))) {
         controllerSettings.speed = speed;
     }
     float speedBoostFactor = controllerSettings.speedBoostFactor.Get() * 100.0f;
-    if (MakeDirty(ImGui::SliderFloat("Speed boost factor", &speedBoostFactor, kMinSpeedBoostFactor * 100.0f,
+    if (MakeDirty(ImGui::SliderFloat("加速倍数", &speedBoostFactor, kMinSpeedBoostFactor * 100.0f,
                                      kMaxSpeedBoostFactor * 100.0f, "%.0f%%", ImGuiSliderFlags_AlwaysClamp))) {
         controllerSettings.speedBoostFactor = speedBoostFactor / 100.0f;
     }
     float sensitivity = controllerSettings.sensitivity.Get();
-    if (MakeDirty(ImGui::SliderFloat("Mouse sensitivity", &sensitivity, kMinSensitivity, kMaxSensitivity, "%.2fx",
+    if (MakeDirty(ImGui::SliderFloat("鼠标灵敏度", &sensitivity, kMinSensitivity, kMaxSensitivity, "%.2fx",
                                      ImGuiSliderFlags_AlwaysClamp))) {
         controllerSettings.sensitivity = sensitivity;
     }
@@ -44,27 +44,27 @@ void ShuttleMouseConfigView::Display(Settings::Input::Port::ShuttleMouse &contro
     // -------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Binds");
+    ImGui::SeparatorText("绑定");
     ImGui::PopFont();
 
-    if (ImGui::Button("Restore defaults##binds")) {
+    if (ImGui::Button("恢复默认##binds")) {
         m_unboundActionsWidget.Capture(settings.ResetBinds(binds, true));
         MakeDirty();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Clear all")) {
+    if (ImGui::Button("全部清除")) {
         m_unboundActionsWidget.Capture(settings.ResetBinds(binds, false));
         MakeDirty();
     }
 
-    ImGui::TextUnformatted("Left, middle and right mouse buttons are mapped normally.");
-    ImGui::TextUnformatted("Start is bound to mouse buttons 4 and 5.");
-    ImGui::TextUnformatted("Left-click a button to assign a hotkey. Right-click to clear.");
+    ImGui::TextUnformatted("左键、中键和右键鼠标按钮正常映射。");
+    ImGui::TextUnformatted("Start 绑定到鼠标按钮 4 和 5。");
+    ImGui::TextUnformatted("左键点击按钮以分配快捷键。右键点击以清除。");
     m_unboundActionsWidget.Display();
     if (ImGui::BeginTable("hotkeys", 1 + input::kNumBindsPerInput, ImGuiTableFlags_SizingStretchProp)) {
-        ImGui::TableSetupColumn("Button", ImGuiTableColumnFlags_WidthFixed, 90.0f * m_context.displayScale);
+        ImGui::TableSetupColumn("按钮", ImGuiTableColumnFlags_WidthFixed, 90.0f * m_context.displayScale);
         for (size_t i = 0; i < input::kNumBindsPerInput; i++) {
-            ImGui::TableSetupColumn(fmt::format("Hotkey {}", i + 1).c_str(), ImGuiTableColumnFlags_WidthStretch, 1.0f);
+            ImGui::TableSetupColumn(fmt::format("快捷键 {}", i + 1).c_str(), ImGuiTableColumnFlags_WidthStretch, 1.0f);
         }
         ImGui::TableHeadersRow();
 

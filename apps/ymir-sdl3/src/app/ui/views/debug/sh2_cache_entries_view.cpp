@@ -21,11 +21,11 @@ void SH2CacheEntriesView::Display() {
     if (ImGui::BeginTable("lru", 6, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY)) {
         ImGui::TableSetupScrollFreeze(1, 1);
         ImGui::TableSetupColumn("#");
-        ImGui::TableSetupColumn("LRU bits\n   -> Code/Data way");
-        ImGui::TableSetupColumn("Way 0\nValid  Tag address");
-        ImGui::TableSetupColumn("Way 1\nValid  Tag address");
-        ImGui::TableSetupColumn("Way 2\nValid  Tag address");
-        ImGui::TableSetupColumn("Way 3\nValid  Tag address");
+        ImGui::TableSetupColumn("LRU 位\n   -> 代码/数据 Way");
+        ImGui::TableSetupColumn("Way 0\n有效  标签地址");
+        ImGui::TableSetupColumn("Way 1\n有效  标签地址");
+        ImGui::TableSetupColumn("Way 2\n有效  标签地址");
+        ImGui::TableSetupColumn("Way 3\n有效  标签地址");
         ImGui::TableHeadersRow();
 
         for (uint32 i = 0; i < 64; i++) {

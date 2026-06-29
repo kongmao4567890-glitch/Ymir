@@ -49,7 +49,7 @@ void SH2DebugToolbarView::Display() {
             m_context.EnqueueEvent(master ? events::emu::StepMSH2() : events::emu::StepSSH2());
         }
         if (ImGui::BeginItemTooltip()) {
-            ImGui::TextUnformatted("Step (F7, S)");
+            ImGui::TextUnformatted("步进 (F7, S)");
             ImGui::EndTooltip();
         }
 
@@ -61,7 +61,7 @@ void SH2DebugToolbarView::Display() {
         }
         ImGui::EndDisabled();
         if (ImGui::BeginItemTooltip()) {
-            ImGui::TextUnformatted("Pause (Space, R)");
+            ImGui::TextUnformatted("暂停 (Space, R)");
             ImGui::EndTooltip();
         }
 
@@ -73,7 +73,7 @@ void SH2DebugToolbarView::Display() {
         }
         ImGui::EndDisabled();
         if (ImGui::BeginItemTooltip()) {
-            ImGui::TextUnformatted("Resume (Space, R)");
+            ImGui::TextUnformatted("继续 (Space, R)");
             ImGui::EndTooltip();
         }
     }
@@ -85,7 +85,7 @@ void SH2DebugToolbarView::Display() {
         m_context.EnqueueEvent(events::emu::HardReset());
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Hard reset (Ctrl+R)");
+        ImGui::TextUnformatted("硬重置 (Ctrl+R)");
         ImGui::EndTooltip();
     }
 
@@ -95,7 +95,7 @@ void SH2DebugToolbarView::Display() {
         m_context.EnqueueEvent(events::gui::OpenSH2BreakpointsWindow(m_sh2.IsMaster()));
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Breakpoints (Ctrl+F9)");
+        ImGui::TextUnformatted("断点 (Ctrl+F9)");
         ImGui::EndTooltip();
     }
 
@@ -105,7 +105,7 @@ void SH2DebugToolbarView::Display() {
         m_context.EnqueueEvent(events::gui::OpenSH2WatchpointsWindow(m_sh2.IsMaster()));
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Watchpoints (Ctrl+Shift+F9)");
+        ImGui::TextUnformatted("监视点 (Ctrl+Shift+F9)");
         ImGui::EndTooltip();
     }
 
@@ -114,7 +114,7 @@ void SH2DebugToolbarView::Display() {
         m_disasmDumpView.OpenPopup();
     }
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("Dump disassembly range (Ctrl+D)");
+        ImGui::TextUnformatted("转储反汇编范围 (Ctrl+D)");
         ImGui::EndTooltip();
     }
     if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_D)) {
@@ -125,7 +125,7 @@ void SH2DebugToolbarView::Display() {
     if (!master) {
         ImGui::SameLine();
         bool slaveSH2Enabled = m_context.saturn.IsSlaveSH2Enabled();
-        if (ImGui::Checkbox("Enabled", &slaveSH2Enabled)) {
+        if (ImGui::Checkbox("已启用", &slaveSH2Enabled)) {
             m_context.saturn.SetSlaveSH2Enabled(slaveSH2Enabled);
         }
     }
@@ -135,19 +135,19 @@ void SH2DebugToolbarView::Display() {
         ImGui::BeginDisabled();
     }
     bool suspended = m_sh2.IsCPUSuspended();
-    if (ImGui::Checkbox("Suspended", &suspended)) {
+    if (ImGui::Checkbox("已挂起", &suspended)) {
         m_sh2.SetCPUSuspended(suspended);
     }
-    widgets::ExplanationTooltip("Disables the CPU while in debug mode.", m_context.displayScale);
+    widgets::ExplanationTooltip("在调试模式下禁用 CPU。", m_context.displayScale);
     if (!debugTracing) {
         ImGui::EndDisabled();
     }
     ImGui::SameLine();
     bool asleep = probe.GetSleepState();
-    if (ImGui::Checkbox("Asleep", &asleep)) {
+    if (ImGui::Checkbox("休眠", &asleep)) {
         probe.SetSleepState(asleep);
     }
-    widgets::ExplanationTooltip("Whether the CPU is in standby or sleep mode due to executing the SLEEP instruction.",
+    widgets::ExplanationTooltip("CPU 是否因执行 SLEEP 指令而处于待机或休眠模式。",
                                 m_context.displayScale);
 
     auto doJump = [&] {
@@ -164,7 +164,7 @@ void SH2DebugToolbarView::Display() {
 
     // Input field to jump to address
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Go to:");
+    ImGui::TextUnformatted("跳转到:");
 
     ImGui::SameLine();
     if (ImGui::Button("PC##goto")) {
@@ -188,16 +188,16 @@ void SH2DebugToolbarView::Display() {
     ImGui::PopFont();
 
     ImGui::SameLine();
-    if (ImGui::Button("Jump")) {
+    if (ImGui::Button("跳转")) {
         doJump();
     }
 
     ImGui::SameLine();
-    ImGui::Checkbox("Follow PC", &m_model.followPC);
+    ImGui::Checkbox("跟随 PC", &m_model.followPC);
 
     ImGui::SameLine();
-    ImGui::Checkbox("on events", &m_model.followPCOnEvents);
-    widgets::ExplanationTooltip("Causes the cursor to jump to PC when breakpoints and watchpoints are hit.",
+    ImGui::Checkbox("事件触发时", &m_model.followPCOnEvents);
+    widgets::ExplanationTooltip("当命中断点和监视点时，使光标跳转到 PC。",
                                 m_context.displayScale);
 
     ImGui::EndGroup();

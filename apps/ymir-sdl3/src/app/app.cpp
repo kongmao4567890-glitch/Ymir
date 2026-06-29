@@ -140,7 +140,7 @@ template <typename... TArgs>
 static void ShowStartupFailure(fmt::format_string<TArgs...> fmt, TArgs &&...args) {
     std::string message = fmt::format(fmt, static_cast<TArgs &&>(args)...);
     devlog::error<grp::base>("{}", message);
-    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Ymir startup error", message.c_str(), nullptr);
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Ymir 启动错误", message.c_str(), nullptr);
 }
 
 App::App()
@@ -364,12 +364,12 @@ int App::Run(const CommandLineOptions &options) {
             auto userPath = Profile::GetUserProfilePath();
             auto portablePath = Profile::GetPortableProfilePath();
 
-            std::string message = fmt::format("No existing profile found.\n"
-                                              "Looks like this is the first time you're launching Ymir.\n"
-                                              "Choose where to place settings and data:\n"
+            std::string message = fmt::format("未找到现有配置文件。\n"
+                                              "这似乎是您首次启动 Ymir。\n"
+                                              "请选择设置和数据的存放位置：\n"
                                               "\n"
-                                              "Installed: User's home directory - {}\n"
-                                              "Portable: Current working directory - {}",
+                                              "安装版：用户主目录 - {}\n"
+                                              "便携版：当前工作目录 - {}",
                                               userPath, portablePath);
 
             constexpr int bIDInstalled = 0;
@@ -377,9 +377,9 @@ int App::Run(const CommandLineOptions &options) {
             constexpr int bIDCancel = 2;
 
             SDL_MessageBoxButtonData buttons[] = {
-                {.flags = 0, .buttonID = bIDInstalled, .text = "Installed"},
-                {.flags = 0, .buttonID = bIDPortable, .text = "Portable"},
-                {.flags = SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, .buttonID = bIDCancel, .text = "Cancel"},
+                {.flags = 0, .buttonID = bIDInstalled, .text = "安装版"},
+                {.flags = 0, .buttonID = bIDPortable, .text = "便携版"},
+                {.flags = SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, .buttonID = bIDCancel, .text = "取消"},
             };
 #ifdef WIN32
             std::reverse(std::begin(buttons), std::end(buttons));
@@ -387,7 +387,7 @@ int App::Run(const CommandLineOptions &options) {
 
             SDL_MessageBoxData messageboxdata = {.flags = SDL_MESSAGEBOX_INFORMATION,
                                                  .window = nullptr,
-                                                 .title = "Ymir first time run - profile mode selection",
+                                                 .title = "Ymir 首次运行 - 配置文件模式选择",
                                                  .message = message.c_str(),
                                                  .numbuttons = std::size(buttons),
                                                  .buttons = &buttons[0],
@@ -472,7 +472,7 @@ int App::Run(const CommandLineOptions &options) {
             m_windowManagerService.OpenWelcomeModal(true);
         } else {
             m_windowManagerService.OpenSimpleErrorModal(
-                fmt::format("Could not load IPL ROM: {}", iplLoadResult.errorMessage));
+                fmt::format("无法加载 IPL ROM: {}", iplLoadResult.errorMessage));
         }
     }
 
@@ -481,7 +481,7 @@ int App::Run(const CommandLineOptions &options) {
     auto cdbLoadResult = m_romService.LoadCDBlockROM();
     if (!cdbLoadResult.succeeded && settings.cdblock.useLLE) {
         m_windowManagerService.OpenSimpleErrorModal(
-            fmt::format("Could not load CD Block ROM: {}", cdbLoadResult.errorMessage));
+            fmt::format("无法加载 CD Block ROM: {}", cdbLoadResult.errorMessage));
     }
 
     m_saveStateService.LoadSaveStates();
@@ -560,7 +560,7 @@ void App::RunEmulator() {
     // Initialize SDL subsystems
 
     if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS)) {
-        ShowStartupFailure("Failed to initialize SDL: {}", SDL_GetError());
+        ShowStartupFailure("初始化 SDL 失败: {}", SDL_GetError());
         return;
     }
     ScopeGuard sgQuit{[&] { SDL_Quit(); }};
@@ -644,7 +644,7 @@ void App::RunEmulator() {
 
     SDL_PropertiesID windowProps = SDL_CreateProperties();
     if (windowProps == 0) {
-        ShowStartupFailure("Failed to create window properties: {}", SDL_GetError());
+        ShowStartupFailure("创建窗口属性失败: {}", SDL_GetError());
         return;
     }
     ScopeGuard sgDestroyWindowProps{[&] { SDL_DestroyProperties(windowProps); }};
@@ -727,7 +727,7 @@ void App::RunEmulator() {
 
     screen.window = SDL_CreateWindowWithProperties(windowProps);
     if (screen.window == nullptr) {
-        ShowStartupFailure("Failed to create window: {}", SDL_GetError());
+        ShowStartupFailure("创建窗口失败: {}", SDL_GetError());
         return;
     }
     ScopeGuard sgDestroyWindow{[&] {
@@ -753,7 +753,7 @@ void App::RunEmulator() {
         if (renderer == nullptr) {
             // If not using the default renderer option, try the default and reset configuration
             if (graphicsBackend != gfx::Backend::Default) {
-                m_context.DisplayMessage(fmt::format("Could not create {} renderer. Reverting to default API.",
+                m_context.DisplayMessage(fmt::format("无法创建 {} 渲染器。恢复为默认 API。",
                                                      gfx::GraphicsBackendName(graphicsBackend)));
                 graphicsBackend = gfx::Backend::Default;
                 settings.MakeDirty();
@@ -762,7 +762,7 @@ void App::RunEmulator() {
             }
         }
         if (renderer == nullptr) {
-            ShowStartupFailure("Failed to create renderer: {}", SDL_GetError());
+            ShowStartupFailure("创建渲染器失败: {}", SDL_GetError());
             return;
         }
     }
@@ -798,7 +798,7 @@ void App::RunEmulator() {
                                             }
                                         });
     if (swFbTexture == gfx::kInvalidTextureHandle) {
-        ShowStartupFailure("Failed to create software framebuffer texture: {}", SDL_GetError());
+        ShowStartupFailure("创建软件帧缓冲纹理失败: {}", SDL_GetError());
         return;
     };
 
@@ -808,7 +808,7 @@ void App::RunEmulator() {
         vdp::kMaxResV * screen.fbScale,
         [](SDL_Texture *tex, bool) { SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_LINEAR); });
     if (dispTexture == gfx::kInvalidTextureHandle) {
-        ShowStartupFailure("Failed to create display texture: {}", SDL_GetError());
+        ShowStartupFailure("创建显示纹理失败: {}", SDL_GetError());
         return;
     }
 
@@ -864,12 +864,12 @@ void App::RunEmulator() {
         ymirLogoImgData =
             stbi_load_from_memory((const stbi_uc *)ymirLogoFile.begin(), ymirLogoFile.size(), &imgW, &imgH, &chans, 4);
         if (ymirLogoImgData == nullptr) {
-            ShowStartupFailure("Could not read logo image");
+            ShowStartupFailure("无法读取 logo 图像");
             return;
         }
         ScopeGuard sgFreeImageData{[&] { stbi_image_free(ymirLogoImgData); }};
         if (chans != 4) {
-            ShowStartupFailure("Unexpected logo image format");
+            ShowStartupFailure("意外的 logo 图像格式");
             return;
         }
 
@@ -880,7 +880,7 @@ void App::RunEmulator() {
                 SDL_UpdateTexture(texture, nullptr, ymirLogoImgData, imgW * sizeof(uint32));
             });
         if (m_context.images.ymirLogo.texture == gfx::kInvalidTextureHandle) {
-            ShowStartupFailure("Failed to create logo texture: {}", SDL_GetError());
+            ShowStartupFailure("创建 logo 纹理失败: {}", SDL_GetError());
             return;
         }
 
@@ -996,7 +996,7 @@ void App::RunEmulator() {
     static constexpr uint32 kBufferSize = 512; // TODO: make this configurable
 
     if (!m_context.audioSystem.Init(kSampleRate, kSampleFormat, kChannels, kBufferSize)) {
-        ShowStartupFailure("Failed to create audio stream: {}", SDL_GetError());
+        ShowStartupFailure("创建音频流失败: {}", SDL_GetError());
         return;
     }
     ScopeGuard sgDeinitAudio{[&] { m_context.audioSystem.Deinit(); }};
@@ -1013,7 +1013,7 @@ void App::RunEmulator() {
         SDL_AudioFormat audioFormat;
         int channels;
         if (!m_context.audioSystem.GetAudioStreamFormat(&sampleRate, &audioFormat, &channels)) {
-            ShowStartupFailure("Failed to get audio stream format: {}", SDL_GetError());
+            ShowStartupFailure("获取音频流格式失败: {}", SDL_GetError());
             return;
         }
         auto formatName = [&] {
@@ -1034,11 +1034,11 @@ void App::RunEmulator() {
                                 (channels == 1 ? "" : "s"), formatName());
         if (sampleRate != kSampleRate || channels != kChannels || audioFormat != kSampleFormat) {
             // Hopefully this never happens
-            ShowStartupFailure("Audio format mismatch");
+            ShowStartupFailure("音频格式不匹配");
             return;
         }
     } else {
-        ShowStartupFailure("Failed to start audio stream: {}", SDL_GetError());
+        ShowStartupFailure("启动音频流失败: {}", SDL_GetError());
         return;
     }
 
@@ -1099,7 +1099,7 @@ void App::RunEmulator() {
              switch (info.event) {
                  using enum debug::DebugBreakInfo::Event;
              case SH2Breakpoint: //
-                 sharedCtx.DisplayMessage(fmt::format("{}SH2 breakpoint hit at {:08X}",
+                 sharedCtx.DisplayMessage(fmt::format("{}SH2 断点命中于 {:08X}",
                                                       (info.details.sh2Breakpoint.master ? 'M' : 'S'),
                                                       info.details.sh2Breakpoint.pc));
                  sharedCtx.EnqueueEvent(events::gui::OpenSH2DebuggerWindow(info.details.sh2Breakpoint.master, true));
@@ -1114,11 +1114,11 @@ void App::RunEmulator() {
                  fmt::format_to(writer, "{}SH2 ", (wtptInfo.master ? 'M' : 'S'));
 
                  if (std::popcount(wtptInfo.mask) == 1) {
-                     fmt::format_to(writer, "watchpoint");
+                     fmt::format_to(writer, "监视点");
                  } else {
-                     fmt::format_to(writer, "watchpoints");
+                     fmt::format_to(writer, "监视点");
                  }
-                 fmt::format_to(writer, " on ");
+                 fmt::format_to(writer, " 于 ");
                  uint8 mask = wtptInfo.mask;
                  uint8 offset = 0;
                  bool sep = false;
@@ -1128,21 +1128,21 @@ void App::RunEmulator() {
                      offset += zeros + 1;
                      mask >>= zeros + 1;
                      if (sep) {
-                         fmt::format_to(writer, ", ");
+                         fmt::format_to(writer, "、");
                      } else {
                          sep = true;
                      }
                      fmt::format_to(writer, "{:08X}", address);
                  }
 
-                 fmt::format_to(writer, " hit at {:08X} by {}-bit {} {:08X}", wtptInfo.pc, wtptInfo.size * 8,
-                                (wtptInfo.write ? "write to" : "read from"), wtptInfo.address);
+                 fmt::format_to(writer, " 命中于 {:08X}，由 {} 位 {} {:08X}", wtptInfo.pc, wtptInfo.size * 8,
+                                (wtptInfo.write ? "写入" : "读取"), wtptInfo.address);
 
                  sharedCtx.DisplayMessage(fmt::to_string(msgBuf));
                  sharedCtx.EnqueueEvent(events::gui::OpenSH2DebuggerWindow(wtptInfo.master, true));
                  break;
              }
-             default: sharedCtx.DisplayMessage("Paused due to a debug break event"); break;
+             default: sharedCtx.DisplayMessage("由于调试断点事件已暂停"); break;
              }
          }});
 
@@ -1694,7 +1694,7 @@ void App::RunEmulator() {
                     settings.video.graphicsBackend = backend;
                     settings.MakeDirty();
                 } else {
-                    m_context.DisplayMessage(fmt::format("Could not initialize {} backend: {}",
+                    m_context.DisplayMessage(fmt::format("无法初始化 {} 后端: {}",
                                                          gfx::GraphicsBackendName(backend), SDL_GetError()));
                     m_graphicsService.CreateRenderer(prevBackend, screen.window, vsync);
                 }
@@ -1729,7 +1729,7 @@ void App::RunEmulator() {
                     }
                 } else {
                     m_windowManagerService.OpenSimpleErrorModal(
-                        fmt::format("Failed to load IPL ROM from \"{}\": {}", path, result.errorMessage));
+                        fmt::format("从 \"{}\" 加载 IPL ROM 失败: {}", path, result.errorMessage));
                 }
                 break;
             }
@@ -1739,7 +1739,7 @@ void App::RunEmulator() {
                 if (result.succeeded) {
                     m_context.EnqueueEvent(events::emu::HardReset());
                 } else {
-                    m_windowManagerService.OpenSimpleErrorModal(fmt::format("Failed to reload IPL ROM from \"{}\": {}",
+                    m_windowManagerService.OpenSimpleErrorModal(fmt::format("从 \"{}\" 重新加载 IPL ROM 失败: {}",
                                                                             m_context.iplRomPath, result.errorMessage));
                 }
                 break;
@@ -1788,7 +1788,7 @@ void App::RunEmulator() {
                     }
                 } else if (settings.cdblock.useLLE) {
                     m_windowManagerService.OpenSimpleErrorModal(
-                        fmt::format("Failed to load CD block ROM from \"{}\": {}", path, result.errorMessage));
+                        fmt::format("从 \"{}\" 加载 CD block ROM 失败: {}", path, result.errorMessage));
                 }
                 break;
             }
@@ -1800,7 +1800,7 @@ void App::RunEmulator() {
                         m_context.EnqueueEvent(events::emu::HardReset());
                     } else {
                         m_windowManagerService.OpenSimpleErrorModal(
-                            fmt::format("Failed to reload CD block ROM from \"{}\": {}", m_context.cdbRomPath,
+                            fmt::format("从 \"{}\" 重新加载 CD block ROM 失败: {}", m_context.cdbRomPath,
                                         result.errorMessage));
                     }
                 }
@@ -1826,7 +1826,7 @@ void App::RunEmulator() {
             case EvtType::CheckForUpdates: m_updateCheckerService.CheckForUpdates(true); break;
 
             case EvtType::StateLoaded:
-                m_context.DisplayMessage(fmt::format("State {} loaded", std::get<uint32>(evt.value) + 1));
+                m_context.DisplayMessage(fmt::format("存档 {} 已加载", std::get<uint32>(evt.value) + 1));
                 break;
             case EvtType::StateSaved: m_saveStateService.PersistSaveState(std::get<uint32>(evt.value)); break;
             }
@@ -1863,14 +1863,14 @@ void App::RunEmulator() {
                 const media::Disc &disc = m_context.saturn.GetDisc();
                 const media::SaturnHeader &header = disc.header;
                 if (disc.sessions.empty()) {
-                    fmt::format_to(bufWriter, "No disc inserted");
+                    fmt::format_to(bufWriter, "未插入光盘");
                 } else {
                     if (!header.productNumber.empty()) {
                         fmt::format_to(bufWriter, "[{}] ", header.productNumber);
                     }
 
                     if (header.gameTitle.empty()) {
-                        fmt::format_to(bufWriter, "Unnamed game");
+                        fmt::format_to(bufWriter, "未命名游戏");
                     } else {
                         fmt::format_to(bufWriter, "{}", util::TranslateSaturnString(header.gameTitle));
                     }
@@ -1878,9 +1878,9 @@ void App::RunEmulator() {
             }
 
             if (settings.gui.showPerformanceOnTitleBar) {
-                fmt::format_to(bufWriter, " | Speed: ");
+                fmt::format_to(bufWriter, " | 速度: ");
                 if (m_context.paused) {
-                    fmt::format_to(bufWriter, "paused");
+                    fmt::format_to(bufWriter, "已暂停");
                 } else {
                     const double frameInterval = screen.frameInterval.count() * 0.000000001;
                     const double currSpeed = screen.lastVDP2Frames * frameInterval * 100.0;
@@ -1888,7 +1888,7 @@ void App::RunEmulator() {
                     if (m_context.emuSpeed.limitSpeed) {
                         fmt::format_to(bufWriter, "{:.0f}%", m_context.emuSpeed.GetCurrentSpeedFactor() * 100.0);
                         if (m_context.emuSpeed.altSpeed) {
-                            fmt::format_to(bufWriter, " (alt)");
+                            fmt::format_to(bufWriter, " (备用)");
                         }
                     } else {
                         fmt::format_to(bufWriter, "\u221E%");
@@ -1897,21 +1897,21 @@ void App::RunEmulator() {
 
                 fmt::format_to(bufWriter, " | VDP2: ");
                 if (m_context.paused) {
-                    fmt::format_to(bufWriter, "paused");
+                    fmt::format_to(bufWriter, "已暂停");
                 } else {
                     fmt::format_to(bufWriter, "{} fps", screen.lastVDP2Frames);
                 }
 
                 fmt::format_to(bufWriter, " | VDP1: ");
                 if (m_context.paused) {
-                    fmt::format_to(bufWriter, "paused");
+                    fmt::format_to(bufWriter, "已暂停");
                 } else {
-                    fmt::format_to(bufWriter, "{} fps, {} draws", screen.lastVDP1Frames, screen.lastVDP1DrawCalls);
+                    fmt::format_to(bufWriter, "{} fps, {} 绘制", screen.lastVDP1Frames, screen.lastVDP1DrawCalls);
                 }
 
                 fmt::format_to(bufWriter, " | GUI: {:.0f} fps", io.Framerate);
             } else if (m_context.paused) {
-                fmt::format_to(bufWriter, " (paused)");
+                fmt::format_to(bufWriter, " (已暂停)");
             }
 
             std::string title = fmt::to_string(buf);
@@ -2001,15 +2001,15 @@ void App::RunEmulator() {
             ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
             if (ImGui::BeginMainMenuBar()) {
                 ImGui::PopStyleVar();
-                if (ImGui::BeginMenu("File")) {
+                if (ImGui::BeginMenu("文件")) {
                     // CD drive
-                    if (ImGui::MenuItem("Load disc image",
+                    if (ImGui::MenuItem("加载光盘镜像",
                                         input::ToShortcut(inputContext, actions::cd_drive::LoadDisc).c_str())) {
                         m_discService.OpenLoadDiscDialog();
                     }
-                    if (ImGui::BeginMenu("Recent disc images")) {
+                    if (ImGui::BeginMenu("最近的光盘镜像")) {
                         if (m_context.state.recentDiscs.empty()) {
-                            ImGui::TextDisabled("(empty)");
+                            ImGui::TextDisabled("(空)");
                         } else {
                             for (int i = 0; auto &path : m_context.state.recentDiscs) {
                                 std::string fullPathStr = fmt::format("{}", path);
@@ -2034,18 +2034,18 @@ void App::RunEmulator() {
                                 ++i;
                             }
                             ImGui::Separator();
-                            if (ImGui::MenuItem("Clear")) {
+                            if (ImGui::MenuItem("清除")) {
                                 m_context.state.recentDiscs.clear();
                                 m_discService.SaveRecentDiscs();
                             }
                         }
                         ImGui::EndMenu();
                     }
-                    if (ImGui::MenuItem("Open/close tray",
+                    if (ImGui::MenuItem("打开/关闭光驱",
                                         input::ToShortcut(inputContext, actions::cd_drive::OpenCloseTray).c_str())) {
                         m_context.EnqueueEvent(events::emu::OpenCloseTray());
                     }
-                    if (ImGui::MenuItem("Eject disc",
+                    if (ImGui::MenuItem("弹出光盘",
                                         input::ToShortcut(inputContext, actions::cd_drive::EjectDisc).c_str())) {
                         m_context.EnqueueEvent(events::emu::EjectDisc());
                     }
@@ -2068,13 +2068,13 @@ void App::RunEmulator() {
                             const bool isSelected = currentSlot == slotIndex;
                             const auto label = [&]() -> std::string {
                                 if (!present) {
-                                    return fmt::format("{}: (empty)", slotIndex + 1);
+                                    return fmt::format("{}: (空)", slotIndex + 1);
                                 }
                                 const auto localTime = util::to_local_time(slotMeta.ts);
                                 if (backups == 0) {
                                     return fmt::format("{}: {}", slotIndex + 1, localTime);
                                 }
-                                const char *undoText = backups > 1 ? "undos" : "undo";
+                                const char *undoText = backups > 1 ? "次撤销" : "次撤销";
                                 return fmt::format("{}: {} ({} {})", slotIndex + 1, localTime, backups, undoText);
                             }();
 
@@ -2091,20 +2091,20 @@ void App::RunEmulator() {
                     };
 
                     auto drawCommonSaveStatesSection = [&] {
-                        if (ImGui::MenuItem("Clear all")) {
+                        if (ImGui::MenuItem("全部清除")) {
                             m_windowManagerService.OpenGenericModal(
-                                "Clear all save states",
+                                "清除所有存档",
                                 [&] {
                                     ImGui::TextUnformatted(
-                                        "Are you sure you wish to clear all save states for this game?");
+                                        "您确定要清除此游戏的所有存档吗？");
                                     if (ImGui::Button(
-                                            "Yes", ImVec2(80 * m_context.displayScale, 0 * m_context.displayScale))) {
+                                            "是", ImVec2(80 * m_context.displayScale, 0 * m_context.displayScale))) {
                                         m_saveStateService.ClearSaveStates();
                                         m_windowManagerService.CloseGenericModal();
                                     }
                                     ImGui::SameLine();
                                     if (ImGui::Button(
-                                            "No", ImVec2(80 * m_context.displayScale, 0 * m_context.displayScale))) {
+                                            "否", ImVec2(80 * m_context.displayScale, 0 * m_context.displayScale))) {
                                         m_windowManagerService.CloseGenericModal();
                                     }
                                 },
@@ -2112,13 +2112,13 @@ void App::RunEmulator() {
                         }
                     };
 
-                    if (ImGui::BeginMenu("Load state")) {
+                    if (ImGui::BeginMenu("读取存档")) {
                         drawSaveStatesList(false);
                         ImGui::Separator();
                         drawCommonSaveStatesSection();
                         ImGui::EndMenu();
                     }
-                    if (ImGui::BeginMenu("Save state")) {
+                    if (ImGui::BeginMenu("保存存档")) {
                         drawSaveStatesList(true);
                         ImGui::Separator();
                         drawCommonSaveStatesSection();
@@ -2127,53 +2127,53 @@ void App::RunEmulator() {
                     {
                         auto &saves = m_context.serviceLocator.GetRequired<services::SaveStateService>();
                         if (ImGui::MenuItem(
-                                "Undo save state",
+                                "撤销保存存档",
                                 input::ToShortcut(inputContext, actions::save_states::UndoSaveState).c_str(), false,
                                 saves.GetCurrentSlotBackupStatesCount() > 0)) {
                             m_context.EnqueueEvent(events::emu::UndoSaveState());
                         }
                         if (ImGui::MenuItem(
-                                "Undo load state",
+                                "撤销读取存档",
                                 input::ToShortcut(inputContext, actions::save_states::UndoLoadState).c_str(), false,
                                 saves.CanUndoLoadState())) {
                             m_context.EnqueueEvent(events::emu::UndoLoadState());
                         }
                     }
-                    if (ImGui::MenuItem("Open save states directory")) {
+                    if (ImGui::MenuItem("打开存档目录")) {
                         auto path = m_context.profile.GetPath(ProfilePath::SaveStates) /
                                     ToString(m_context.saturn.instance->GetDiscHash());
 
                         SDL_OpenURL(fmt::format("file:///{}", path).c_str());
                     }
-                    if (ImGui::MenuItem("Reload save states from disk")) {
+                    if (ImGui::MenuItem("从磁盘重新加载存档")) {
                         m_saveStateService.LoadSaveStates();
                     }
 
                     ImGui::Separator();
 
-                    if (ImGui::MenuItem("Take screenshot",
+                    if (ImGui::MenuItem("截图",
                                         input::ToShortcut(inputContext, actions::general::TakeScreenshot).c_str())) {
                         m_context.EnqueueEvent(events::gui::TakeScreenshot());
                     }
 
                     ImGui::Separator();
 
-                    if (ImGui::MenuItem("Open profile directory")) {
+                    if (ImGui::MenuItem("打开配置目录")) {
                         SDL_OpenURL(fmt::format("file:///{}", m_context.profile.GetPath(ProfilePath::Root)).c_str());
                     }
 
                     ImGui::Separator();
 
-                    if (ImGui::MenuItem("Exit", "Alt+F4")) {
+                    if (ImGui::MenuItem("退出", "Alt+F4")) {
                         SDL_Event quitEvent{.type = SDL_EVENT_QUIT};
                         SDL_PushEvent(&quitEvent);
                     }
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("View")) {
+                if (ImGui::BeginMenu("视图")) {
                     auto &videoSettings = settings.video;
-                    ImGui::MenuItem("Force integer scaling", nullptr, &videoSettings.forceIntegerScaling);
-                    ImGui::MenuItem("Force aspect ratio", nullptr, &videoSettings.forceAspectRatio);
+                    ImGui::MenuItem("强制整数缩放", nullptr, &videoSettings.forceIntegerScaling);
+                    ImGui::MenuItem("强制宽高比", nullptr, &videoSettings.forceAspectRatio);
                     if (ImGui::SmallButton("4:3")) {
                         videoSettings.forcedAspect = 4.0 / 3.0;
                         settings.MakeDirty();
@@ -2197,7 +2197,7 @@ void App::RunEmulator() {
                     ui::widgets::settings::video::DisplayRotation(m_context, true);
 
                     bool fullScreen = settings.video.fullScreen.Get();
-                    if (ImGui::MenuItem("Full screen",
+                    if (ImGui::MenuItem("全屏",
                                         input::ToShortcut(inputContext, actions::general::ToggleFullScreen).c_str(),
                                         &fullScreen)) {
                         videoSettings.fullScreen = fullScreen;
@@ -2206,20 +2206,20 @@ void App::RunEmulator() {
 
                     ImGui::Separator();
 
-                    if (ImGui::MenuItem("Auto-fit window to screen", nullptr, &videoSettings.autoResizeWindow)) {
+                    if (ImGui::MenuItem("自动适配窗口到屏幕", nullptr, &videoSettings.autoResizeWindow)) {
                         if (videoSettings.autoResizeWindow) {
                             fitWindowToScreenNow = true;
                         }
                     }
-                    if (ImGui::MenuItem("Fit window to screen", nullptr, nullptr,
+                    if (ImGui::MenuItem("适配窗口到屏幕", nullptr, nullptr,
                                         !videoSettings.displayVideoOutputInWindow)) {
                         fitWindowToScreenNow = true;
                     }
-                    ImGui::MenuItem("Remember window geometry", nullptr, &settings.gui.rememberWindowGeometry);
+                    ImGui::MenuItem("记住窗口位置", nullptr, &settings.gui.rememberWindowGeometry);
                     if (fullScreen) {
                         ImGui::BeginDisabled();
                     }
-                    ImGui::TextUnformatted("Set view scale to");
+                    ImGui::TextUnformatted("设置视图缩放为");
                     ImGui::SameLine();
                     if (ImGui::SmallButton("1x")) {
                         forceScreenScale = true;
@@ -2251,7 +2251,7 @@ void App::RunEmulator() {
                     ImGui::Separator();
 
                     if (ImGui::MenuItem(
-                            "Windowed video output",
+                            "窗口化视频输出",
                             input::ToShortcut(inputContext, actions::general::ToggleWindowedVideoOutput).c_str(),
                             &videoSettings.displayVideoOutputInWindow)) {
                         fitWindowToScreenNow = true;
@@ -2259,25 +2259,25 @@ void App::RunEmulator() {
                     }
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("System")) {
-                    ImGui::MenuItem("System state", nullptr, &m_windowManagerService.SystemStateWindow().Open);
-                    if (ImGui::MenuItem("Copy disc hash")) {
+                if (ImGui::BeginMenu("系统")) {
+                    ImGui::MenuItem("系统状态", nullptr, &m_windowManagerService.SystemStateWindow().Open);
+                    if (ImGui::MenuItem("复制光盘哈希")) {
                         std::unique_lock lock{m_context.locks.disc};
                         std::string hash = ToString(m_context.saturn.instance->GetDiscHash());
                         SDL_SetClipboardText(hash.c_str());
                     }
-                    ImGui::MenuItem("Backup memory manager", nullptr,
+                    ImGui::MenuItem("备份内存管理器", nullptr,
                                     &m_windowManagerService.BackupMemoryManagerWindow().Open);
 
                     ImGui::Separator();
 
                     // Resets
                     {
-                        if (ImGui::MenuItem("Soft reset",
+                        if (ImGui::MenuItem("软重启",
                                             input::ToShortcut(inputContext, actions::sys::SoftReset).c_str())) {
                             m_context.EnqueueEvent(events::emu::SoftReset());
                         }
-                        if (ImGui::MenuItem("Hard reset",
+                        if (ImGui::MenuItem("硬重启",
                                             input::ToShortcut(inputContext, actions::sys::HardReset).c_str())) {
                             m_context.EnqueueEvent(events::emu::HardReset());
                         }
@@ -2292,16 +2292,16 @@ void App::RunEmulator() {
                     // Video standard and region
                     {
                         ImGui::AlignTextToFramePadding();
-                        ImGui::TextUnformatted("Video standard:");
+                        ImGui::TextUnformatted("视频制式:");
                         ImGui::SameLine();
                         ui::widgets::VideoStandardSelector(m_context);
 
                         ImGui::AlignTextToFramePadding();
-                        ImGui::TextUnformatted("Region");
+                        ImGui::TextUnformatted("区域");
                         ImGui::SameLine();
                         ImGui::TextDisabled("(?)");
                         if (ImGui::BeginItemTooltip()) {
-                            ImGui::TextUnformatted("Changing this option will cause a hard reset");
+                            ImGui::TextUnformatted("更改此选项将导致硬重启");
                             ImGui::EndTooltip();
                         }
                         ImGui::SameLine();
@@ -2313,28 +2313,28 @@ void App::RunEmulator() {
                     // Cartridge slot
                     {
                         ImGui::BeginDisabled();
-                        ImGui::TextUnformatted("Cartridge port: ");
+                        ImGui::TextUnformatted("卡带端口: ");
                         ImGui::SameLine(0, 0);
                         ui::widgets::CartridgeInfo(m_context);
                         ImGui::EndDisabled();
 
-                        if (ImGui::MenuItem("Insert backup RAM...")) {
+                        if (ImGui::MenuItem("插入备份内存...")) {
                             m_romService.OpenBackupMemoryCartFileDialog();
                         }
-                        if (ImGui::MenuItem("Insert 8 Mbit DRAM")) {
+                        if (ImGui::MenuItem("插入 8 Mbit DRAM")) {
                             m_context.EnqueueEvent(events::emu::Insert8MbitDRAMCartridge());
                         }
-                        if (ImGui::MenuItem("Insert 32 Mbit DRAM")) {
+                        if (ImGui::MenuItem("插入 32 Mbit DRAM")) {
                             m_context.EnqueueEvent(events::emu::Insert32MbitDRAMCartridge());
                         }
-                        if (ImGui::MenuItem("Insert 48 Mbit DRAM (dev)")) {
+                        if (ImGui::MenuItem("插入 48 Mbit DRAM (开发)")) {
                             m_context.EnqueueEvent(events::emu::Insert48MbitDRAMCartridge());
                         }
-                        if (ImGui::MenuItem("Insert 16 Mbit ROM...")) {
+                        if (ImGui::MenuItem("插入 16 Mbit ROM...")) {
                             m_romService.OpenROMCartFileDialog();
                         }
 
-                        if (ImGui::MenuItem("Remove cartridge")) {
+                        if (ImGui::MenuItem("移除卡带")) {
                             m_context.EnqueueEvent(events::emu::RemoveCartridge());
                         }
                     }
@@ -2348,33 +2348,33 @@ void App::RunEmulator() {
 
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("Emulation")) {
+                if (ImGui::BeginMenu("模拟")) {
                     bool rewindEnabled = settings.general.enableRewindBuffer;
 
-                    if (ImGui::MenuItem("Pause/resume",
+                    if (ImGui::MenuItem("暂停/继续",
                                         input::ToShortcut(inputContext, actions::emu::PauseResume).c_str())) {
                         m_context.EnqueueEvent(events::emu::SetPaused(!m_context.paused));
                     }
-                    if (ImGui::MenuItem("Forward frame step",
+                    if (ImGui::MenuItem("向前帧步进",
                                         input::ToShortcut(inputContext, actions::emu::ForwardFrameStep).c_str())) {
                         m_context.EnqueueEvent(events::emu::ForwardFrameStep());
                     }
-                    if (ImGui::MenuItem("Reverse frame step",
+                    if (ImGui::MenuItem("向后帧步进",
                                         input::ToShortcut(inputContext, actions::emu::ReverseFrameStep).c_str(),
                                         nullptr, rewindEnabled)) {
                         if (rewindEnabled) {
                             m_context.EnqueueEvent(events::emu::ReverseFrameStep());
                         }
                     }
-                    if (ImGui::MenuItem("Rewind buffer",
+                    if (ImGui::MenuItem("回退缓冲",
                                         input::ToShortcut(inputContext, actions::emu::ToggleRewindBuffer).c_str(),
                                         &rewindEnabled)) {
                         ToggleRewindBuffer();
                     }
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("Settings")) {
-                    if (ImGui::MenuItem("Settings",
+                if (ImGui::BeginMenu("设置")) {
+                    if (ImGui::MenuItem("设置",
                                         input::ToShortcut(inputContext, actions::general::OpenSettings).c_str(),
                                         &m_windowManagerService.SettingsWindow().Open)) {
                         if (m_windowManagerService.SettingsWindow().Open) {
@@ -2382,61 +2382,61 @@ void App::RunEmulator() {
                         }
                     }
                     ImGui::Separator();
-                    if (ImGui::MenuItem("General")) {
+                    if (ImGui::MenuItem("常规")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::General);
                     }
-                    if (ImGui::MenuItem("GUI")) {
+                    if (ImGui::MenuItem("界面")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::GUI);
                     }
-                    if (ImGui::MenuItem("Hotkeys")) {
+                    if (ImGui::MenuItem("快捷键")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::Hotkeys);
                     }
-                    if (ImGui::MenuItem("System")) {
+                    if (ImGui::MenuItem("系统")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::System);
                     }
                     if (ImGui::MenuItem("IPL")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::IPL);
                     }
-                    if (ImGui::MenuItem("Input")) {
+                    if (ImGui::MenuItem("输入")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::Input);
                     }
-                    if (ImGui::MenuItem("Video")) {
+                    if (ImGui::MenuItem("视频")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::Video);
                     }
-                    if (ImGui::MenuItem("Audio")) {
+                    if (ImGui::MenuItem("音频")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::Audio);
                     }
-                    if (ImGui::MenuItem("Cartridge")) {
+                    if (ImGui::MenuItem("卡带")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::Cartridge);
                     }
                     if (ImGui::MenuItem("CD Block")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::CDBlock);
                     }
-                    if (ImGui::MenuItem("Tweaks")) {
+                    if (ImGui::MenuItem("调整")) {
                         m_windowManagerService.SettingsWindow().OpenTab(ui::SettingsTab::Tweaks);
                     }
 
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("Debug")) {
+                if (ImGui::BeginMenu("调试")) {
                     bool debugTrace = m_context.saturn.instance->IsDebugTracingEnabled();
-                    if (ImGui::MenuItem("Enable tracing",
+                    if (ImGui::MenuItem("启用跟踪",
                                         input::ToShortcut(inputContext, actions::dbg::ToggleDebugTrace).c_str(),
                                         &debugTrace)) {
                         m_context.EnqueueEvent(events::emu::SetDebugTrace(debugTrace));
                     }
                     ImGui::Separator();
-                    if (ImGui::MenuItem("Open memory viewer", nullptr)) {
+                    if (ImGui::MenuItem("打开内存查看器", nullptr)) {
                         m_windowManagerService.OpenMemoryViewer();
                     }
-                    if (ImGui::BeginMenu("Memory viewers")) {
+                    if (ImGui::BeginMenu("内存查看器")) {
                         for (auto &memView : m_windowManagerService.MemoryViewerWindows()) {
-                            ImGui::MenuItem(fmt::format("Memory viewer #{}", memView.Index() + 1).c_str(), nullptr,
+                            ImGui::MenuItem(fmt::format("内存查看器 #{}", memView.Index() + 1).c_str(), nullptr,
                                             &memView.Open);
                         }
                         ImGui::EndMenu();
                     }
-                    if (ImGui::MenuItem("Dump all memory",
+                    if (ImGui::MenuItem("转储所有内存",
                                         input::ToShortcut(inputContext, actions::dbg::DumpMemory).c_str())) {
                         m_context.EnqueueEvent(events::emu::DumpMemory());
                     }
@@ -2444,42 +2444,42 @@ void App::RunEmulator() {
 
                     auto sh2Menu = [&](const char *name, ui::SH2WindowSet &set) {
                         if (ImGui::BeginMenu(name)) {
-                            ImGui::MenuItem("Debugger", nullptr, &set.debugger.Open);
+                            ImGui::MenuItem("调试器", nullptr, &set.debugger.Open);
                             ImGui::Indent();
                             {
-                                ImGui::MenuItem("Breakpoints", nullptr, &set.breakpoints.Open);
-                                ImGui::MenuItem("Watchpoints", nullptr, &set.watchpoints.Open);
+                                ImGui::MenuItem("断点", nullptr, &set.breakpoints.Open);
+                                ImGui::MenuItem("监视点", nullptr, &set.watchpoints.Open);
                             }
                             ImGui::Unindent();
-                            ImGui::MenuItem("Interrupts", nullptr, &set.interrupts.Open);
-                            ImGui::MenuItem("Interrupt trace", nullptr, &set.interruptTrace.Open);
-                            ImGui::MenuItem("Exception vectors", nullptr, &set.exceptionVectors.Open);
-                            ImGui::MenuItem("Cache", nullptr, &set.cache.Open);
-                            ImGui::MenuItem("Division unit (DIVU)", nullptr, &set.divisionUnit.Open);
-                            ImGui::MenuItem("Timers (FRT and WDT)", nullptr, &set.timers.Open);
-                            ImGui::MenuItem("Power module", nullptr, &set.power.Open);
-                            ImGui::MenuItem("DMA Controller (DMAC)", nullptr, &set.dmaController.Open);
-                            ImGui::MenuItem("DMA Controller trace", nullptr, &set.dmaControllerTrace.Open);
+                            ImGui::MenuItem("中断", nullptr, &set.interrupts.Open);
+                            ImGui::MenuItem("中断跟踪", nullptr, &set.interruptTrace.Open);
+                            ImGui::MenuItem("异常向量", nullptr, &set.exceptionVectors.Open);
+                            ImGui::MenuItem("缓存", nullptr, &set.cache.Open);
+                            ImGui::MenuItem("除法单元 (DIVU)", nullptr, &set.divisionUnit.Open);
+                            ImGui::MenuItem("定时器 (FRT 和 WDT)", nullptr, &set.timers.Open);
+                            ImGui::MenuItem("电源模块", nullptr, &set.power.Open);
+                            ImGui::MenuItem("DMA 控制器 (DMAC)", nullptr, &set.dmaController.Open);
+                            ImGui::MenuItem("DMA 控制器跟踪", nullptr, &set.dmaControllerTrace.Open);
                             ImGui::EndMenu();
                         }
                     };
-                    sh2Menu("Master SH2", m_windowManagerService.MasterSH2WindowSet());
-                    sh2Menu("Slave SH2", m_windowManagerService.SlaveSH2WindowSet());
+                    sh2Menu("主 SH2", m_windowManagerService.MasterSH2WindowSet());
+                    sh2Menu("从 SH2", m_windowManagerService.SlaveSH2WindowSet());
 
                     if (ImGui::BeginMenu("SCU")) {
-                        ImGui::MenuItem("Registers", nullptr, &m_windowManagerService.SCUWindowSet().regs.Open);
+                        ImGui::MenuItem("寄存器", nullptr, &m_windowManagerService.SCUWindowSet().regs.Open);
                         ImGui::MenuItem("DSP", nullptr, &m_windowManagerService.SCUWindowSet().dsp.Open);
                         ImGui::MenuItem("DMA", nullptr, &m_windowManagerService.SCUWindowSet().dma.Open);
-                        ImGui::MenuItem("DMA trace", nullptr, &m_windowManagerService.SCUWindowSet().dmaTrace.Open);
-                        ImGui::MenuItem("Interrupt trace", nullptr,
+                        ImGui::MenuItem("DMA 跟踪", nullptr, &m_windowManagerService.SCUWindowSet().dmaTrace.Open);
+                        ImGui::MenuItem("中断跟踪", nullptr,
                                         &m_windowManagerService.SCUWindowSet().intrTrace.Open);
                         ImGui::EndMenu();
                     }
 
                     if (ImGui::BeginMenu("SCSP")) {
-                        ImGui::MenuItem("Output", nullptr, &m_windowManagerService.SCSPWindowSet().output.Open);
-                        ImGui::MenuItem("Slots", nullptr, &m_windowManagerService.SCSPWindowSet().slots.Open);
-                        ImGui::MenuItem("KYONEX trace", nullptr,
+                        ImGui::MenuItem("输出", nullptr, &m_windowManagerService.SCSPWindowSet().output.Open);
+                        ImGui::MenuItem("插槽", nullptr, &m_windowManagerService.SCSPWindowSet().slots.Open);
+                        ImGui::MenuItem("KYONEX 跟踪", nullptr,
                                         &m_windowManagerService.SCSPWindowSet().kyonexTrace.Open);
 
                         ImGui::EndMenu();
@@ -2495,7 +2495,7 @@ void App::RunEmulator() {
                             ImGui::PopItemFlag();
                         };
 
-                        ImGui::MenuItem("Layer visibility", nullptr,
+                        ImGui::MenuItem("图层可见性", nullptr,
                                         &m_windowManagerService.VDPWindowSet().vdp2LayerVisibility.Open);
                         ImGui::Indent();
                         layerMenuItem("Sprite", vdp::Layer::Sprite);
@@ -2510,25 +2510,25 @@ void App::RunEmulator() {
                         ImGui::BeginDisabled();
                         ImGui::TextUnformatted("VDP1");
                         ImGui::EndDisabled();
-                        ImGui::MenuItem("Registers", nullptr, &m_windowManagerService.VDPWindowSet().vdp1Regs.Open);
+                        ImGui::MenuItem("寄存器", nullptr, &m_windowManagerService.VDPWindowSet().vdp1Regs.Open);
 
                         ImGui::Separator();
                         ImGui::BeginDisabled();
                         ImGui::TextUnformatted("VDP2");
                         ImGui::EndDisabled();
-                        ImGui::MenuItem("Background layer parameters", nullptr,
+                        ImGui::MenuItem("背景图层参数", nullptr,
                                         &m_windowManagerService.VDPWindowSet().vdp2BGLayerParams.Open);
-                        ImGui::MenuItem("Sprite layer parameters", nullptr,
+                        ImGui::MenuItem("精灵图层参数", nullptr,
                                         &m_windowManagerService.VDPWindowSet().vdp2SpriteLayerParams.Open);
-                        ImGui::MenuItem("Window parameters", nullptr,
+                        ImGui::MenuItem("窗口参数", nullptr,
                                         &m_windowManagerService.VDPWindowSet().vdp2WindowParams.Open);
-                        ImGui::MenuItem("Color calculation parameters", nullptr,
+                        ImGui::MenuItem("颜色计算参数", nullptr,
                                         &m_windowManagerService.VDPWindowSet().vdp2ColorCalcParams.Open);
-                        ImGui::MenuItem("Debug overlay", nullptr,
+                        ImGui::MenuItem("调试覆盖层", nullptr,
                                         &m_windowManagerService.VDPWindowSet().vdp2DebugOverlay.Open);
-                        ImGui::MenuItem("VRAM access patterns", nullptr,
+                        ImGui::MenuItem("VRAM 访问模式", nullptr,
                                         &m_windowManagerService.VDPWindowSet().vdp2VRAMAccessPatterns.Open);
-                        ImGui::MenuItem("Color RAM palette", nullptr,
+                        ImGui::MenuItem("Color RAM 调色板", nullptr,
                                         &m_windowManagerService.VDPWindowSet().vdp2CRAM.Open);
 
                         ImGui::EndMenu();
@@ -2538,43 +2538,43 @@ void App::RunEmulator() {
                         ImGui::BeginDisabled();
                         ImGui::TextUnformatted("HLE");
                         ImGui::EndDisabled();
-                        ImGui::MenuItem("Command trace", nullptr,
+                        ImGui::MenuItem("命令跟踪", nullptr,
                                         &m_windowManagerService.CDBlockWindowSet().cmdTrace.Open);
-                        ImGui::MenuItem("Filters", nullptr, &m_windowManagerService.CDBlockWindowSet().filters.Open);
-                        ImGui::MenuItem("Partitions", nullptr,
+                        ImGui::MenuItem("过滤器", nullptr, &m_windowManagerService.CDBlockWindowSet().filters.Open);
+                        ImGui::MenuItem("分区", nullptr,
                                         &m_windowManagerService.CDBlockWindowSet().partitions.Open);
                         ImGui::Separator();
                         ImGui::BeginDisabled();
                         ImGui::TextUnformatted("LLE");
                         ImGui::EndDisabled();
-                        ImGui::MenuItem("CD drive state trace", nullptr,
+                        ImGui::MenuItem("CD 驱动器状态跟踪", nullptr,
                                         &m_windowManagerService.CDBlockWindowSet().driveStateTrace.Open);
-                        ImGui::MenuItem("YGR command trace", nullptr,
+                        ImGui::MenuItem("YGR 命令跟踪", nullptr,
                                         &m_windowManagerService.CDBlockWindowSet().ygrCmdTrace.Open);
                         ImGui::EndMenu();
                     }
 
-                    ImGui::MenuItem("Debug output", nullptr, &m_windowManagerService.DebugOutputWindow().Open);
+                    ImGui::MenuItem("调试输出", nullptr, &m_windowManagerService.DebugOutputWindow().Open);
                     ImGui::EndMenu();
                 }
-                if (ImGui::BeginMenu("Help")) {
-                    if (ImGui::MenuItem("Open welcome window", nullptr)) {
+                if (ImGui::BeginMenu("帮助")) {
+                    if (ImGui::MenuItem("打开欢迎窗口", nullptr)) {
                         m_windowManagerService.OpenWelcomeModal(false);
                     }
-                    if (ImGui::MenuItem("Check for updates", nullptr)) {
+                    if (ImGui::MenuItem("检查更新", nullptr)) {
                         m_updateCheckerService.CheckForUpdates(true);
                     }
 
                     ImGui::Separator();
-                    ImGui::MenuItem("Show message history",
+                    ImGui::MenuItem("显示消息历史",
                                     input::ToShortcut(inputContext, actions::general::ShowMessageHistory).c_str(),
                                     &m_windowManagerService.MessageHistoryWindow().Open);
                     ImGui::Separator();
 #if Ymir_ENABLE_IMGUI_DEMO
-                    ImGui::MenuItem("ImGui demo window", nullptr, &showImGuiDemoWindow);
+                    ImGui::MenuItem("ImGui 演示窗口", nullptr, &showImGuiDemoWindow);
                     ImGui::Separator();
 #endif
-                    ImGui::MenuItem("About", nullptr, &m_windowManagerService.AboutWindow().Open);
+                    ImGui::MenuItem("关于", nullptr, &m_windowManagerService.AboutWindow().Open);
                     ImGui::EndMenu();
                 }
                 ImGui::EndMainMenuBar();
@@ -2617,7 +2617,7 @@ void App::RunEmulator() {
 
             // Draw video output as a window
             if (videoSettings.displayVideoOutputInWindow) {
-                std::string title = fmt::format("Video Output - {}x{}###Display", screen.width, screen.height);
+                std::string title = fmt::format("视频输出 - {}x{}###Display", screen.width, screen.height);
 
                 const bool horzDisplay = videoSettings.rotation == Settings::Video::DisplayRotation::Normal ||
                                          videoSettings.rotation == Settings::Video::DisplayRotation::_180;
@@ -2785,8 +2785,8 @@ void App::RunEmulator() {
 
                         const std::string speed =
                             m_context.emuSpeed.limitSpeed
-                                ? fmt::format("{:.02f}x{}", speedFactor, m_context.emuSpeed.altSpeed ? "\n(alt)" : "")
-                                : "(unlimited)";
+                                ? fmt::format("{:.02f}x{}", speedFactor, m_context.emuSpeed.altSpeed ? "\n(备用)" : "")
+                                : "(无限制)";
 
                         drawIndicator(tl, alpha, size,
                                       slomo ? (rev ? ICON_MS_ARROW_BACK_2 : ICON_MS_PLAY_ARROW)
@@ -2878,7 +2878,7 @@ void App::RunEmulator() {
                             // Volume text
                             std::string volumeText = fmt::format("{}%", std::round(gain * 100.0f));
                             if (mute) {
-                                volumeText = fmt::format("(Mute) {}", volumeText);
+                                volumeText = fmt::format("(静音) {}", volumeText);
                             }
                             ImGui::PushFont(font, m_context.fontSizes.medium);
                             const ImVec2 volumeTextSize = ImGui::CalcTextSize(volumeText.c_str());
@@ -2893,20 +2893,20 @@ void App::RunEmulator() {
             // Draw frame rate counters
             if (settings.gui.showFrameRateOSD) {
                 std::string speedStr =
-                    m_context.paused ? "paused"
+                    m_context.paused ? "已暂停"
                     : m_context.emuSpeed.limitSpeed
                         ? fmt::format("{:.0f}%{}", m_context.emuSpeed.GetCurrentSpeedFactor() * 100.0,
-                                      m_context.emuSpeed.altSpeed ? " (alt)" : "")
-                        : "unlimited";
+                                      m_context.emuSpeed.altSpeed ? " (备用)" : "")
+                        : "无限制";
                 std::string fpsText{};
                 if (m_context.paused) {
-                    fpsText = fmt::format("VDP2: paused\nVDP1: paused\nVDP1: paused\nGUI: {:.0f} fps\nSpeed: {}",
+                    fpsText = fmt::format("VDP2: 已暂停\nVDP1: 已暂停\nVDP1: 已暂停\nGUI: {:.0f} fps\n速度: {}",
                                           io.Framerate, speedStr);
                 } else {
                     const double frameInterval = screen.frameInterval.count() * 0.000000001;
                     const double currSpeed = screen.lastVDP2Frames * frameInterval * 100.0;
                     fpsText =
-                        fmt::format("VDP2: {} fps\nVDP1: {} fps\nVDP1: {} draws\nGUI: {:.0f} fps\nSpeed: {:.0f}% / {}",
+                        fmt::format("VDP2: {} fps\nVDP1: {} fps\nVDP1: {} 绘制\nGUI: {:.0f} fps\n速度: {:.0f}% / {}",
                                     screen.lastVDP2Frames, screen.lastVDP1Frames, screen.lastVDP1DrawCalls,
                                     io.Framerate, currSpeed, speedStr);
                 }
@@ -3234,21 +3234,21 @@ void App::EmulatorThread() {
             switch (evt.type) {
             case FactoryReset:
                 m_context.saturn.instance->FactoryReset();
-                m_context.DisplayMessage("Factory reset triggered");
+                m_context.DisplayMessage("已触发恢复出厂设置");
                 break;
             case HardReset:
                 m_context.saturn.instance->Reset(true);
                 m_context.rewindBuffer.Reset();
-                m_context.DisplayMessage("Hard reset triggered");
+                m_context.DisplayMessage("已触发硬重启");
                 break;
             case SoftReset:
                 m_context.saturn.instance->Reset(false);
-                m_context.DisplayMessage("Soft reset triggered");
+                m_context.DisplayMessage("已触发软重启");
                 break;
             case SetResetButton:
                 m_context.saturn.instance->SMPC.SetResetButtonState(std::get<bool>(evt.value));
                 if (std::get<bool>(evt.value)) {
-                    m_context.DisplayMessage("Soft reset triggered");
+                    m_context.DisplayMessage("已触发软重启");
                 }
                 break;
 
@@ -3279,7 +3279,7 @@ void App::EmulatorThread() {
                 stepAction = StepAction::StepMSH2;
                 if (!m_context.paused) {
                     m_context.paused = true;
-                    m_context.DisplayMessage("Paused due to single-stepping master SH-2");
+                    m_context.DisplayMessage("由于单步执行主 SH-2 已暂停");
                 }
                 m_context.audioSystem.SetSilent(true);
                 break;
@@ -3287,7 +3287,7 @@ void App::EmulatorThread() {
                 stepAction = StepAction::StepSSH2;
                 if (!m_context.paused) {
                     m_context.paused = true;
-                    m_context.DisplayMessage("Paused due to single-stepping slave SH-2");
+                    m_context.DisplayMessage("由于单步执行从 SH-2 已暂停");
                 }
                 m_context.audioSystem.SetSilent(true);
                 break;
@@ -3295,10 +3295,10 @@ void App::EmulatorThread() {
             case OpenCloseTray:
                 if (m_context.saturn.instance->IsTrayOpen()) {
                     m_context.saturn.instance->CloseTray();
-                    m_context.DisplayMessage("Disc tray closed");
+                    m_context.DisplayMessage("光盘托盘已关闭");
                 } else {
                     m_context.saturn.instance->OpenTray();
-                    m_context.DisplayMessage("Disc tray opened");
+                    m_context.DisplayMessage("光盘托盘已打开");
                 }
                 break;
             case LoadDisc: //
@@ -3311,7 +3311,7 @@ void App::EmulatorThread() {
                     auto iplLoadResult = m_romService.LoadIPLROM();
                     if (!iplLoadResult.succeeded) {
                         m_windowManagerService.OpenSimpleErrorModal(
-                            fmt::format("Could not load IPL ROM: {}", iplLoadResult.errorMessage));
+                            fmt::format("无法加载 IPL ROM: {}", iplLoadResult.errorMessage));
                     }
                 }
                 break;
@@ -3324,7 +3324,7 @@ void App::EmulatorThread() {
                 if (settings.system.internalBackupRAMPerGame) {
                     m_context.EnqueueEvent(events::emu::LoadInternalBackupMemory());
                 }
-                m_context.DisplayMessage("Disc ejected");
+                m_context.DisplayMessage("光盘已弹出");
                 break;
             }
             case RemoveCartridge: //
@@ -3425,7 +3425,7 @@ void App::EnableRewindBuffer(bool enable) {
             m_context.rewindBuffer.Stop();
             m_context.rewindBuffer.Reset();
         }
-        m_context.DisplayMessage(fmt::format("Rewind buffer {}", (enable ? "enabled" : "disabled")));
+        m_context.DisplayMessage(fmt::format("回退缓冲{}", (enable ? "已启用" : "已禁用")));
     }
 }
 

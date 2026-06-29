@@ -16,22 +16,22 @@ namespace app::ui {
 
 static const char *GetVariantName(db::SystemVariant variant) {
     switch (variant) {
-    case db::SystemVariant::None: return "None";
+    case db::SystemVariant::None: return "无";
     case db::SystemVariant::Saturn: return "Saturn";
     case db::SystemVariant::HiSaturn: return "HiSaturn";
     case db::SystemVariant::VSaturn: return "V-Saturn";
-    case db::SystemVariant::DevKit: return "Dev kit";
-    default: return "Unknown";
+    case db::SystemVariant::DevKit: return "开发套件";
+    default: return "未知";
     }
 }
 
 static const char *GetRegionName(db::SystemRegion region) {
     switch (region) {
-    case db::SystemRegion::None: return "None";
-    case db::SystemRegion::US_EU: return "US/EU";
-    case db::SystemRegion::JP: return "Japan";
-    case db::SystemRegion::KR: return "South Korea";
-    default: return "Unknown";
+    case db::SystemRegion::None: return "无";
+    case db::SystemRegion::US_EU: return "美国/欧洲";
+    case db::SystemRegion::JP: return "日本";
+    case db::SystemRegion::KR: return "韩国";
+    default: return "未知";
     }
 }
 
@@ -41,27 +41,27 @@ IPLSettingsView::IPLSettingsView(SharedContext &context)
 void IPLSettingsView::Display() {
     auto &settings = GetSettings().system.ipl;
 
-    ImGui::TextUnformatted("NOTE: Changing any of these options will cause a hard reset");
+    ImGui::TextUnformatted("注意：更改这些选项中的任何一个都将导致硬重置");
 
     ImGui::Separator();
 
     const float paddingWidth = ImGui::GetStyle().FramePadding.x;
     const float itemSpacingWidth = ImGui::GetStyle().ItemSpacing.x;
     const float fileSelectorButtonWidth = ImGui::CalcTextSize("...").x + paddingWidth * 2;
-    const float reloadButtonWidth = ImGui::CalcTextSize("Reload").x + paddingWidth * 2;
-    const float useButtonWidth = ImGui::CalcTextSize("Use").x + paddingWidth * 2;
+    const float reloadButtonWidth = ImGui::CalcTextSize("重载").x + paddingWidth * 2;
+    const float useButtonWidth = ImGui::CalcTextSize("使用").x + paddingWidth * 2;
 
     std::filesystem::path iplRomsPath = m_context.profile.GetPath(ProfilePath::IPLROMImages);
 
     ImGui::PushTextWrapPos(ImGui::GetContentRegionAvail().x);
-    ImGui::Text("IPL ROMs in %s", fmt::format("{}", iplRomsPath).c_str());
+    ImGui::Text("%s 中的 IPL ROM", fmt::format("{}", iplRomsPath).c_str());
     ImGui::PopTextWrapPos();
 
-    if (ImGui::Button("Open directory")) {
+    if (ImGui::Button("打开目录")) {
         SDL_OpenURL(fmt::format("file:///{}", iplRomsPath).c_str());
     }
     ImGui::SameLine();
-    if (ImGui::Button("Rescan")) {
+    if (ImGui::Button("重新扫描")) {
         {
             std::unique_lock lock{m_context.locks.romManager};
             m_context.romManager.ScanIPLROMs(iplRomsPath);
@@ -76,11 +76,11 @@ void IPLSettingsView::Display() {
                           ImGuiTableFlags_ScrollY | ImGuiTableFlags_Sortable | ImGuiTableFlags_SortMulti |
                               ImGuiTableFlags_SortTristate,
                           ImVec2(0, 250 * m_context.displayScale))) {
-        ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_DefaultSort, 0.0f);
-        ImGui::TableSetupColumn("Version", ImGuiTableColumnFlags_WidthFixed, 50 * m_context.displayScale);
-        ImGui::TableSetupColumn("Date", ImGuiTableColumnFlags_WidthFixed, 75 * m_context.displayScale);
-        ImGui::TableSetupColumn("Variant", ImGuiTableColumnFlags_WidthFixed, 60 * m_context.displayScale);
-        ImGui::TableSetupColumn("Region", ImGuiTableColumnFlags_WidthFixed, 105 * m_context.displayScale);
+        ImGui::TableSetupColumn("路径", ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_DefaultSort, 0.0f);
+        ImGui::TableSetupColumn("版本", ImGuiTableColumnFlags_WidthFixed, 50 * m_context.displayScale);
+        ImGui::TableSetupColumn("日期", ImGuiTableColumnFlags_WidthFixed, 75 * m_context.displayScale);
+        ImGui::TableSetupColumn("变体", ImGuiTableColumnFlags_WidthFixed, 60 * m_context.displayScale);
+        ImGui::TableSetupColumn("区域", ImGuiTableColumnFlags_WidthFixed, 105 * m_context.displayScale);
         ImGui::TableSetupColumn("##use", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 useButtonWidth);
         ImGui::TableSetupScrollFreeze(0, 1);
@@ -182,7 +182,7 @@ void IPLSettingsView::Display() {
                 if (iplRom.info != nullptr) {
                     ImGui::Text("%s", GetVariantName(iplRom.info->variant));
                 } else {
-                    ImGui::TextUnformatted("Unknown");
+                    ImGui::TextUnformatted("未知");
                 }
             }
             if (ImGui::TableNextColumn()) {
@@ -194,11 +194,11 @@ void IPLSettingsView::Display() {
                         ImGui::Text("%s", GetRegionName(iplRom.info->region));
                     }
                 } else {
-                    ImGui::TextUnformatted("Unknown");
+                    ImGui::TextUnformatted("未知");
                 }
             }
             if (ImGui::TableNextColumn()) {
-                if (ImGui::Button(fmt::format("Use##{}", index).c_str())) {
+                if (ImGui::Button(fmt::format("使用##{}", index).c_str())) {
                     settings.overrideImage = true;
                     settings.path = iplRom.path;
                     if (!settings.path.empty()) {
@@ -216,7 +216,7 @@ void IPLSettingsView::Display() {
     ImGui::Separator();
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Preferred system variant");
+    ImGui::TextUnformatted("首选系统变体");
     ImGui::SameLine();
     if (ImGui::BeginCombo("##variant", GetVariantName(settings.variant), ImGuiComboFlags_WidthFitPreview)) {
         for (int i = 0; i <= 4; ++i) {
@@ -231,7 +231,7 @@ void IPLSettingsView::Display() {
 
     ImGui::Separator();
 
-    if (MakeDirty(ImGui::Checkbox("Override IPL ROM", &settings.overrideImage))) {
+    if (MakeDirty(ImGui::Checkbox("覆盖 IPL ROM", &settings.overrideImage))) {
         if (settings.overrideImage && !settings.path.empty()) {
             m_context.EnqueueEvent(events::gui::ReloadIPLROM());
             MakeDirty();
@@ -242,7 +242,7 @@ void IPLSettingsView::Display() {
         ImGui::BeginDisabled();
     }
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("IPL ROM path");
+    ImGui::TextUnformatted("IPL ROM 路径");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(-(fileSelectorButtonWidth + reloadButtonWidth + itemSpacingWidth * 2));
     std::string iplPath = fmt::format("{}", settings.path);
@@ -252,8 +252,8 @@ void IPLSettingsView::Display() {
     ImGui::SameLine();
     if (ImGui::Button("...##ipl_path")) {
         m_context.EnqueueEvent(events::gui::OpenFile({
-            .dialogTitle = "Load IPL ROM",
-            .filters = {{"ROM files (*.bin, *.rom)", "bin;rom"}, {"All files (*.*)", "*"}},
+            .dialogTitle = "加载 IPL ROM",
+            .filters = {{"ROM 文件 (*.bin, *.rom)", "bin;rom"}, {"所有文件 (*.*)", "*"}},
             .userdata = this,
             .callback = util::WrapSingleSelectionCallback<&IPLSettingsView::ProcessLoadIPLROM,
                                                           &util::NoopCancelFileDialogCallback,
@@ -261,7 +261,7 @@ void IPLSettingsView::Display() {
         }));
     }
     ImGui::SameLine();
-    if (ImGui::Button("Reload")) {
+    if (ImGui::Button("重载")) {
         if (!settings.path.empty()) {
             m_context.EnqueueEvent(events::gui::ReloadIPLROM());
             MakeDirty();
@@ -274,20 +274,20 @@ void IPLSettingsView::Display() {
     ImGui::Separator();
 
     if (m_context.iplRomPath.empty()) {
-        ImGui::TextUnformatted("No IPL ROM loaded");
+        ImGui::TextUnformatted("未加载 IPL ROM");
     } else {
         ImGui::PushTextWrapPos(ImGui::GetContentRegionAvail().x);
-        ImGui::Text("Currently using IPL ROM at %s", fmt::format("{}", m_context.iplRomPath).c_str());
+        ImGui::Text("当前使用的 IPL ROM 位于 %s", fmt::format("{}", m_context.iplRomPath).c_str());
         ImGui::PopTextWrapPos();
     }
     const db::IPLROMInfo *info = db::GetIPLROMInfo(m_context.saturn.GetIPLHash());
     if (info != nullptr) {
-        ImGui::Text("Version: %s", info->version);
-        ImGui::Text("Release date: %04u/%02u/%02u", info->year, info->month, info->day);
-        ImGui::Text("Variant: %s", GetVariantName(info->variant));
-        ImGui::Text("Region: %s", GetRegionName(info->region));
+        ImGui::Text("版本：%s", info->version);
+        ImGui::Text("发布日期：%04u/%02u/%02u", info->year, info->month, info->day);
+        ImGui::Text("变体：%s", GetVariantName(info->variant));
+        ImGui::Text("区域：%s", GetRegionName(info->region));
     } else {
-        ImGui::TextUnformatted("Unknown IPL ROM");
+        ImGui::TextUnformatted("未知 IPL ROM");
     }
 }
 
@@ -304,7 +304,7 @@ void IPLSettingsView::LoadIPLROM(std::filesystem::path file) {
 }
 
 void IPLSettingsView::ShowIPLROMLoadError(const char *message) {
-    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("Could not load IPL ROM: {}", message)));
+    m_context.EnqueueEvent(events::gui::ShowError(fmt::format("无法加载 IPL ROM：{}", message)));
 }
 
 } // namespace app::ui

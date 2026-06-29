@@ -26,7 +26,7 @@ void SCUDMARegistersView::Display(uint8 channel) {
     ImGui::BeginGroup();
 
     bool enabled = probe.IsDMAEnabled(channel);
-    if (ImGui::Checkbox(fmt::format("Enabled##{}", channel).c_str(), &enabled)) {
+    if (ImGui::Checkbox(fmt::format("已启用##{}", channel).c_str(), &enabled)) {
         probe.SetDMAEnabled(channel, enabled);
     }
     ImGui::SameLine();
@@ -34,14 +34,14 @@ void SCUDMARegistersView::Display(uint8 channel) {
         ImGui::BeginDisabled();
     }
     bool indirect = probe.IsDMAIndirect(channel);
-    if (ImGui::Checkbox(fmt::format("Indirect transfer##{}", channel).c_str(), &indirect)) {
+    if (ImGui::Checkbox(fmt::format("间接传输##{}", channel).c_str(), &indirect)) {
         probe.SetDMAIndirect(channel, indirect);
     }
 
     if (ImGui::BeginTable(fmt::format("addrs_{}", channel).c_str(), 4, ImGuiTableFlags_SizingFixedFit)) {
-        ImGui::TableSetupColumn("Address", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 7);
-        ImGui::TableSetupColumn("Update", ImGuiTableColumnFlags_WidthFixed, frameHeight);
-        ImGui::TableSetupColumn("Increment", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 3);
+        ImGui::TableSetupColumn("地址", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 7);
+        ImGui::TableSetupColumn("更新", ImGuiTableColumnFlags_WidthFixed, frameHeight);
+        ImGui::TableSetupColumn("增量", ImGuiTableColumnFlags_WidthFixed, paddingWidth * 2 + hexCharWidth * 3);
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableHeadersRow();
 
@@ -74,7 +74,7 @@ void SCUDMARegistersView::Display(uint8 channel) {
         }
         if (ImGui::TableNextColumn()) {
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Source");
+            ImGui::TextUnformatted("源");
         }
 
         ImGui::TableNextRow();
@@ -106,7 +106,7 @@ void SCUDMARegistersView::Display(uint8 channel) {
         }
         if (ImGui::TableNextColumn()) {
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Destination");
+            ImGui::TextUnformatted("目标");
         }
 
         ImGui::TableNextRow();
@@ -128,7 +128,7 @@ void SCUDMARegistersView::Display(uint8 channel) {
         }
         if (ImGui::TableNextColumn()) {
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Length");
+            ImGui::TextUnformatted("长度");
         }
 
         ImGui::EndTable();
@@ -136,10 +136,10 @@ void SCUDMARegistersView::Display(uint8 channel) {
 
     scu::DMATrigger trigger = probe.GetDMATrigger(channel);
     static constexpr const char *kTriggerNames[] = {
-        "VDP2 VBlank IN", "VDP2 VBlank OUT",    "VDP2 HBlank IN",       "SCU Timer 0",
-        "SCU Timer 1",    "SCSP Sound Request", "VDP1 Sprite Draw End", "Immediate",
+        "VDP2 VBlank 进入", "VDP2 VBlank 退出",    "VDP2 HBlank 进入",       "SCU 定时器 0",
+        "SCU 定时器 1",    "SCSP 声音请求", "VDP1 精灵绘制结束", "立即",
     };
-    if (ImGui::BeginCombo(fmt::format("Trigger##{}", channel).c_str(), kTriggerNames[static_cast<uint32>(trigger)],
+    if (ImGui::BeginCombo(fmt::format("触发##{}", channel).c_str(), kTriggerNames[static_cast<uint32>(trigger)],
                           ImGuiComboFlags_WidthFitPreview)) {
         for (uint32 i = 0; i < 8; i++) {
             if (ImGui::Selectable(kTriggerNames[i], i == static_cast<uint32>(trigger))) {

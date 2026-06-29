@@ -21,7 +21,7 @@ void VDP2LayerVisibilityView::Display() {
             m_context.EnqueueEvent(events::emu::debug::SetLayerEnabled(layer, enabled));
         }
     };
-    checkbox("Sprite", vdp::Layer::Sprite);
+    checkbox("精灵", vdp::Layer::Sprite);
     checkbox("RBG0", vdp::Layer::RBG0);
     checkbox("NBG0/RBG1", vdp::Layer::NBG0_RBG1);
     checkbox("NBG1/EXBG", vdp::Layer::NBG1_EXBG);

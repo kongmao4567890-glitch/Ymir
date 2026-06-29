@@ -48,8 +48,8 @@ namespace static_config {
 
 } // namespace static_config
 
-static constexpr const char *kConfirmDeletionTitle = "Confirm deletion";
-static constexpr const char *kConfirmFormatTitle = "Confirm format";
+static constexpr const char *kConfirmDeletionTitle = "确认删除";
+static constexpr const char *kConfirmFormatTitle = "确认格式化";
 
 BackupMemoryView::BackupMemoryView(SharedContext &context, std::string_view name, bool external)
     : m_context(context)
@@ -70,12 +70,12 @@ void BackupMemoryView::Display() {
 
     if (hasBup) {
         std::unique_lock lock{m_context.locks.backupRAM};
-        ImGui::Text("%u KiB capacity, %u of %u blocks used", m_bup->Size() / 1024u, m_bup->GetUsedBlocks(),
+        ImGui::Text("%u KiB 容量，已用 %u / %u 块", m_bup->Size() / 1024u, m_bup->GetUsedBlocks(),
                     m_bup->GetTotalBlocks());
         files = m_bup->List();
     } else {
         ImGui::BeginDisabled();
-        ImGui::TextUnformatted("Unavailable - insert a backup memory cartridge to manage it");
+        ImGui::TextUnformatted("不可用 - 插入备份 RAM 卡带以进行管理");
     }
 
     // Make room for buttons below the table
@@ -186,20 +186,19 @@ void BackupMemoryView::Display() {
         };
 
         if (selCount == 0) {
-            ImGui::TextUnformatted("No files selected");
+            ImGui::TextUnformatted("未选中文件");
         } else {
-            ImGui::Text("%u %s selected - %u %s, %u %s", selCount, plural(selCount, "file", "files"), selBlocks,
-                        plural(selBlocks, "block", "blocks"), selSize, plural(selSize, "byte", "bytes"));
+            ImGui::Text("已选中 %u 个文件 - %u 块，%u 字节", selCount, selBlocks, selSize);
         }
     }
 
-    if (ImGui::Button("Import")) {
+    if (ImGui::Button("导入")) {
         // Open file dialog to select backup files to load
         FileDialogParams params{};
-        params.dialogTitle = fmt::format("Import backup files to {}", m_name);
+        params.dialogTitle = fmt::format("导入备份文件到 {}", m_name);
         params.defaultPath = m_context.profile.GetPath(ProfilePath::ExportedBackups);
-        params.filters.push_back({"Backup files (*.bup, *.ymbup)", "bup;ymbup"});
-        params.filters.push_back({"All files (*.*)", "*"});
+        params.filters.push_back({"备份文件 (*.bup, *.ymbup)", "bup;ymbup"});
+        params.filters.push_back({"所有文件 (*.*)", "*"});
         params.userdata = this;
         params.callback = util::WrapMultiSelectionCallback<&BackupMemoryView::ProcessFileImport,
                                                            &BackupMemoryView::ProcessCancelFileImport,
@@ -211,7 +210,7 @@ void BackupMemoryView::Display() {
     if (m_selected.empty()) {
         ImGui::BeginDisabled();
     }
-    if (ImGui::Button("Export")) {
+    if (ImGui::Button("导出")) {
         assert(m_bup != nullptr);
 
         std::unique_lock lock{m_context.locks.backupRAM};
@@ -240,13 +239,13 @@ void BackupMemoryView::Display() {
             util::BackupDateTime bupDate{m_filesToExport[0].file.header.date};
 
             FileDialogParams params{};
-            params.dialogTitle = fmt::format("Export {} from {}", filename, m_name);
+            params.dialogTitle = fmt::format("从 {} 导出 {}", filename, m_name);
             params.defaultPath =
                 m_context.profile.GetPath(ProfilePath::ExportedBackups) /
                 fmt::format("{}_{:04d}{:02d}{:02d}_{:02d}{:02d}.{}", filename, bupDate.year, bupDate.month, bupDate.day,
                             bupDate.hour, bupDate.minute, static_config::bup_file_suffix);
-            params.filters.push_back({"Backup files (*.bup, *.ymbup)", "bup;ymbup"});
-            params.filters.push_back({"All files (*.*)", "*"});
+            params.filters.push_back({"备份文件 (*.bup, *.ymbup)", "bup;ymbup"});
+            params.filters.push_back({"所有文件 (*.*)", "*"});
             params.userdata = this;
             params.callback = util::WrapSingleSelectionCallback<&BackupMemoryView::ProcessSingleFileExport,
                                                                 &BackupMemoryView::ProcessCancelFileExport,
@@ -257,7 +256,7 @@ void BackupMemoryView::Display() {
             // Multiple files -> allow user to pick location only
 
             FolderDialogParams params{};
-            params.dialogTitle = fmt::format("Export {} files from {}", m_filesToExport.size(), m_name);
+            params.dialogTitle = fmt::format("从 {} 导出 {} 个文件", m_filesToExport.size(), m_name);
             params.defaultPath = m_context.profile.GetPath(ProfilePath::ExportedBackups);
             params.userdata = this;
             params.callback = util::WrapSingleSelectionCallback<&BackupMemoryView::ProcessMultiFileExport,
@@ -268,21 +267,21 @@ void BackupMemoryView::Display() {
         }
     }
     ImGui::SameLine();
-    if (ImGui::Button("Delete")) {
+    if (ImGui::Button("删除")) {
         ImGui::OpenPopup(kConfirmDeletionTitle);
     }
     if (m_selected.empty()) {
         ImGui::EndDisabled();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Format")) {
+    if (ImGui::Button("格式化")) {
         ImGui::OpenPopup(kConfirmFormatTitle);
     }
 
     // Align to the right
-    const float loadImageWidth = ImGui::CalcTextSize("Load image...").x + ImGui::GetStyle().FramePadding.x * 2;
+    const float loadImageWidth = ImGui::CalcTextSize("加载镜像...").x + ImGui::GetStyle().FramePadding.x * 2;
     const float sameLineSpacing = ImGui::GetStyle().ItemSpacing.x;
-    const float saveImageWidth = ImGui::CalcTextSize("Save image...").x + ImGui::GetStyle().FramePadding.x * 2;
+    const float saveImageWidth = ImGui::CalcTextSize("保存镜像...").x + ImGui::GetStyle().FramePadding.x * 2;
     std::string bupMemFilename;
     if (m_external) {
         if (m_bup != nullptr) {
@@ -295,13 +294,13 @@ void BackupMemoryView::Display() {
         bupMemFilename = "bup-int.bin";
     }
     ImGui::SameLine(avail.x - loadImageWidth - sameLineSpacing - saveImageWidth);
-    if (ImGui::Button("Load image...")) {
+    if (ImGui::Button("加载镜像...")) {
         // Open file dialog to select backup memory image to load
         FileDialogParams params{};
-        params.dialogTitle = fmt::format("Load {} image", m_name);
+        params.dialogTitle = fmt::format("加载 {} 镜像", m_name);
         params.defaultPath = m_context.profile.GetPath(ProfilePath::BackupMemory) / bupMemFilename;
-        params.filters.push_back({"Backup memory image files (*.bin, *.sav)", "bin;sav"});
-        params.filters.push_back({"All files (*.*)", "*"});
+        params.filters.push_back({"备份 RAM 镜像文件 (*.bin, *.sav)", "bin;sav"});
+        params.filters.push_back({"所有文件 (*.*)", "*"});
         params.userdata = this;
         params.callback = util::WrapSingleSelectionCallback<&BackupMemoryView::ProcessImageImport,
                                                             &BackupMemoryView::ProcessCancelImageImport,
@@ -310,7 +309,7 @@ void BackupMemoryView::Display() {
         m_context.EnqueueEvent(events::gui::OpenFile(std::move(params)));
     }
     ImGui::SameLine();
-    if (ImGui::Button("Save image...")) {
+    if (ImGui::Button("保存镜像...")) {
         {
             std::unique_lock lock{m_context.locks.backupRAM};
             m_imageToSave = m_bup->ReadAll();
@@ -318,10 +317,10 @@ void BackupMemoryView::Display() {
 
         // Open file dialog to select backup memory image to save
         FileDialogParams params{};
-        params.dialogTitle = fmt::format("Save {} image", m_name);
+        params.dialogTitle = fmt::format("保存 {} 镜像", m_name);
         params.defaultPath = m_context.profile.GetPath(ProfilePath::BackupMemory) / bupMemFilename;
-        params.filters.push_back({"Backup memory image files (*.bin, *.sav)", "bin;sav"});
-        params.filters.push_back({"All files (*.*)", "*"});
+        params.filters.push_back({"备份 RAM 镜像文件 (*.bin, *.sav)", "bin;sav"});
+        params.filters.push_back({"所有文件 (*.*)", "*"});
         params.userdata = this;
         params.callback = util::WrapSingleSelectionCallback<&BackupMemoryView::ProcessImageExport,
                                                             &BackupMemoryView::ProcessCancelImageExport,
@@ -395,9 +394,9 @@ void BackupMemoryView::ImportAll(std::span<const bup::BackupFile> files) {
             case bup::BackupFileImportResult::Imported: break;
             case bup::BackupFileImportResult::Overwritten: break;
             case bup::BackupFileImportResult::NoSpace:
-                m_importFailed.push_back({file.header, "Not enough space in memory"});
+                m_importFailed.push_back({file.header, "内存空间不足"});
                 break;
-            default: m_importFailed.push_back({file.header, "Unspecified error"}); break;
+            default: m_importFailed.push_back({file.header, "未指定的错误"}); break;
             }
         }
     }
@@ -445,13 +444,13 @@ void BackupMemoryView::DrawFileTableHeader() {
     const float jpCharWidth = ImGui::CalcTextSize("ア").x;
     ImGui::PopFont();
 
-    ImGui::TableSetupColumn("File name", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_DefaultSort,
+    ImGui::TableSetupColumn("文件名", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_DefaultSort,
                             monoCharWidth * 12.5f);
-    ImGui::TableSetupColumn("Comment", ImGuiTableColumnFlags_WidthFixed, jpCharWidth * 9.5f);
-    ImGui::TableSetupColumn("Language", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 9);
-    ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 6.5f);
-    ImGui::TableSetupColumn("Blocks", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 7);
-    ImGui::TableSetupColumn("Date/time", ImGuiTableColumnFlags_WidthStretch);
+    ImGui::TableSetupColumn("注释", ImGuiTableColumnFlags_WidthFixed, jpCharWidth * 9.5f);
+    ImGui::TableSetupColumn("语言", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 9);
+    ImGui::TableSetupColumn("大小", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 6.5f);
+    ImGui::TableSetupColumn("块数", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 7);
+    ImGui::TableSetupColumn("日期/时间", ImGuiTableColumnFlags_WidthStretch);
     ImGui::TableSetupScrollFreeze(0, 1);
 
     ImGui::TableNextRow();
@@ -462,7 +461,7 @@ void BackupMemoryView::DrawFileTableHeader() {
         ImGui::TableHeader(ImGui::TableGetColumnName(i));
         if (i == 4) {
             if (ImGui::BeginItemTooltip()) {
-                ImGui::TextUnformatted("Used blocks + header blocks");
+                ImGui::TextUnformatted("已用块 + 头块");
                 ImGui::EndTooltip();
             }
         }
@@ -491,7 +490,7 @@ void BackupMemoryView::DrawFileTableRow(const bup::BackupFileInfo &file, uint32 
         ImGui::PopFont();
     }
     if (ImGui::TableNextColumn()) {
-        static constexpr const char *kLanguages[] = {"Japanese", "English", "French", "German", "Spanish", "Italian"};
+        static constexpr const char *kLanguages[] = {"日语", "英语", "法语", "德语", "西班牙语", "意大利语"};
         const auto langIndex = static_cast<uint8>(file.header.language);
         if (langIndex < std::size(kLanguages)) {
             ImGui::Text("%s", kLanguages[langIndex]);
@@ -542,7 +541,7 @@ void BackupMemoryView::OpenErrorModal(std::string errorMessage) {
 
 void BackupMemoryView::DisplayConfirmDeleteModal(std::span<bup::BackupFileInfo> files) {
     if (ImGui::BeginPopupModal(kConfirmDeletionTitle, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("The following files will be deleted from %s:", m_name.c_str());
+        ImGui::Text("以下文件将从 %s 中删除：", m_name.c_str());
 
         const float lineHeight = ImGui::GetTextLineHeightWithSpacing();
         if (ImGui::BeginChild("##files_to_delete", ImVec2(550, lineHeight * 10))) {
@@ -566,7 +565,7 @@ void BackupMemoryView::DisplayConfirmDeleteModal(std::span<bup::BackupFileInfo> 
         }
         ImGui::EndChild();
 
-        ImGui::TextUnformatted("This operation cannot be undone!");
+        ImGui::TextUnformatted("此操作无法撤销！");
 
         /*
         static bool dont_ask_me_next_time = false;
@@ -575,7 +574,7 @@ void BackupMemoryView::DisplayConfirmDeleteModal(std::span<bup::BackupFileInfo> 
         ImGui::Checkbox("Don't ask me next time", &dont_ask_me_next_time);
         ImGui::PopStyleVar();*/
 
-        if (ImGui::Button("OK", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("确定", ImVec2(80 * m_context.displayScale, 0))) {
             for (const std::string &item : m_selected) {
                 auto it = std::find_if(files.begin(), files.end(), [&](const bup::BackupFileInfo &bupFile) {
                     return bupFile.header.filename == item;
@@ -592,7 +591,7 @@ void BackupMemoryView::DisplayConfirmDeleteModal(std::span<bup::BackupFileInfo> 
         }
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("取消", ImVec2(80 * m_context.displayScale, 0))) {
             ImGui::CloseCurrentPopup();
         }
 
@@ -602,18 +601,18 @@ void BackupMemoryView::DisplayConfirmDeleteModal(std::span<bup::BackupFileInfo> 
 
 void BackupMemoryView::DisplayConfirmFormatModal() {
     if (ImGui::BeginPopupModal(kConfirmFormatTitle, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("%s will be formatted. All files will be erased.", m_name.c_str());
-        ImGui::TextUnformatted("This operation cannot be undone!\n");
-        ImGui::Text("Are you sure you want to format %s?", m_name.c_str());
+        ImGui::Text("%s 将被格式化。所有文件都将被擦除。", m_name.c_str());
+        ImGui::TextUnformatted("此操作无法撤销！\n");
+        ImGui::Text("确定要格式化 %s 吗？", m_name.c_str());
 
-        if (ImGui::Button("Yes", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("是", ImVec2(80 * m_context.displayScale, 0))) {
             m_context.EnqueueEvent(events::emu::FormatBackupMemory(m_external));
             m_selected.clear();
             ImGui::CloseCurrentPopup();
         }
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
-        if (ImGui::Button("No", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("否", ImVec2(80 * m_context.displayScale, 0))) {
             ImGui::CloseCurrentPopup();
         }
 
@@ -622,7 +621,7 @@ void BackupMemoryView::DisplayConfirmFormatModal() {
 }
 
 void BackupMemoryView::DisplayFileImportOverwriteModal(std::span<bup::BackupFileInfo> files) {
-    static constexpr const char *kTitle = "Resolve imported file conflicts";
+    static constexpr const char *kTitle = "解决导入文件冲突";
 
     if (m_openFileImportOverwriteModal) {
         ImGui::OpenPopup(kTitle);
@@ -630,7 +629,7 @@ void BackupMemoryView::DisplayFileImportOverwriteModal(std::span<bup::BackupFile
     }
 
     if (ImGui::BeginPopupModal(kTitle, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("The following files already exist in %s:", m_name.c_str());
+        ImGui::Text("以下文件已存在于 %s 中：", m_name.c_str());
 
         ImGui::PushFont(m_context.fonts.monospace.regular, m_context.fontSizes.medium);
         const float monoCharWidth = ImGui::CalcTextSize("F").x;
@@ -640,12 +639,12 @@ void BackupMemoryView::DisplayFileImportOverwriteModal(std::span<bup::BackupFile
         if (ImGui::BeginChild("##bup_files_table", ImVec2(550, lineHeight * 20))) {
             if (ImGui::BeginTable("bup_files_overwrite_list", 6,
                                   ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY)) {
-                ImGui::TableSetupColumn("File name", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 12.5f);
-                ImGui::TableSetupColumn("Original\nSize", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 7);
-                ImGui::TableSetupColumn("Original\nDate/time", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 14);
-                ImGui::TableSetupColumn("Imported\nSize", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 7);
-                ImGui::TableSetupColumn("Imported\nDate/time", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 14);
-                ImGui::TableSetupColumn("Overwrite", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("文件名", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 12.5f);
+                ImGui::TableSetupColumn("原始\n大小", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 7);
+                ImGui::TableSetupColumn("原始\n日期/时间", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 14);
+                ImGui::TableSetupColumn("导入\n大小", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 7);
+                ImGui::TableSetupColumn("导入\n日期/时间", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 14);
+                ImGui::TableSetupColumn("覆盖", ImGuiTableColumnFlags_WidthStretch);
                 ImGui::TableSetupScrollFreeze(0, 1);
                 ImGui::TableHeadersRow();
 
@@ -724,11 +723,11 @@ void BackupMemoryView::DisplayFileImportOverwriteModal(std::span<bup::BackupFile
 
         bool execute = false;
 
-        if (ImGui::Button("Import", ImVec2(100 * m_context.displayScale, 0))) {
+        if (ImGui::Button("导入", ImVec2(100 * m_context.displayScale, 0))) {
             execute = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Overwrite all", ImVec2(100 * m_context.displayScale, 0))) {
+        if (ImGui::Button("全部覆盖", ImVec2(100 * m_context.displayScale, 0))) {
             for (auto &ovFile : m_importOverwrite) {
                 ovFile.overwrite = true;
                 break;
@@ -736,7 +735,7 @@ void BackupMemoryView::DisplayFileImportOverwriteModal(std::span<bup::BackupFile
             execute = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Ignore all", ImVec2(100 * m_context.displayScale, 0))) {
+        if (ImGui::Button("全部忽略", ImVec2(100 * m_context.displayScale, 0))) {
             execute = false;
             ImGui::CloseCurrentPopup();
             OpenFileImportResultModal();
@@ -758,9 +757,9 @@ void BackupMemoryView::DisplayFileImportOverwriteModal(std::span<bup::BackupFile
                     case bup::BackupFileImportResult::Imported: [[fallthrough]];
                     case bup::BackupFileImportResult::Overwritten: m_importSuccess.push_back(ovFile.file.header); break;
                     case bup::BackupFileImportResult::NoSpace:
-                        m_importFailed.push_back({ovFile.file.header, "Not enough space in memory"});
+                        m_importFailed.push_back({ovFile.file.header, "内存空间不足"});
                         break;
-                    default: m_importFailed.push_back({ovFile.file.header, "Unspecified error"}); break;
+                    default: m_importFailed.push_back({ovFile.file.header, "未指定的错误"}); break;
                     }
                 }
             }
@@ -775,7 +774,7 @@ void BackupMemoryView::DisplayFileImportOverwriteModal(std::span<bup::BackupFile
 }
 
 void BackupMemoryView::DisplayFileImportResultModal() {
-    static constexpr const char *kTitle = "Backup file import summary";
+    static constexpr const char *kTitle = "备份文件导入摘要";
 
     if (m_openFileImportResultModal) {
         ImGui::OpenPopup(kTitle);
@@ -790,21 +789,20 @@ void BackupMemoryView::DisplayFileImportResultModal() {
         ImGui::PopFont();
 
         if (!m_importSuccess.empty()) {
-            ImGui::Text("%zu file%s imported successfully.", m_importSuccess.size(),
-                        (m_importSuccess.size() == 1 ? "" : "s"));
+            ImGui::Text("成功导入 %zu 个文件。", m_importSuccess.size());
         } else {
-            ImGui::TextUnformatted("No files were imported.");
+            ImGui::TextUnformatted("没有导入任何文件。");
         }
 
         if (!m_importFailed.empty()) {
-            ImGui::Text("The following file%s could not be imported:", (m_importFailed.size() == 1 ? "" : "s"));
+            ImGui::Text("以下文件无法导入：");
 
             const float lineHeight = ImGui::GetTextLineHeightWithSpacing();
             if (ImGui::BeginChild("##bup_failed_table", ImVec2(550 * m_context.displayScale, lineHeight * 10))) {
                 if (ImGui::BeginTable("bup_files_failed_list", 2,
                                       ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_ScrollY)) {
-                    ImGui::TableSetupColumn("File name", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 12.5f);
-                    ImGui::TableSetupColumn("Reason", ImGuiTableColumnFlags_WidthStretch);
+                    ImGui::TableSetupColumn("文件名", ImGuiTableColumnFlags_WidthFixed, monoCharWidth * 12.5f);
+                    ImGui::TableSetupColumn("原因", ImGuiTableColumnFlags_WidthStretch);
                     ImGui::TableSetupScrollFreeze(0, 1);
                     ImGui::TableHeadersRow();
 
@@ -829,14 +827,14 @@ void BackupMemoryView::DisplayFileImportResultModal() {
         }
 
         if (!m_importBad.empty()) {
-            ImGui::Text("The following file%s could not be loaded:", (m_importBad.size() == 1 ? "" : "s"));
+            ImGui::Text("以下文件无法加载：");
 
             const float lineHeight = ImGui::GetTextLineHeightWithSpacing();
             if (ImGui::BeginChild("##bup_bad_table", ImVec2(550 * m_context.displayScale, lineHeight * 10))) {
                 if (ImGui::BeginTable("bup_files_bad_list", 2,
                                       ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY)) {
-                    ImGui::TableSetupColumn("Path");
-                    ImGui::TableSetupColumn("Reason");
+                    ImGui::TableSetupColumn("路径");
+                    ImGui::TableSetupColumn("原因");
                     ImGui::TableSetupScrollFreeze(0, 1);
                     ImGui::TableHeadersRow();
 
@@ -860,7 +858,7 @@ void BackupMemoryView::DisplayFileImportResultModal() {
             ImGui::EndChild();
         }
 
-        if (ImGui::Button("OK", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("确定", ImVec2(80 * m_context.displayScale, 0))) {
             m_importBad.clear();
             m_importFailed.clear();
             m_importOverwrite.clear();
@@ -873,7 +871,7 @@ void BackupMemoryView::DisplayFileImportResultModal() {
 }
 
 void BackupMemoryView::DisplayFilesExportSuccessfulModal() {
-    static constexpr const char *kTitle = "Files export successful";
+    static constexpr const char *kTitle = "文件导出成功";
 
     if (m_openFilesExportSuccessfulModal) {
         ImGui::OpenPopup(kTitle);
@@ -881,9 +879,9 @@ void BackupMemoryView::DisplayFilesExportSuccessfulModal() {
     }
 
     if (ImGui::BeginPopupModal(kTitle, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("%u file%s exported successfully.", m_filesExportCount, (m_filesExportCount == 1 ? "" : "s"));
+        ImGui::Text("成功导出 %u 个文件。", m_filesExportCount);
 
-        if (ImGui::Button("OK", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("确定", ImVec2(80 * m_context.displayScale, 0))) {
             m_filesExportCount = 0;
             ImGui::CloseCurrentPopup();
         }
@@ -893,7 +891,7 @@ void BackupMemoryView::DisplayFilesExportSuccessfulModal() {
 }
 
 void BackupMemoryView::DisplayImageImportSuccessfulModal() {
-    static constexpr const char *kTitle = "Image import successful";
+    static constexpr const char *kTitle = "镜像导入成功";
 
     if (m_openImageImportSuccessfulModal) {
         ImGui::OpenPopup(kTitle);
@@ -901,9 +899,9 @@ void BackupMemoryView::DisplayImageImportSuccessfulModal() {
     }
 
     if (ImGui::BeginPopupModal(kTitle, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("%s image imported successfully.", m_name.c_str());
+        ImGui::Text("%s 镜像导入成功。", m_name.c_str());
 
-        if (ImGui::Button("OK", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("确定", ImVec2(80 * m_context.displayScale, 0))) {
             ImGui::CloseCurrentPopup();
         }
 
@@ -912,7 +910,7 @@ void BackupMemoryView::DisplayImageImportSuccessfulModal() {
 }
 
 void BackupMemoryView::DisplayImageExportSuccessfulModal() {
-    static constexpr const char *kTitle = "Image export successful";
+    static constexpr const char *kTitle = "镜像导出成功";
 
     if (m_openImageExportSuccessfulModal) {
         ImGui::OpenPopup(kTitle);
@@ -920,9 +918,9 @@ void BackupMemoryView::DisplayImageExportSuccessfulModal() {
     }
 
     if (ImGui::BeginPopupModal(kTitle, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("%s image exported successfully.", m_name.c_str());
+        ImGui::Text("%s 镜像导出成功。", m_name.c_str());
 
-        if (ImGui::Button("OK", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("确定", ImVec2(80 * m_context.displayScale, 0))) {
             m_filesExportCount = 0;
             ImGui::CloseCurrentPopup();
         }
@@ -932,7 +930,7 @@ void BackupMemoryView::DisplayImageExportSuccessfulModal() {
 }
 
 void BackupMemoryView::DisplayErrorModal() {
-    static constexpr const char *kTitle = "Error";
+    static constexpr const char *kTitle = "错误";
 
     if (m_openErrorModal) {
         ImGui::OpenPopup(kTitle);
@@ -944,7 +942,7 @@ void BackupMemoryView::DisplayErrorModal() {
         ImGui::Text("%s", m_errorModalMessage.c_str());
         ImGui::PopTextWrapPos();
 
-        if (ImGui::Button("OK", ImVec2(80 * m_context.displayScale, 0))) {
+        if (ImGui::Button("确定", ImVec2(80 * m_context.displayScale, 0))) {
             m_filesExportCount = 0;
             ImGui::CloseCurrentPopup();
         }
@@ -982,16 +980,16 @@ void BackupMemoryView::ImportFiles(std::span<std::filesystem::path> files) {
                 switch (m_bup->Import(bupFile, false)) {
                 case bup::BackupFileImportResult::Imported: m_importSuccess.push_back(bupFile.header); break;
                 case bup::BackupFileImportResult::NoSpace:
-                    m_importFailed.push_back({bupFile.header, "Not enough space in memory"});
+                    m_importFailed.push_back({bupFile.header, "内存空间不足"});
                     break;
                 case bup::BackupFileImportResult::FileExists: m_importOverwrite.push_back({bupFile}); break;
-                default: m_importFailed.push_back({bupFile.header, "Unspecified error"}); break;
+                default: m_importFailed.push_back({bupFile.header, "未指定的错误"}); break;
                 }
                 break;
             case ImportFileResult::FilesystemError: m_importBad.push_back({file, error.message()}); break;
-            case ImportFileResult::FileTruncated: m_importBad.push_back({file, "Backup file truncated"}); break;
-            case ImportFileResult::BadMagic: m_importBad.push_back({file, "Not a valid backup file"}); break;
-            default: m_importBad.push_back({file, "Unspecified error"}); break;
+            case ImportFileResult::FileTruncated: m_importBad.push_back({file, "备份文件已截断"}); break;
+            case ImportFileResult::BadMagic: m_importBad.push_back({file, "不是有效的备份文件"}); break;
+            default: m_importBad.push_back({file, "未指定的错误"}); break;
             }
         }
     }
@@ -1010,7 +1008,7 @@ void BackupMemoryView::CancelFileImport() {
 }
 
 void BackupMemoryView::FileImportError(const char *errorMessage) {
-    OpenErrorModal(fmt::format("File import failed: {}", errorMessage));
+    OpenErrorModal(fmt::format("文件导入失败：{}", errorMessage));
 }
 
 BackupMemoryView::ImportFileResult BackupMemoryView::ImportFile(std::filesystem::path path, bup::BackupFile &out,
@@ -1197,7 +1195,7 @@ void BackupMemoryView::CancelFileExport() {
 }
 
 void BackupMemoryView::FileExportError(const char *errorMessage) {
-    OpenErrorModal(fmt::format("File export failed: {}", errorMessage));
+    OpenErrorModal(fmt::format("文件导出失败：{}", errorMessage));
     m_filesToExport.clear();
 }
 
@@ -1344,13 +1342,13 @@ void BackupMemoryView::ImportImage(std::filesystem::path file) {
     switch (result) {
     case bup::BackupMemoryImageLoadResult::Success: break;
     case bup::BackupMemoryImageLoadResult::FilesystemError:
-        OpenErrorModal(fmt::format("Could not import {} as {}: {}", file, m_name, error.message()));
+        OpenErrorModal(fmt::format("无法将 {} 作为 {} 导入：{}", file, m_name, error.message()));
         return;
     case bup::BackupMemoryImageLoadResult::InvalidSize:
-        OpenErrorModal(fmt::format("Could not import {} as {}: invalid image size", file, m_name));
+        OpenErrorModal(fmt::format("无法将 {} 作为 {} 导入：镜像大小无效", file, m_name));
         return;
     case bup::BackupMemoryImageLoadResult::OutOfMemoryError:
-        OpenErrorModal(fmt::format("Could not import {} as {}: out of memory", file, m_name));
+        OpenErrorModal(fmt::format("无法将 {} 作为 {} 导入：内存不足", file, m_name));
         return;
     }
 
@@ -1359,7 +1357,7 @@ void BackupMemoryView::ImportImage(std::filesystem::path file) {
     // - for cartridge memory, file must be 512 KiB, 1 MiB, 2 MiB or 4 MiB
     auto size = bupMem.Size();
     if ((!m_external && size != 32_KiB) || (m_external && (size < 512_KiB || size > 4_MiB))) {
-        OpenErrorModal(fmt::format("Could not import {} as {}: invalid image size", file, m_name));
+        OpenErrorModal(fmt::format("无法将 {} 作为 {} 导入：镜像大小无效", file, m_name));
         return;
     }
 
@@ -1379,7 +1377,7 @@ void BackupMemoryView::CancelImageImport() {
 }
 
 void BackupMemoryView::ImageImportError(const char *errorMessage) {
-    OpenErrorModal(fmt::format("{} image import failed: {}", m_name, errorMessage));
+    OpenErrorModal(fmt::format("{} 镜像导入失败：{}", m_name, errorMessage));
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -1409,7 +1407,7 @@ void BackupMemoryView::CancelImageExport() {
 }
 
 void BackupMemoryView::ImageExportError(const char *errorMessage) {
-    OpenErrorModal(fmt::format("{} image export failed: {}", m_name, errorMessage));
+    OpenErrorModal(fmt::format("{} 镜像导出失败：{}", m_name, errorMessage));
     m_imageToSave.clear();
 }
 

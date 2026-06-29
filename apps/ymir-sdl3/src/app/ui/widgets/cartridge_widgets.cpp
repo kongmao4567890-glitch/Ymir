@@ -12,11 +12,11 @@ void CartridgeInfo(SharedContext &ctx) {
     std::unique_lock lock{ctx.locks.cart};
     auto &cart = ctx.saturn.GetCartridge();
     switch (cart.GetType()) {
-    case cart::CartType::None: ImGui::TextUnformatted("None"); break;
+    case cart::CartType::None: ImGui::TextUnformatted("无"); break;
     case cart::CartType::BackupMemory: //
     {
         auto &bupCart = *cart.As<cart::CartType::BackupMemory>();
-        ImGui::Text("%u Mbit Backup RAM", bupCart.GetBackupMemory().Size() * 8u / 1024u / 1024u);
+        ImGui::Text("%u Mbit 备份 RAM", bupCart.GetBackupMemory().Size() * 8u / 1024u / 1024u);
         break;
     }
     case cart::CartType::DRAM8Mbit: ImGui::TextUnformatted("8 Mbit DRAM"); break;

@@ -40,37 +40,37 @@ void SH2DivisionUnitRegistersView::Display() {
         };
 
         if (ImGui::TableNextColumn()) {
-            drawReg(divu.DVDNTH, "DVDNTH", "64-bit dividend high");
-            drawReg(divu.DVDNTUH, "DVDNTUH", "64-bit dividend high (shadow copy)");
+            drawReg(divu.DVDNTH, "DVDNTH", "64 位被除数高位");
+            drawReg(divu.DVDNTUH, "DVDNTUH", "64 位被除数高位 (影子副本)");
         }
 
         if (ImGui::TableNextColumn()) {
-            drawReg(divu.DVDNTL, "DVDNTL", "64-bit dividend low");
-            drawReg(divu.DVDNTUL, "DVDNTUL", "64-bit dividend low (shadow copy)");
+            drawReg(divu.DVDNTL, "DVDNTL", "64 位被除数低位");
+            drawReg(divu.DVDNTUL, "DVDNTUL", "64 位被除数低位 (影子副本)");
         }
 
         if (ImGui::TableNextColumn()) {
-            drawReg(divu.DVDNT, "DVDNT", "32-bit dividend");
-            drawReg(divu.DVSR, "DVSR", "Divisor");
+            drawReg(divu.DVDNT, "DVDNT", "32 位被除数");
+            drawReg(divu.DVSR, "DVSR", "除数");
         }
 
         if (ImGui::TableNextColumn()) {
             uint32 dvcr = divu.DVCR.Read();
-            if (drawReg(dvcr, "DVCR", "Division control register")) {
+            if (drawReg(dvcr, "DVCR", "除法控制寄存器")) {
                 divu.DVCR.Write(dvcr);
             }
             ImGui::Checkbox("OVF", &divu.DVCR.OVF);
-            ImGui::SetItemTooltip("Overflow flag");
+            ImGui::SetItemTooltip("溢出标志");
             ImGui::SameLine();
             ImGui::Checkbox("OVFIE", &divu.DVCR.OVFIE);
-            ImGui::SetItemTooltip("Overflow interrupt enable");
+            ImGui::SetItemTooltip("溢出中断启用");
         }
 
         ImGui::EndTable();
     }
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Interrupt:");
+    ImGui::TextUnformatted("中断:");
 
     ImGui::SameLine();
 
@@ -86,7 +86,7 @@ void SH2DivisionUnitRegistersView::Display() {
     ImGui::SameLine();
     ImGui::TextUnformatted("VCRDIV");
     ImGui::EndGroup();
-    ImGui::SetItemTooltip("Division unit interrupt vector");
+    ImGui::SetItemTooltip("除法单元中断向量");
 
     ImGui::SameLine();
 
@@ -102,12 +102,12 @@ void SH2DivisionUnitRegistersView::Display() {
     ImGui::SameLine();
     ImGui::TextUnformatted("IPRA.DIVUIP3-0");
     ImGui::EndGroup();
-    ImGui::SetItemTooltip("Division unit interrupt level");
+    ImGui::SetItemTooltip("除法单元中断级别");
 
     const bool master = m_sh2.IsMaster();
 
     ImGui::SameLine(0, 15.0f);
-    ImGui::TextUnformatted("Calculate:");
+    ImGui::TextUnformatted("计算:");
     ImGui::SameLine();
     if (ImGui::Button("32x32")) {
         m_context.EnqueueEvent(events::emu::debug::ExecuteSH2Division(master, false));

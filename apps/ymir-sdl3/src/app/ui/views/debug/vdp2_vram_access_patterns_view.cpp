@@ -40,38 +40,38 @@ void VDP2VRAMAccessPatternsView::Display() {
 
     // -------------------------------------------------------------------------
 
-    ImGui::SeparatorText("Resolution");
+    ImGui::SeparatorText("分辨率");
 
     ImGui::Text("TVMD HRESO2-0: %X", regs2.TVMD.HRESOn);
     ImGui::SameLine();
     switch (regs2.TVMD.HRESOn) {
-    case 0: ImGui::TextUnformatted("320 pixels - Normal Graphic A (NTSC or PAL)"); break;
-    case 1: ImGui::TextUnformatted("352 pixels - Normal Graphic B (NTSC or PAL)"); break;
-    case 2: ImGui::TextUnformatted("640 pixels - Hi-Res Graphic A (NTSC or PAL)"); break;
-    case 3: ImGui::TextUnformatted("704 pixels - Hi-Res Graphic B (NTSC or PAL)"); break;
-    case 4: ImGui::TextUnformatted("320 pixels - Exclusive Normal Graphic A (31 KHz monitor)"); break;
-    case 5: ImGui::TextUnformatted("352 pixels - Exclusive Normal Graphic B (Hi-Vision monitor)"); break;
-    case 6: ImGui::TextUnformatted("640 pixels - Exclusive Hi-Res Graphic A (31 KHz monitor)"); break;
-    case 7: ImGui::TextUnformatted("704 pixels - Exclusive Hi-Res Graphic B (Hi-Vision monitor)"); break;
+    case 0: ImGui::TextUnformatted("320 像素 - 普通图形 A (NTSC 或 PAL)"); break;
+    case 1: ImGui::TextUnformatted("352 像素 - 普通图形 B (NTSC 或 PAL)"); break;
+    case 2: ImGui::TextUnformatted("640 像素 - 高分辨率图形 A (NTSC 或 PAL)"); break;
+    case 3: ImGui::TextUnformatted("704 像素 - 高分辨率图形 B (NTSC 或 PAL)"); break;
+    case 4: ImGui::TextUnformatted("320 像素 - 专用普通图形 A (31 KHz 显示器)"); break;
+    case 5: ImGui::TextUnformatted("352 像素 - 专用普通图形 B (Hi-Vision 显示器)"); break;
+    case 6: ImGui::TextUnformatted("640 像素 - 专用高分辨率图形 A (31 KHz 显示器)"); break;
+    case 7: ImGui::TextUnformatted("704 像素 - 专用高分辨率图形 B (Hi-Vision 显示器)"); break;
     }
 
     bool hires = (regs2.TVMD.HRESOn & 6) != 0;
-    checkbox("High resolution or exclusive monitor mode", hires);
+    checkbox("高分辨率或专用显示器模式", hires);
 
     // -------------------------------------------------------------------------
 
-    ImGui::SeparatorText("VRAM control");
+    ImGui::SeparatorText("VRAM 控制");
 
-    checkbox("Partition VRAM A into A0/A1", regs2.vramControl.partitionVRAMA);
-    checkbox("Partition VRAM B into B0/B1", regs2.vramControl.partitionVRAMB);
+    checkbox("将 VRAM A 分区为 A0/A1", regs2.vramControl.partitionVRAMA);
+    checkbox("将 VRAM B 分区为 B0/B1", regs2.vramControl.partitionVRAMB);
 
     // -------------------------------------------------------------------------
 
-    ImGui::SeparatorText("VRAM rotation data bank selectors");
+    ImGui::SeparatorText("VRAM 旋转数据 Bank 选择器");
 
     if (ImGui::BeginTable("vram_rot_data_bank_sel", 2, ImGuiTableFlags_SizingFixedFit)) {
         ImGui::TableSetupColumn("Bank");
-        ImGui::TableSetupColumn("Assignment");
+        ImGui::TableSetupColumn("分配");
         ImGui::TableHeadersRow();
 
         auto rotDataBankSel = [](const char *name, vdp::RotDataBankSel sel, bool enabled) {
@@ -85,9 +85,9 @@ void VDP2VRAMAccessPatternsView::Display() {
             ImGui::TableNextColumn();
             switch (sel) {
             case vdp::RotDataBankSel::Unused: ImGui::TextUnformatted("-"); break;
-            case vdp::RotDataBankSel::Coefficients: ImGui::TextUnformatted("Coefficients"); break;
-            case vdp::RotDataBankSel::PatternName: ImGui::TextUnformatted("Pattern name data"); break;
-            case vdp::RotDataBankSel::Character: ImGui::TextUnformatted("Character pattern data"); break;
+            case vdp::RotDataBankSel::Coefficients: ImGui::TextUnformatted("系数"); break;
+            case vdp::RotDataBankSel::PatternName: ImGui::TextUnformatted("模式名称数据"); break;
+            case vdp::RotDataBankSel::Character: ImGui::TextUnformatted("字符模式数据"); break;
             }
             if (!enabled) {
                 ImGui::EndDisabled();
@@ -104,7 +104,7 @@ void VDP2VRAMAccessPatternsView::Display() {
 
     // -------------------------------------------------------------------------
 
-    ImGui::SeparatorText("VRAM access patterns");
+    ImGui::SeparatorText("VRAM 访问模式");
 
     if (ImGui::BeginTable("access_patterns", 9, ImGuiTableFlags_SizingFixedFit)) {
         ImGui::TableSetupColumn("Bank");
@@ -239,7 +239,7 @@ void VDP2VRAMAccessPatternsView::Display() {
 
     // -------------------------------------------------------------------------
 
-    ImGui::SeparatorText("Layers");
+    ImGui::SeparatorText("图层");
 
     if (ImGui::BeginTable("layers", 7, ImGuiTableFlags_SizingFixedFit)) {
         ImGui::TableSetupColumn("");
@@ -253,14 +253,14 @@ void VDP2VRAMAccessPatternsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Type");
+        ImGui::TextUnformatted("类型");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
                 if (regs2.bgParams[i + 1].bitmap) {
-                    ImGui::TextUnformatted("Bitmap");
+                    ImGui::TextUnformatted("位图");
                 } else {
-                    ImGui::TextUnformatted("Scroll");
+                    ImGui::TextUnformatted("滚动");
                 }
             }
         }
@@ -268,16 +268,16 @@ void VDP2VRAMAccessPatternsView::Display() {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i + 4]) {
                 if (regs2.bgParams[i].bitmap) {
-                    ImGui::TextUnformatted("Bitmap");
+                    ImGui::TextUnformatted("位图");
                 } else {
-                    ImGui::TextUnformatted("Scroll");
+                    ImGui::TextUnformatted("滚动");
                 }
             }
         }
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Reduction");
+        ImGui::TextUnformatted("缩小");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -293,13 +293,13 @@ void VDP2VRAMAccessPatternsView::Display() {
         for (uint32 i = 0; i < 2; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i + 4]) {
-                ImGui::TextUnformatted("n/a");
+                ImGui::TextUnformatted("不适用");
             }
         }
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Char pat size");
+        ImGui::TextUnformatted("字符模式大小");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -325,14 +325,14 @@ void VDP2VRAMAccessPatternsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Color format");
+        ImGui::TextUnformatted("颜色格式");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
                 switch (regs2.bgParams[i + 1].colorFormat) {
-                case vdp::ColorFormat::Palette16: ImGui::TextUnformatted("Pal 16"); break;
-                case vdp::ColorFormat::Palette256: ImGui::TextUnformatted("Pal 256"); break;
-                case vdp::ColorFormat::Palette2048: ImGui::TextUnformatted("Pal 2048"); break;
+                case vdp::ColorFormat::Palette16: ImGui::TextUnformatted("调色板 16"); break;
+                case vdp::ColorFormat::Palette256: ImGui::TextUnformatted("调色板 256"); break;
+                case vdp::ColorFormat::Palette2048: ImGui::TextUnformatted("调色板 2048"); break;
                 case vdp::ColorFormat::RGB555: ImGui::TextUnformatted("RGB 5:5:5"); break;
                 case vdp::ColorFormat::RGB888: ImGui::TextUnformatted("RGB 8:8:8"); break;
                 }
@@ -342,9 +342,9 @@ void VDP2VRAMAccessPatternsView::Display() {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i + 4]) {
                 switch (regs2.bgParams[i].colorFormat) {
-                case vdp::ColorFormat::Palette16: ImGui::TextUnformatted("Pal 16"); break;
-                case vdp::ColorFormat::Palette256: ImGui::TextUnformatted("Pal 256"); break;
-                case vdp::ColorFormat::Palette2048: ImGui::TextUnformatted("Pal 2048"); break;
+                case vdp::ColorFormat::Palette16: ImGui::TextUnformatted("调色板 16"); break;
+                case vdp::ColorFormat::Palette256: ImGui::TextUnformatted("调色板 256"); break;
+                case vdp::ColorFormat::Palette2048: ImGui::TextUnformatted("调色板 2048"); break;
                 case vdp::ColorFormat::RGB555: ImGui::TextUnformatted("RGB 5:5:5"); break;
                 case vdp::ColorFormat::RGB888: ImGui::TextUnformatted("RGB 8:8:8"); break;
                 }
@@ -353,7 +353,7 @@ void VDP2VRAMAccessPatternsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("CP delayed?");
+        ImGui::TextUnformatted("CP 延迟?");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -361,15 +361,15 @@ void VDP2VRAMAccessPatternsView::Display() {
                 // Only scroll BGs are affected by this.
                 // The delay applies to all banks at once.
                 if (!bgParams.bitmap && bgParams.charPatDelay[0]) {
-                    ImGui::TextColored(colorBad, "yes");
+                    ImGui::TextColored(colorBad, "是");
                 } else {
-                    ImGui::TextColored(colorGood, "no");
+                    ImGui::TextColored(colorGood, "否");
                 }
             }
         }
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("Access shift?");
+        ImGui::TextUnformatted("访问偏移?");
         for (uint32 i = 0; i < 4; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
@@ -403,7 +403,7 @@ void VDP2VRAMAccessPatternsView::Display() {
                     }
 
                     if (delayedBanks.empty()) {
-                        ImGui::TextColored(colorGood, "no");
+                        ImGui::TextColored(colorGood, "否");
                     } else {
                         bool first = true;
                         for (const char *bank : delayedBanks) {
@@ -417,9 +417,9 @@ void VDP2VRAMAccessPatternsView::Display() {
                     }
                 } else {
                     if (bgParams.vramDataOffset[0] != 0u) {
-                        ImGui::TextColored(colorBad, "yes");
+                        ImGui::TextColored(colorBad, "是");
                     } else {
-                        ImGui::TextColored(colorGood, "no");
+                        ImGui::TextColored(colorGood, "否");
                     }
                 }
             }
@@ -427,15 +427,15 @@ void VDP2VRAMAccessPatternsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("VC delayed?");
+        ImGui::TextUnformatted("VC 延迟?");
         for (uint32 i = 0; i < 2; i++) {
             ImGui::TableNextColumn();
             if (regs2.bgEnabled[i]) {
                 if (regs2.bgParams[i + 1].vcellScrollEnable) {
                     if (nbgLayerStates[i].vcellScrollDelay) {
-                        ImGui::TextColored(colorBad, "yes");
+                        ImGui::TextColored(colorBad, "是");
                     } else {
-                        ImGui::TextColored(colorGood, "no");
+                        ImGui::TextColored(colorGood, "否");
                     }
                 } else {
                     ImGui::TextUnformatted("-");
@@ -445,15 +445,15 @@ void VDP2VRAMAccessPatternsView::Display() {
 
         ImGui::TableNextRow();
         ImGui::TableNextColumn();
-        ImGui::TextUnformatted("VC repeated?");
+        ImGui::TextUnformatted("VC 重复?");
 
         ImGui::TableNextColumn();
         if (regs2.bgEnabled[0]) {
             if (regs2.bgParams[1].vcellScrollEnable) {
                 if (nbgLayerStates[0].vcellScrollRepeat) {
-                    ImGui::TextColored(colorBad, "yes");
+                    ImGui::TextColored(colorBad, "是");
                 } else {
-                    ImGui::TextColored(colorGood, "no");
+                    ImGui::TextColored(colorGood, "否");
                 }
             } else {
                 ImGui::TextUnformatted("-");
@@ -463,7 +463,7 @@ void VDP2VRAMAccessPatternsView::Display() {
         ImGui::EndTable();
     }
 
-    if (ImGui::Button("Generate test case")) {
+    if (ImGui::Button("生成测试用例")) {
         const auto &state2 = probe.GetVDP2State();
         const uint32 CYCA0 = (regs2.ReadCYCA0L() << 16u) | regs2.ReadCYCA0U();
         const uint32 CYCA1 = (regs2.ReadCYCA1L() << 16u) | regs2.ReadCYCA1U();
@@ -738,9 +738,9 @@ void VDP2VRAMAccessPatternsView::Display() {
         SDL_SetClipboardText(testcase.c_str());
     }
     widgets::ExplanationTooltip(
-        "Generates test case code and copies it to the clipboard.\n"
-        "Helps developers add test cases to cover edge cases.\n"
-        "When pasting this on GitHub, make sure to wrap it in a code block (triple backticks) like this:\n"
+        "生成测试用例代码并复制到剪贴板。\n"
+        "帮助开发者添加测试用例以覆盖边界情况。\n"
+        "在 GitHub 上粘贴时，请确保用代码块（三重反引号）包裹，如下所示：\n"
         "```cpp\n"
         "<Ctrl+V>\n"
         "```",

@@ -16,15 +16,15 @@ void SH2InterruptTraceView::Display() {
 
     ImGui::BeginGroup();
 
-    ImGui::Checkbox("Enable", &m_tracer.traceInterrupts);
+    ImGui::Checkbox("启用", &m_tracer.traceInterrupts);
     ImGui::SameLine();
     ImGui::TextDisabled("(?)");
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("You must also enable tracing in Debug > Enable tracing (F11)");
+        ImGui::TextUnformatted("你还必须在 调试 > 启用跟踪 (F11) 中启用跟踪");
         ImGui::EndTooltip();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Clear##trace")) {
+    if (ImGui::Button("清除##trace")) {
         m_tracer.interrupts.Clear();
         m_tracer.ResetInterruptCounter();
     }
@@ -34,11 +34,11 @@ void SH2InterruptTraceView::Display() {
         ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_PreferSortDescending);
         ImGui::TableSetupColumn("PC", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 8);
-        ImGui::TableSetupColumn("Vec", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("向量", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 2);
-        ImGui::TableSetupColumn("Lv", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
+        ImGui::TableSetupColumn("级别", ImGuiTableColumnFlags_WidthFixed | ImGuiTableColumnFlags_NoSort,
                                 paddingWidth * 2 + hexCharWidth * 2);
-        ImGui::TableSetupColumn("Source", ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_NoSort);
+        ImGui::TableSetupColumn("源", ImGuiTableColumnFlags_WidthStretch | ImGuiTableColumnFlags_NoSort);
         ImGui::TableSetupScrollFreeze(1, 1);
         ImGui::TableHeadersRow();
 

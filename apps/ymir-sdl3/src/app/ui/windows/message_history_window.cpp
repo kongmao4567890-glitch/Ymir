@@ -7,7 +7,7 @@ namespace app::ui {
 MessageHistoryWindow::MessageHistoryWindow(SharedContext &context)
     : WindowBase(context) {
 
-    m_windowConfig.name = "Message history";
+    m_windowConfig.name = "消息历史";
 }
 
 void MessageHistoryWindow::PrepareWindow() {
@@ -20,8 +20,8 @@ void MessageHistoryWindow::PrepareWindow() {
 
 void MessageHistoryWindow::DrawContents() {
     if (ImGui::BeginTable("msg_history", 2, ImGuiTableFlags_SizingFixedFit)) {
-        ImGui::TableSetupColumn("Timestamp");
-        ImGui::TableSetupColumn("Message");
+        ImGui::TableSetupColumn("时间戳");
+        ImGui::TableSetupColumn("消息");
         ImGui::TableHeadersRow();
 
         std::unique_lock lock{m_context.locks.messages};

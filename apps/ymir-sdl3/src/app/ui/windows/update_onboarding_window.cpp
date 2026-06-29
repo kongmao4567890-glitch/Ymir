@@ -17,7 +17,7 @@ namespace app::ui {
 UpdateOnboardingWindow::UpdateOnboardingWindow(SharedContext &context)
     : WindowBase(context) {
 
-    m_windowConfig.name = "Automatic update checks";
+    m_windowConfig.name = "自动检查更新";
     m_windowConfig.flags = ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse;
 }
 
@@ -30,26 +30,26 @@ void UpdateOnboardingWindow::PrepareWindow() {
 void UpdateOnboardingWindow::DrawContents() {
     ImGui::PushTextWrapPos(450.0f * m_context.displayScale);
 
-    ImGui::TextUnformatted("Ymir can check for new versions automatically on startup.");
-    ImGui::TextUnformatted("This requires an Internet connection and will reach github.com to check for new versions.");
-    ImGui::TextUnformatted("Please make your choices below:");
-    ImGui::Checkbox("Check for updates on startup", &m_checkForUpdates);
+    ImGui::TextUnformatted("Ymir 可以在启动时自动检查新版本。");
+    ImGui::TextUnformatted("这需要网络连接，并将访问 github.com 来检查新版本。");
+    ImGui::TextUnformatted("请在下方做出选择：");
+    ImGui::Checkbox("启动时检查更新", &m_checkForUpdates);
     widgets::ExplanationTooltip(
-        "Ymir will check for updates whenever it is launched, and notify you if a new version is available.\n"
-        "Upon accepting, Ymir will immediately check for updates if this option is enabled.",
+        "启用后，Ymir 会在每次启动时检查更新，并在有新版本时通知你。\n"
+        "接受后，如果启用了此选项，Ymir 将立即检查更新。",
         m_context.displayScale);
-    ImGui::Checkbox("Update to nightly builds", &m_includeNightlyBuilds);
+    ImGui::Checkbox("更新到 nightly 版本", &m_includeNightlyBuilds);
     widgets::ExplanationTooltip(
-        "Whenever Ymir checks for updates, it will also consider nightly builds.\n"
-        "Nightly builds include the latest features and bug fixes, but are work-in-progress and may contain bugs",
+        "Ymir 检查更新时，也会考虑 nightly 版本。\n"
+        "Nightly 版本包含最新的功能和错误修复，但属于开发中版本，可能存在错误",
         m_context.displayScale);
 
     ImGui::NewLine();
-    ImGui::TextUnformatted("Choose Accept to apply these settings or Decide later to close this window now.\n"
-                           "If you choose to decide later, this popup will appear again on next startup.");
+    ImGui::TextUnformatted("点击“接受”应用这些设置，或点击“稍后决定”关闭此窗口。\n"
+                           "如果选择稍后决定，此弹窗将在下次启动时再次出现。");
 
     ImGui::Separator();
-    if (ImGui::Button("Accept")) {
+    if (ImGui::Button("接受")) {
         const auto updatesPath = m_context.profile.GetPath(ProfilePath::PersistentState) / "updates";
         const auto onboardedPath = updatesPath / ".onboarded";
         std::filesystem::create_directories(updatesPath);
@@ -66,7 +66,7 @@ void UpdateOnboardingWindow::DrawContents() {
         Open = false;
     }
     ImGui::SameLine();
-    if (ImGui::Button("Decide later")) {
+    if (ImGui::Button("稍后决定")) {
         Open = false;
     }
 

@@ -33,7 +33,7 @@ void RewindBar(SharedContext &context, float alpha, const RewindBarStyle &style)
                                          ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings |
                                          ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav |
                                          ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBackground;
-    if (ImGui::Begin("Rewind buffer bar", nullptr, windowFlags)) {
+    if (ImGui::Begin("回退缓冲条", nullptr, windowFlags)) {
         const ImVec2 pos = ImGui::GetCursorScreenPos();
         const ImVec2 avail = ImGui::GetContentRegionAvail();
 

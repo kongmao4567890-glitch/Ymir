@@ -94,7 +94,7 @@ inline constexpr License licenseBSD3        {.name = "BSD-3-Clause",  .url = "ht
 inline constexpr License licenseMIT         {.name = "MIT",           .url = "https://opensource.org/licenses/MIT"};
 inline constexpr License licenseMITCurl     {.name = "MIT-cURL",      .url = "https://github.com/curl/curl/blob/master/COPYING"};
 inline constexpr License licenseMITRtMidi   {.name = "MIT-RtMidi",    .url = "https://github.com/thestk/rtmidi/blob/master/LICENSE"};
-inline constexpr License licensePublicDomain{.name = "Public domain", .url = nullptr};
+inline constexpr License licensePublicDomain{.name = "公有领域", .url = nullptr};
 //inline constexpr License licenseUnlicense   {.name = "Unlicense",     .url = "https://opensource.org/licenses/unlicense"};
 inline constexpr License licenseZlib        {.name = "Zlib",          .url = "https://opensource.org/licenses/Zlib"};
 inline constexpr License licenseOFL         {.name = "OFL-1.1",       .url = "https://opensource.org/licenses/OFL-1.1"};
@@ -187,27 +187,27 @@ const char *RendererToHumanReadableString(std::string_view driver) {
 // If only SDL3 exposed the nice desc field they already have in the SDL_AudioDriver struct...
 // Also note that just because certain systems are listed here, it doesn't mean Ymir actually supports them.
 static const std::unordered_map<std::string_view, const char *> kAudioDrivers = {
-    {"AAudio", "AAudio audio driver"},
-    {"alsa", "ALSA PCM audio"},
+    {"AAudio", "AAudio 音频驱动"},
+    {"alsa", "ALSA PCM 音频"},
     {"coreaudio", "CoreAudio"},
     {"directsound", "DirectSound"},
-    {"disk", "direct-to-disk audio"},
+    {"disk", "直接写入磁盘音频"},
     {"dsp", "Open Sound System (/dev/dsp)"},
-    {"dummy", "SDL dummy audio driver"},
-    {"emscripten", "SDL emscripten audio driver"},
+    {"dummy", "SDL 虚拟音频驱动"},
+    {"emscripten", "SDL emscripten 音频驱动"},
     {"haiku", "Haiku BSoundPlayer"},
     {"jack", "JACK Audio Connection Kit"},
-    {"netbsd", "NetBSD audio"},
-    {"N-Gage", "N-Gage audio driver"},
-    {"n3ds", "SDL N3DS audio driver"},
-    {"openslES", "OpenSL ES audio driver"},
+    {"netbsd", "NetBSD 音频"},
+    {"N-Gage", "N-Gage 音频驱动"},
+    {"n3ds", "SDL N3DS 音频驱动"},
+    {"openslES", "OpenSL ES 音频驱动"},
     {"pipewire", "Pipewire"},
-    {"psp", "PSP audio driver"},
-    {"ps2", "PS2 audio driver"},
+    {"psp", "PSP 音频驱动"},
+    {"ps2", "PS2 音频驱动"},
     {"pulseaudio", "PulseAudio"},
-    {"qsa", "QNX QSA Audio"},
+    {"qsa", "QNX QSA 音频"},
     {"sndio", "OpenBSD sndio"},
-    {"vita", "VITA audio driver"},
+    {"vita", "VITA 音频驱动"},
     {"wasapi", "WASAPI"},
 };
 
@@ -215,13 +215,13 @@ const char *AudioDriverToHumanReadableString(std::string_view driver) {
     if (kAudioDrivers.contains(driver)) {
         return kAudioDrivers.at(driver);
     }
-    return "unknown";
+    return "未知";
 }
 
 AboutWindow::AboutWindow(SharedContext &context)
     : WindowBase(context) {
 
-    m_windowConfig.name = "About";
+    m_windowConfig.name = "关于";
 }
 
 void AboutWindow::PrepareWindow() {
@@ -236,7 +236,7 @@ void AboutWindow::PrepareWindow() {
 
 void AboutWindow::DrawContents() {
     if (ImGui::BeginTabBar("##tabs")) {
-        if (ImGui::BeginTabItem("About")) {
+        if (ImGui::BeginTabItem("关于")) {
             if (ImGui::BeginChild("##about")) {
                 DrawAboutTab();
             }
@@ -244,7 +244,7 @@ void AboutWindow::DrawContents() {
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem("Dependencies")) {
+        if (ImGui::BeginTabItem("依赖")) {
             if (ImGui::BeginChild("##dependencies")) {
                 DrawDependenciesTab();
             }
@@ -252,7 +252,7 @@ void AboutWindow::DrawContents() {
             ImGui::EndTabItem();
         }
 
-        if (ImGui::BeginTabItem("Acknowledgements")) {
+        if (ImGui::BeginTabItem("致谢")) {
             if (ImGui::BeginChild("##acknowledgements", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar)) {
                 DrawAcknowledgementsTab();
             }
@@ -276,47 +276,47 @@ void AboutWindow::DrawAboutTab() {
     ImGui::TextUnformatted("Ymir");
     ImGui::PopFont();
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.xlarge);
-    ImGui::TextUnformatted("Version " Ymir_VERSION);
+    ImGui::TextUnformatted("版本 " Ymir_VERSION);
     ImGui::PopFont();
 #if Ymir_DEV_BUILD
     ImGui::SameLine();
     ImGui::PushFont(m_context.fonts.sansSerif.regular, m_context.fontSizes.xlarge);
-    ImGui::TextUnformatted("(development build)");
+    ImGui::TextUnformatted("(开发版)");
     ImGui::PopFont();
 #endif
 
     ImGui::PushFont(m_context.fonts.sansSerif.regular, m_context.fontSizes.large);
-    ImGui::TextUnformatted("A Sega Saturn emulator");
+    ImGui::TextUnformatted("世嘉土星模拟器");
     ImGui::PopFont();
 
-    if (ImGui::Button("Copy version")) {
+    if (ImGui::Button("复制版本")) {
         SDL_SetClipboardText(Ymir_VERSION);
     }
 
     ImGui::NewLine();
-    ImGui::Text("Compiled with %s %s.", compiler::name, compiler::version::string.c_str());
+    ImGui::Text("使用 %s %s 编译。", compiler::name, compiler::version::string.c_str());
 #ifdef Ymir_BUILD_TIMESTAMP
     if (auto buildTimestamp = util::parse8601(Ymir_BUILD_TIMESTAMP)) {
         auto localBuildTime = util::to_local_time(std::chrono::system_clock::time_point(*buildTimestamp));
-        ImGui::TextUnformatted(fmt::format("Built at {}", localBuildTime).c_str());
+        ImGui::TextUnformatted(fmt::format("构建时间 {}", localBuildTime).c_str());
     }
 #endif
     if constexpr (ymir::version::is_nightly_build) {
-        ImGui::TextUnformatted("Nightly release channel.");
+        ImGui::TextUnformatted("Nightly 发布通道。");
     } else if constexpr (ymir::version::is_stable_build) {
-        ImGui::TextUnformatted("Stable release channel.");
+        ImGui::TextUnformatted("稳定版发布通道。");
     } else if constexpr (ymir::version::is_local_build) {
-        ImGui::TextUnformatted("Local development build.");
+        ImGui::TextUnformatted("本地开发构建。");
     }
 
 #if defined(__x86_64__) || defined(_M_X64)
     #ifdef Ymir_AVX2
-    ImGui::Text("Using AVX2 instruction set.");
+    ImGui::Text("使用 AVX2 指令集。");
     #else
-    ImGui::Text("Using SSE2 instruction set.");
+    ImGui::Text("使用 SSE2 指令集。");
     #endif
 #elif defined(__aarch64__) || defined(__arm64__)
-    ImGui::Text("Using NEON instruction set.");
+    ImGui::Text("使用 NEON 指令集。");
 #endif
 
     SDL_PropertiesID rendererProps = SDL_GetRendererProperties(graphicsService.GetRenderer());
@@ -334,34 +334,36 @@ void AboutWindow::DrawAboutTab() {
     } else {
         graphicsBackendName = RendererToHumanReadableString(rendererName);
     }
-    ImGui::Text("Using %s graphics backend for GUI rendering.", graphicsBackendName);
+    ImGui::Text("使用 %s 图形后端进行界面渲染。", graphicsBackendName);
     const auto &vdp = m_context.saturn.GetVDP();
     {
         std::unique_lock lock{m_context.locks.renderer};
-        ImGui::Text("Using %s VDP1/VDP2 renderer.", vdp.GetRenderer().GetName().data());
+        ImGui::Text("使用 %s VDP1/VDP2 渲染器。", vdp.GetRenderer().GetName().data());
     }
 
     const char *audioDriver = SDL_GetCurrentAudioDriver();
-    ImGui::Text("Using %s audio driver.", AudioDriverToHumanReadableString(audioDriver));
-    ImGui::Text("Using %s MIDI API.", RtMidi::getApiDisplayName(midiService.GetInput()->getCurrentApi()).c_str());
+    ImGui::Text("使用 %s 音频驱动。", AudioDriverToHumanReadableString(audioDriver));
+    ImGui::Text("使用 %s MIDI API。", RtMidi::getApiDisplayName(midiService.GetInput()->getCurrentApi()).c_str());
 
     ImGui::NewLine();
-    ImGui::TextUnformatted("Licensed under ");
+    ImGui::TextUnformatted("采用 ");
     ImGui::SameLine(0, 0);
     ImGui::TextLinkOpenURL("GPLv3", "https://www.gnu.org/licenses/gpl-3.0.en.html");
 
-    ImGui::TextUnformatted("The source code can be found at ");
+    ImGui::TextUnformatted("源代码可在 ");
     ImGui::SameLine(0, 0);
     ImGui::TextLinkOpenURL("https://github.com/StrikerX3/Ymir");
 
     ImGui::NewLine();
-    ImGui::TextUnformatted("Join the official ");
+    ImGui::TextUnformatted("加入官方 ");
     ImGui::SameLine(0, 0);
-    ImGui::TextLinkOpenURL("Discord server", "https://discord.gg/NN3A7n5dzn");
+    ImGui::TextLinkOpenURL("Discord 服务器", "https://discord.gg/NN3A7n5dzn");
 
-    ImGui::TextUnformatted("Consider supporting my work on ");
+    ImGui::TextUnformatted("欢迎在 ");
     ImGui::SameLine(0, 0);
     ImGui::TextLinkOpenURL("Patreon", "https://www.patreon.com/StrikerX3");
+    ImGui::SameLine(0, 0);
+    ImGui::TextUnformatted(" 上支持我的工作。");
 
     ImGui::PopTextWrapPos();
 }
@@ -372,13 +374,13 @@ void AboutWindow::DrawDependenciesTab() {
     // -----------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::TextUnformatted("Libraries");
+    ImGui::TextUnformatted("库");
     ImGui::PopFont();
 
     if (ImGui::BeginTable("libraries", 3, kTableFlags)) {
-        ImGui::TableSetupColumn("Name");
-        ImGui::TableSetupColumn("License");
-        ImGui::TableSetupColumn("Links");
+        ImGui::TableSetupColumn("名称");
+        ImGui::TableSetupColumn("许可证");
+        ImGui::TableSetupColumn("链接");
         ImGui::TableHeadersRow();
 
         for (auto &dep : depsCode) {
@@ -414,7 +416,7 @@ void AboutWindow::DrawDependenciesTab() {
                 ImGui::SameLine();
                 // TODO: don't hardcode colors!
                 ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.77f, 0.8f, 1.0f));
-                ImGui::TextUnformatted("(private)");
+                ImGui::TextUnformatted("(私有)");
                 ImGui::PopStyleColor();
             }
             if (dep.homeURL != nullptr) {
@@ -431,13 +433,13 @@ void AboutWindow::DrawDependenciesTab() {
     ImGui::Separator();
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::TextUnformatted("Fonts");
+    ImGui::TextUnformatted("字体");
     ImGui::PopFont();
 
     if (ImGui::BeginTable("fonts", 3, kTableFlags)) {
-        ImGui::TableSetupColumn("Name");
-        ImGui::TableSetupColumn("License");
-        ImGui::TableSetupColumn("Link");
+        ImGui::TableSetupColumn("名称");
+        ImGui::TableSetupColumn("许可证");
+        ImGui::TableSetupColumn("链接");
         ImGui::TableHeadersRow();
 
         for (auto &font : fontDescs) {
@@ -480,7 +482,7 @@ void AboutWindow::DrawAcknowledgementsTab() {
     ImGui::PushTextWrapPos(ImGui::GetWindowContentRegionMax().x);
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::TextUnformatted("Ymir was made possible by");
+    ImGui::TextUnformatted("Ymir 的诞生离不开");
     ImGui::PopFont();
 
     auto ack = [&](const char *name, const char *url) {
@@ -497,76 +499,76 @@ void AboutWindow::DrawAcknowledgementsTab() {
         ImGui::SameLine();
 
         ImGui::PushFont(m_context.fonts.sansSerif.regular, m_context.fontSizes.medium);
-        ImGui::Text("by %s", author);
+        ImGui::Text("作者：%s", author);
         ImGui::PopFont();
     };
 
-    ackWithAuthor("antime's feeble Sega Saturn page", "antime", "https://antime.kapsi.fi/sega/");
-    ackWithAuthor("Hardware research and signal traces", "Sergiy Dvodnenko (srg320)",
+    ackWithAuthor("antime 的简陋世嘉土星页面", "antime", "https://antime.kapsi.fi/sega/");
+    ackWithAuthor("硬件研究和信号追踪", "Sergiy Dvodnenko (srg320)",
                   "https://github.com/srg320/Saturn_hw");
-    ackWithAuthor("Original research", "Charles MacDonald",
+    ackWithAuthor("原始研究", "Charles MacDonald",
                   "https://web.archive.org/web/20150119062930/http://cgfm2.emuviews.com/saturn.php");
     {
         ImGui::Indent();
-        ack("Sega Saturn hardware notes (sattech.txt)",
+        ack("世嘉土星硬件笔记 (sattech.txt)",
             "https://web.archive.org/web/20140318183509/http://cgfm2.emuviews.com/txt/sattech.txt");
-        ack("VDP1 hardware notes (vdp1tech.txt)",
+        ack("VDP1 硬件笔记 (vdp1tech.txt)",
             "https://web.archive.org/web/20150106171745/http://cgfm2.emuviews.com/sat/vdp1tech.txt");
-        ack("Sega Saturn Cartridge Information (satcart.txt)",
+        ack("世嘉土星卡带信息 (satcart.txt)",
             "https://web.archive.org/web/20140724061526/http://cgfm2.emuviews.com/sat/satcart.txt");
-        ack("EMS Action Replay Plus notes (satar.txt)",
+        ack("EMS Action Replay Plus 笔记 (satar.txt)",
             "https://web.archive.org/web/20140724045721/http://cgfm2.emuviews.com/sat/satar.txt");
-        ack("Comms Link hardware notes (comminfo.txt)",
+        ack("Comms Link 硬件笔记 (comminfo.txt)",
             "https://web.archive.org/web/20140724035829/http://cgfm2.emuviews.com/sat/comminfo.txt");
         ImGui::Unindent();
     }
-    ackWithAuthor("Collection of Dreamcast docs", "Senryoku",
+    ackWithAuthor("Dreamcast 文档集合", "Senryoku",
                   "https://github.com/Senryoku/dreamcast-docs/tree/master/AICA/DOCS");
     {
         ImGui::Indent();
-        ackWithAuthor("Original AICA research", "Neill Corlett",
+        ackWithAuthor("原始 AICA 研究", "Neill Corlett",
                       "https://raw.githubusercontent.com/Senryoku/dreamcast-docs/refs/heads/master/"
                       "AICA/DOCS/myaica.txt");
         ImGui::Unindent();
     }
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
-    ImGui::TextUnformatted("CD block research");
+    ImGui::TextUnformatted("CD block 研究");
     ImGui::PopFont();
     {
         ImGui::Indent();
-        ackWithAuthor("CD block modchip research", "Pinchy",
+        ackWithAuthor("CD block 改版芯片研究", "Pinchy",
                       "https://segaxtreme.net/threads/finally-made-a-working-modchip.14781/");
-        ackWithAuthor("CD interface and signal traces", "Pinchy",
+        ackWithAuthor("CD 接口和信号追踪", "Pinchy",
                       "https://web.archive.org/web/20111203080908/http://www.crazynation.org/SEGA/Saturn/cd_tech.htm");
         ackWithAuthor(
-            "CD drive command log", "Pinchy",
+            "CD 驱动器命令日志", "Pinchy",
             "https://web.archive.org/web/20111011104440/http://www.crazynation.org/SEGA/Saturn/files/command_log.txt");
         ackWithAuthor(
-            "Raw optical disc format", "Joachim Metz",
+            "原始光盘格式", "Joachim Metz",
             "https://github.com/libyal/libodraw/blob/main/documentation/Optical%20disc%20RAW%20format.asciidoc");
-        ackWithAuthor("YGR registers, ROM disassembly and signal traces", "Sergiy Dvodnenko (srg320)",
+        ackWithAuthor("YGR 寄存器、ROM 反汇编和信号追踪", "Sergiy Dvodnenko (srg320)",
                       "https://github.com/srg320/Saturn_hw/tree/main/CDB");
         ImGui::Unindent();
     }
     ack("Yabause wiki", "http://wiki.yabause.org/");
-    ack("SegaRetro on Sega Saturn", "https://segaretro.org/Sega_Saturn");
+    ack("SegaRetro 上的世嘉土星", "https://segaretro.org/Sega_Saturn");
 
     // -----------------------------------------------------------------------------
 
     ImGui::NewLine();
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::TextUnformatted("Helpful tools and test suites");
+    ImGui::TextUnformatted("有用的工具和测试套件");
     ImGui::PopFont();
 
     ackWithAuthor("libyaul", "mrkotfw and contributors", "https://github.com/yaul-org/libyaul");
     ackWithAuthor("libyaul-examples", "mrkotfw and contributors", "https://github.com/yaul-org/libyaul-examples");
     ackWithAuthor("saturn-tests", "StrikerX3", "https://github.com/StrikerX3/saturn-tests");
-    ackWithAuthor("SH-4 single step tests", "raddad772", "https://github.com/SingleStepTests/sh4");
-    ackWithAuthor("M68000 single step tests", "raddad772", "https://github.com/SingleStepTests/m68000");
-    ackWithAuthor("Various tests", "celeriyacon", "https://github.com/celeriyacon");
+    ackWithAuthor("SH-4 单步测试", "raddad772", "https://github.com/SingleStepTests/sh4");
+    ackWithAuthor("M68000 单步测试", "raddad772", "https://github.com/SingleStepTests/m68000");
+    ackWithAuthor("各种测试", "celeriyacon", "https://github.com/celeriyacon");
     ImGui::Indent();
-    ImGui::TextUnformatted("cdbtest, memtimes, misctest, scspadpcm, scsptest, scutest, sh2test, smpctest and vdp2test");
+    ImGui::TextUnformatted("cdbtest, memtimes, misctest, scspadpcm, scsptest, scutest, sh2test, smpctest 和 vdp2test");
     ImGui::Unindent();
 
     // -----------------------------------------------------------------------------
@@ -574,60 +576,60 @@ void AboutWindow::DrawAcknowledgementsTab() {
     ImGui::NewLine();
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::TextUnformatted("Other emulators that inspired Ymir");
+    ImGui::TextUnformatted("启发 Ymir 的其他模拟器");
     ImGui::PopFont();
 
     ackWithAuthor("Saturn MiSTer", "Sergiy Dvodnenko (srg320)", "https://github.com/MiSTer-devel/Saturn_MiSTer");
 
     ackWithAuthor("Mednafen", "various contributors", "https://mednafen.github.io/");
     ImGui::SameLine();
-    ImGui::TextLinkOpenURL("(libretro git mirror)##mednafen", "https://github.com/libretro-mirrors/mednafen-git");
+    ImGui::TextLinkOpenURL("(libretro git 镜像)##mednafen", "https://github.com/libretro-mirrors/mednafen-git");
 
     ackWithAuthor("Yaba Sanshiro 2", "devmiyax", "https://github.com/devmiyax/yabause");
     ImGui::SameLine();
-    ImGui::TextLinkOpenURL("(site)##yaba_sanshiro_2", "https://www.uoyabause.org/");
+    ImGui::TextLinkOpenURL("(网站)##yaba_sanshiro_2", "https://www.uoyabause.org/");
 
     ackWithAuthor("Yabause", "Guillaume Duhamel and contributors", "https://github.com/Yabause/yabause");
 
     ackWithAuthor("Mesen2", "Sour and contributors", "https://github.com/SourMesen/Mesen2");
     ImGui::SameLine();
-    ImGui::TextLinkOpenURL("(site)##mesen", "https://www.mesen.ca/");
+    ImGui::TextLinkOpenURL("(网站)##mesen", "https://www.mesen.ca/");
 
     ackWithAuthor("openMSX", "openMSX developers", "https://github.com/openMSX/openMSX");
     ImGui::SameLine();
-    ImGui::TextLinkOpenURL("(site)##openmsx", "https://openmsx.org/");
+    ImGui::TextLinkOpenURL("(网站)##openmsx", "https://openmsx.org/");
 
     ackWithAuthor("DuckStation", "Stenzek and contributors", "https://github.com/stenzek/duckstation");
     ImGui::SameLine();
-    ImGui::TextLinkOpenURL("(site)##duckstation", "https://www.duckstation.org/");
+    ImGui::TextLinkOpenURL("(网站)##duckstation", "https://www.duckstation.org/");
 
     // -----------------------------------------------------------------------------
 
     ImGui::NewLine();
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::TextUnformatted("Special thanks");
+    ImGui::TextUnformatted("特别感谢");
     ImGui::PopFont();
 
-    ImGui::TextUnformatted("To the ");
+    ImGui::TextUnformatted("感谢 ");
     ImGui::SameLine(0, 0);
-    ImGui::TextLinkOpenURL("/r/EmuDev community", "https://www.reddit.com/r/EmuDev/");
+    ImGui::TextLinkOpenURL("/r/EmuDev 社区", "https://www.reddit.com/r/EmuDev/");
     ImGui::SameLine(0, 0);
-    ImGui::TextUnformatted(" and their ");
+    ImGui::TextUnformatted(" 及其 ");
     ImGui::SameLine(0, 0);
-    ImGui::TextLinkOpenURL("Discord server", "https://discord.gg/dkmJAes");
+    ImGui::TextLinkOpenURL("Discord 服务器", "https://discord.gg/dkmJAes");
     ImGui::SameLine(0, 0);
-    ImGui::TextUnformatted(".");
+    ImGui::TextUnformatted("。");
 
-    ImGui::TextUnformatted("To the ");
+    ImGui::TextUnformatted("感谢 ");
     ImGui::SameLine(0, 0);
-    ImGui::TextLinkOpenURL("project contributors", "https://github.com/StrikerX3/Ymir/graphs/contributors");
+    ImGui::TextLinkOpenURL("项目贡献者", "https://github.com/StrikerX3/Ymir/graphs/contributors");
     ImGui::SameLine(0, 0);
-    ImGui::TextUnformatted(" and users ");
+    ImGui::TextUnformatted(" 以及 ");
     ImGui::SameLine(0, 0);
-    ImGui::TextLinkOpenURL("reporting issues and feature requests", "https://github.com/StrikerX3/Ymir/issues");
+    ImGui::TextLinkOpenURL("报告问题和功能需求的用户", "https://github.com/StrikerX3/Ymir/issues");
     ImGui::SameLine(0, 0);
-    ImGui::TextUnformatted(", including:");
+    ImGui::TextUnformatted("，包括：");
     ImGui::Indent();
     ImGui::TextUnformatted("BlueInterlude, "
                            "bsdcode, "
@@ -645,11 +647,11 @@ void AboutWindow::DrawAcknowledgementsTab() {
                            "Wunkolo.");
     ImGui::Unindent();
 
-    ImGui::TextUnformatted("To the friends in the ");
+    ImGui::TextUnformatted("感谢 ");
     ImGui::SameLine(0, 0);
-    ImGui::TextLinkOpenURL("official Ymir Discord server", "https://discord.gg/NN3A7n5dzn");
+    ImGui::TextLinkOpenURL("Ymir 官方 Discord 服务器", "https://discord.gg/NN3A7n5dzn");
     ImGui::SameLine(0, 0);
-    ImGui::TextUnformatted(", especially:");
+    ImGui::TextUnformatted("中的朋友们，特别是：");
     ImGui::Indent();
     ImGui::TextUnformatted("Aydan Watkins, "
                            "celeriyacon, "
@@ -671,11 +673,11 @@ void AboutWindow::DrawAcknowledgementsTab() {
                            "Zet-sensei.");
     ImGui::Unindent();
 
-    ImGui::TextUnformatted("To the current and former ");
+    ImGui::TextUnformatted("感谢当前和曾经的 ");
     ImGui::SameLine(0, 0);
-    ImGui::TextLinkOpenURL("Patreon supporters", "https://www.patreon.com/StrikerX3");
+    ImGui::TextLinkOpenURL("Patreon 支持者", "https://www.patreon.com/StrikerX3");
     ImGui::SameLine(0, 0);
-    ImGui::TextUnformatted(":");
+    ImGui::TextUnformatted("：");
     ImGui::Indent();
     ImGui::TextUnformatted("Aitor Guevara, "
                            "Armonte, "
@@ -706,7 +708,7 @@ void AboutWindow::DrawAcknowledgementsTab() {
     ImGui::Unindent();
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::TextUnformatted("And YOU!");
+    ImGui::TextUnformatted("还有你！");
     ImGui::PopFont();
 
     ImGui::PopTextWrapPos();

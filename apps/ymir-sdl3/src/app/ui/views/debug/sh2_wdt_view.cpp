@@ -36,20 +36,20 @@ void SH2WatchdogTimerView::Display() {
             ImGui::AlignTextToFramePadding();
             ImGui::TextUnformatted("WTCSR");
             ImGui::EndGroup();
-            ImGui::SetItemTooltip("Watchdog Timer Control/Status Register");
+            ImGui::SetItemTooltip("看门狗定时器控制/状态寄存器");
         }
 
         if (ImGui::TableNextColumn()) {
             ImGui::Checkbox("OVF##wtcsr", &wdt.WTCSR.OVF);
-            ImGui::SetItemTooltip("Overflow Flag");
+            ImGui::SetItemTooltip("溢出标志");
 
             ImGui::SameLine();
             ImGui::Checkbox("WT/!IT##wtcsr", &wdt.WTCSR.WT_nIT);
-            ImGui::SetItemTooltip("Timer Mode Select");
+            ImGui::SetItemTooltip("定时器模式选择");
 
             ImGui::SameLine();
             ImGui::Checkbox("TME##wtcsr", &wdt.WTCSR.TME);
-            ImGui::SetItemTooltip("Timer Enable");
+            ImGui::SetItemTooltip("定时器启用");
 
             static constexpr const char *kCKSValues[] = {"Phi/2",   "Phi/64",   "Phi/128",  "Phi/256",
                                                          "Phi/512", "Phi/1024", "Phi/4096", "Phi/8192"};
@@ -69,7 +69,7 @@ void SH2WatchdogTimerView::Display() {
             ImGui::AlignTextToFramePadding();
             ImGui::TextUnformatted("CKS2-0");
             ImGui::EndGroup();
-            ImGui::SetItemTooltip("Clock Select");
+            ImGui::SetItemTooltip("时钟选择");
         }
 
         ImGui::TableNextRow();
@@ -88,20 +88,20 @@ void SH2WatchdogTimerView::Display() {
             ImGui::AlignTextToFramePadding();
             ImGui::TextUnformatted("RSTCSR");
             ImGui::EndGroup();
-            ImGui::SetItemTooltip("Reset Control/Status Register");
+            ImGui::SetItemTooltip("复位控制/状态寄存器");
         }
 
         if (ImGui::TableNextColumn()) {
             ImGui::Checkbox("WOVF##rstcsr", &wdt.RSTCSR.WOVF);
-            ImGui::SetItemTooltip("Watchdog Timer Overflow Flag");
+            ImGui::SetItemTooltip("看门狗定时器溢出标志");
 
             ImGui::SameLine();
             ImGui::Checkbox("RSTE##rstcsr", &wdt.RSTCSR.RSTE);
-            ImGui::SetItemTooltip("Reset Enable");
+            ImGui::SetItemTooltip("复位启用");
 
             ImGui::SameLine();
             ImGui::Checkbox("RSTS##rstcsr", &wdt.RSTCSR.RSTS);
-            ImGui::SetItemTooltip("Reset Select");
+            ImGui::SetItemTooltip("复位选择");
         }
 
         ImGui::EndTable();
@@ -118,7 +118,7 @@ void SH2WatchdogTimerView::Display() {
         ImGui::AlignTextToFramePadding();
         ImGui::TextUnformatted("WTCNT");
         ImGui::EndGroup();
-        ImGui::SetItemTooltip("Watchdog Timer Counter");
+        ImGui::SetItemTooltip("看门狗定时器计数器");
     }
 
     ImGui::SameLine();
@@ -135,7 +135,7 @@ void SH2WatchdogTimerView::Display() {
     ImGui::SameLine();
     ImGui::TextUnformatted("VCRWDT.WITV7-0");
     ImGui::EndGroup();
-    ImGui::SetItemTooltip("Watchdog timer ITI interrupt vector");
+    ImGui::SetItemTooltip("看门狗定时器 ITI 中断向量");
 
     ImGui::SameLine();
 
@@ -151,7 +151,7 @@ void SH2WatchdogTimerView::Display() {
     ImGui::SameLine();
     ImGui::TextUnformatted("IPRA.WDTIP3-0");
     ImGui::EndGroup();
-    ImGui::SetItemTooltip("Watchdog timer interrupt level");
+    ImGui::SetItemTooltip("看门狗定时器中断级别");
 }
 
 } // namespace app::ui

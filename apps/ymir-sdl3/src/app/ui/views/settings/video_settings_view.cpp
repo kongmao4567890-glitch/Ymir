@@ -24,12 +24,12 @@ void VideoSettingsView::Display() {
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Display");
+    ImGui::SeparatorText("显示");
     ImGui::PopFont();
 
-    MakeDirty(ImGui::Checkbox("Force integer scaling", &settings.forceIntegerScaling));
-    MakeDirty(ImGui::Checkbox("Force aspect ratio", &settings.forceAspectRatio));
-    widgets::ExplanationTooltip("If disabled, forces square pixels.", m_context.displayScale);
+    MakeDirty(ImGui::Checkbox("强制整数缩放", &settings.forceIntegerScaling));
+    MakeDirty(ImGui::Checkbox("强制宽高比", &settings.forceAspectRatio));
+    widgets::ExplanationTooltip("禁用时，强制使用方形像素。", m_context.displayScale);
     ImGui::SameLine();
     if (MakeDirty(ImGui::Button("4:3"))) {
         settings.forcedAspect = 4.0 / 3.0;
@@ -52,38 +52,37 @@ void VideoSettingsView::Display() {
 
     ImGui::Separator();
 
-    MakeDirty(ImGui::Checkbox("Auto-fit window to screen", &settings.autoResizeWindow));
+    MakeDirty(ImGui::Checkbox("自动调整窗口以适应屏幕", &settings.autoResizeWindow));
     widgets::ExplanationTooltip(
-        "If forced aspect ratio is disabled, adjusts and recenters the window whenever the display "
-        "resolution changes.",
+        "如果禁用了强制宽高比，则在显示分辨率改变时调整并重新居中窗口。",
         m_context.displayScale);
     ImGui::SameLine();
     if (settings.displayVideoOutputInWindow) {
         ImGui::BeginDisabled();
     }
-    if (MakeDirty(ImGui::Button("Fit now"))) {
+    if (MakeDirty(ImGui::Button("立即调整"))) {
         m_context.EnqueueEvent(events::gui::FitWindowToScreen());
     }
     if (settings.displayVideoOutputInWindow) {
         ImGui::EndDisabled();
     }
 
-    if (MakeDirty(ImGui::Checkbox("Windowed video output", &settings.displayVideoOutputInWindow))) {
+    if (MakeDirty(ImGui::Checkbox("窗口化视频输出", &settings.displayVideoOutputInWindow))) {
         m_context.EnqueueEvent(events::gui::FitWindowToScreen());
     }
-    widgets::ExplanationTooltip("Moves the display into a dedicated window.\n"
-                                "Can be helpful when used in conjunction with the debugger windows.",
+    widgets::ExplanationTooltip("将显示移动到专用窗口。\n"
+                                "与调试器窗口一起使用时可能会有所帮助。",
                                 m_context.displayScale);
 
     ImGui::Separator();
 
     bool fullScreen = settings.fullScreen.Get();
-    if (MakeDirty(ImGui::Checkbox("Full screen", &fullScreen))) {
+    if (MakeDirty(ImGui::Checkbox("全屏", &fullScreen))) {
         settings.fullScreen = fullScreen;
     }
 
-    MakeDirty(ImGui::Checkbox("Double-click to toggle full screen", &settings.doubleClickToFullScreen));
-    widgets::ExplanationTooltip("This option will not work if you are using a Virtua Gun or Shuttle Mouse.",
+    MakeDirty(ImGui::Checkbox("双击切换全屏", &settings.doubleClickToFullScreen));
+    widgets::ExplanationTooltip("如果你正在使用 Virtua Gun 或 Shuttle Mouse，此选项将不起作用。",
                                 m_context.displayScale);
 
     auto formatDisplay = [&](SDL_DisplayID id) -> std::string {
@@ -94,9 +93,9 @@ void VideoSettingsView::Display() {
         const SDL_DisplayID currDisplayID = SDL_GetDisplayForWindow(m_context.screen.window);
         SDL_Rect bounds{};
         if (SDL_GetDisplayBounds(currDisplayID, &bounds)) {
-            return fmt::format("Current display - {} [{}x{}]", SDL_GetDisplayName(currDisplayID), bounds.x, bounds.y);
+            return fmt::format("当前显示器 - {} [{}x{}]", SDL_GetDisplayName(currDisplayID), bounds.x, bounds.y);
         }
-        return fmt::format("Current display - {} [?x?]", SDL_GetDisplayName(currDisplayID));
+        return fmt::format("当前显示器 - {} [?x?]", SDL_GetDisplayName(currDisplayID));
     };
 
     auto formatMode = [&](const display::DisplayMode &mode) -> std::string {
@@ -107,11 +106,11 @@ void VideoSettingsView::Display() {
         }
         const SDL_DisplayMode *desktopMode = SDL_GetDesktopDisplayMode(m_context.GetSelectedDisplay());
         const SDL_PixelFormatDetails *pixelFormat = SDL_GetPixelFormatDetails(desktopMode->format);
-        return fmt::format("Desktop resolution - {}x{} {}bpp {} Hz", desktopMode->w, desktopMode->h,
+        return fmt::format("桌面分辨率 - {}x{} {}bpp {} Hz", desktopMode->w, desktopMode->h,
                            pixelFormat->bits_per_pixel, desktopMode->refresh_rate);
     };
 
-    if (ImGui::BeginCombo("Full screen display", formatDisplay(m_context.display.id).c_str())) {
+    if (ImGui::BeginCombo("全屏显示器", formatDisplay(m_context.display.id).c_str())) {
         auto entry = [&](SDL_DisplayID id) {
             if (MakeDirty(ImGui::Selectable(formatDisplay(id).c_str(), m_context.display.id == id))) {
                 if (m_context.display.id != id) {
@@ -143,16 +142,15 @@ void VideoSettingsView::Display() {
         ImGui::EndCombo();
     }
     widgets::ExplanationTooltip(
-        "Selects the display to use when switching to full screen mode.\n"
+        "选择切换到全屏模式时要使用的显示器。\n"
         "\n"
-        "The numbers in [brackets] indicate the display's virtual position in multi-monitor systems. [0x0] is your "
-        "primary display.\n"
+        "[方括号] 中的数字表示显示器在多显示器系统中的虚拟位置。[0x0] 是你的主显示器。\n"
         "\n"
-        "The \"Current display\" option causes Ymir to go full screen on the display where the window is located at.",
+        "\"当前显示器\" 选项使 Ymir 在窗口所在的显示器上进入全屏。",
         m_context.displayScale);
 
-    if (ImGui::BeginCombo("Full screen resolution",
-                          settings.borderlessFullScreen ? "Borderless full screen"
+    if (ImGui::BeginCombo("全屏分辨率",
+                          settings.borderlessFullScreen ? "无边框全屏"
                                                         : formatMode(settings.fullScreenMode).c_str(),
                           ImGuiComboFlags_HeightLarge)) {
         auto entry = [&](const display::DisplayMode &mode) {
@@ -167,7 +165,7 @@ void VideoSettingsView::Display() {
             }
         };
 
-        if (MakeDirty(ImGui::Selectable("Borderless full screen", settings.borderlessFullScreen))) {
+        if (MakeDirty(ImGui::Selectable("无边框全屏", settings.borderlessFullScreen))) {
             if (!settings.borderlessFullScreen) {
                 settings.borderlessFullScreen = true;
                 settings.fullScreenMode = {};
@@ -186,57 +184,51 @@ void VideoSettingsView::Display() {
         }
         ImGui::EndCombo();
     }
-    widgets::ExplanationTooltip("Selects the resolution to use when switching to full screen mode.\n"
+    widgets::ExplanationTooltip("选择切换到全屏模式时要使用的分辨率。\n"
                                 "\n"
-                                "All options besides \"Borderless full screen\" are exclusive modes.\n"
+                                "除 \"无边框全屏\" 外的所有选项都是独占模式。\n"
                                 "\n"
-                                "This option is reset when the display is changed or removed, or while using the "
-                                "current display and moving the window across different displays.",
+                                "当显示器被更改或移除，或在使用当前显示器并将窗口移动到不同显示器时，此选项会重置。",
                                 m_context.displayScale);
 
     ImGui::Separator();
 
-    MakeDirty(ImGui::Checkbox("Synchronize video in windowed mode", &settings.syncInWindowedMode));
+    MakeDirty(ImGui::Checkbox("窗口模式下同步视频", &settings.syncInWindowedMode));
     widgets::ExplanationTooltip(
-        "When enabled, synchronizes GUI updates with emulator rendering while in windowed mode.\n"
-        "This greatly improves frame pacing but may reduce GUI performance.",
+        "启用后，在窗口模式下将界面更新与模拟器渲染同步。\n"
+        "这极大地改善了帧节奏，但可能降低界面性能。",
         m_context.displayScale);
 
-    MakeDirty(ImGui::Checkbox("Synchronize video in full screen mode", &settings.syncInFullscreenMode));
+    MakeDirty(ImGui::Checkbox("全屏模式下同步视频", &settings.syncInFullscreenMode));
     widgets::ExplanationTooltip(
-        "When enabled, synchronizes GUI updates with emulator rendering while in full screen mode.\n"
-        "This greatly improves frame pacing but may reduce GUI performance.",
+        "启用后，在全屏模式下将界面更新与模拟器渲染同步。\n"
+        "这极大地改善了帧节奏，但可能降低界面性能。",
         m_context.displayScale);
 
     MakeDirty(
-        ImGui::Checkbox("Use full refresh rate when synchronizing video", &settings.useFullRefreshRateWithVideoSync));
+        ImGui::Checkbox("同步视频时使用完整刷新率", &settings.useFullRefreshRateWithVideoSync));
     widgets::ExplanationTooltip(
-        "When enabled, while synchronizing video, the GUI frame rate will be adjusted to the largest integer multiple "
-        "of the emulator's target frame rate that's not greater than your display's refresh rate.\n"
-        "When disabled, the GUI frame rate will be limited to the emulator's target frame rate.\n"
-        "Enabling this option can slightly reduce input latency on high refresh rate displays.\n"
+        "启用后，在同步视频时，界面帧率将调整为不超过显示器刷新率的模拟器目标帧率的最大整数倍。\n"
+        "禁用时，界面帧率将限制为模拟器的目标帧率。\n"
+        "启用此选项可以在高刷新率显示器上略微减少输入延迟。\n"
         "\n"
-        "WARNING: Before enabling this option, disable the \"Synchronize video in windowed/full screen mode\" options "
-        "above and check if the reported GUI frame rate matches your display's refresh rate. If it is capped to any "
-        "value lower than your display's refresh rate (e.g. 60 fps on a 120 Hz display), enabling this option will "
-        "significantly slow down emulation.",
+        "警告：在启用此选项之前，请禁用上面的 \"窗口/全屏模式下同步视频\" 选项，并检查报告的界面帧率是否与显示器的刷新率匹配。"
+        "如果它被限制为低于显示器刷新率的任何值（例如在 120 Hz 显示器上为 60 fps），启用此选项将显著减慢模拟。",
         m_context.displayScale);
 
-    MakeDirty(ImGui::Checkbox("Reduce video latency on low refresh rate displays", &settings.reduceLatency));
+    MakeDirty(ImGui::Checkbox("在低刷新率显示器上减少视频延迟", &settings.reduceLatency));
     widgets::ExplanationTooltip(
-        "This option affects which frame is presented if the emulator is producing more frames than your display is "
-        "capable of showing:\n"
-        "- When enabled, the latest rendered frame is displayed. Slightly reduces perceived input latency.\n"
-        "- When disabled, the first rendered frame since the last refresh is displayed. Slightly improves overall "
-        "emulation performance by skipping some framebuffer copies.\n"
+        "此选项影响当模拟器生成的帧数多于显示器能够显示的帧数时显示哪一帧：\n"
+        "- 启用时，显示最新渲染的帧。略微减少感知的输入延迟。\n"
+        "- 禁用时，显示自上次刷新以来渲染的第一帧。通过跳过一些帧缓冲拷贝来略微提高整体模拟性能。\n"
         "\n"
-        "This option has no effect if your display's refresh rate is higher than the emulator's target frame rate.",
+        "如果显示器的刷新率高于模拟器的目标帧率，此选项无效。",
         m_context.displayScale);
 
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Enhancements");
+    ImGui::SeparatorText("增强");
     ImGui::PopFont();
 
     widgets::settings::video::enhancements::Deinterlace(m_context);
@@ -245,7 +237,7 @@ void VideoSettingsView::Display() {
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
-    ImGui::SeparatorText("Software renderer");
+    ImGui::SeparatorText("软件渲染器");
     ImGui::PopFont();
 
     widgets::settings::video::swrenderer::ThreadedVDP(m_context);

@@ -18,14 +18,12 @@ void ArcadeRacerConfigView::Display(Settings::Input::Port::ArcadeRacer &controll
     auto &binds = controllerSettings.binds;
     float sensitivity = controllerSettings.sensitivity;
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Wheel sensitivity");
+    ImGui::TextUnformatted("方向盘灵敏度");
     widgets::ExplanationTooltip(
-        "Adjusts the exponent of the value mapping curve.\n"
-        "The graph below displays how the current sensitivity affects values.\n"
-        "Lower sensitivity pushes values closer to zero leading to stiffer controls while higher sensitivity pushes "
-        "values away from zero causing the slightest touch to be detected.\n"
-        "In the meter below, green represents the raw input value and orange is the mapped value sent to the "
-        "controller.",
+        "调整值映射曲线的指数。\n"
+        "下图显示当前灵敏度如何影响值。\n"
+        "较低的灵敏度将值推向零，使控制更生硬；较高的灵敏度将值推离零，使最轻微的触摸也能被检测到。\n"
+        "在下方的计量器中，绿色表示原始输入值，橙色表示发送到控制器的映射值。",
         m_context.displayScale);
     ImGui::SameLine();
     ImGui::SetNextItemWidth(-1.0f);
@@ -134,27 +132,27 @@ void ArcadeRacerConfigView::Display(Settings::Input::Port::ArcadeRacer &controll
 
         ImGui::Dummy(meterSize);
     }
-    ImGui::Checkbox("Display raw value in meter", &m_showRawValueInMeter);
+    ImGui::Checkbox("在计量器中显示原始值", &m_showRawValueInMeter);
 
     ImGui::Separator();
 
-    if (ImGui::Button("Restore default binds")) {
+    if (ImGui::Button("恢复默认绑定")) {
         m_unboundActionsWidget.Capture(settings.ResetBinds(binds, true));
         MakeDirty();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Clear all binds")) {
+    if (ImGui::Button("清除所有绑定")) {
         m_unboundActionsWidget.Capture(settings.ResetBinds(binds, false));
         MakeDirty();
     }
 
-    ImGui::TextUnformatted("Left-click a button to assign a hotkey. Right-click to clear.");
+    ImGui::TextUnformatted("左键点击按钮以分配快捷键。右键点击以清除。");
     m_unboundActionsWidget.Display();
     if (ImGui::BeginTable("hotkeys", 1 + input::kNumBindsPerInput,
                           ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY)) {
-        ImGui::TableSetupColumn("Button", ImGuiTableColumnFlags_WidthFixed, 95.0f * m_context.displayScale);
+        ImGui::TableSetupColumn("按钮", ImGuiTableColumnFlags_WidthFixed, 95.0f * m_context.displayScale);
         for (size_t i = 0; i < input::kNumBindsPerInput; i++) {
-            ImGui::TableSetupColumn(fmt::format("Hotkey {}", i + 1).c_str(), ImGuiTableColumnFlags_WidthStretch, 1.0f);
+            ImGui::TableSetupColumn(fmt::format("快捷键 {}", i + 1).c_str(), ImGuiTableColumnFlags_WidthStretch, 1.0f);
         }
         ImGui::TableHeadersRow();
 
