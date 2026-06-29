@@ -473,6 +473,8 @@ cmrc_add_resource_library(ymir-sdl3-rc
     res/embed/fonts/MaterialSymbolsOutlined_Filled-Regular.ttf
     res/embed/fonts/MPLUSU-Bold.ttf
     res/embed/fonts/MPLUSU-ExtraBold.ttf
+    res/embed/fonts/NotoSansSC-Regular.otf
+    res/embed/fonts/NotoSansSC-Bold.otf
     res/embed/fonts/SplineSans-Bold.ttf
     res/embed/fonts/SplineSans-Medium.ttf
     res/embed/fonts/SplineSansMono-Bold.ttf

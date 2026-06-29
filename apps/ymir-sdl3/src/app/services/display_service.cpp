@@ -212,14 +212,14 @@ void DisplayService::LoadFonts() {
     };
 
     m_context.fonts.sansSerif.regular = loadFont("SplineSans Medium", "fonts/SplineSans-Medium.ttf", true);
-    m_context.fonts.sansSerif.regular = mergeFont("fonts/MPLUSU-Bold.ttf", cjkRanges);
+    m_context.fonts.sansSerif.regular = mergeFont("fonts/NotoSansSC-Regular.otf", cjkRanges);
     m_context.fonts.sansSerif.bold = loadFont("SplineSans Bold", "fonts/SplineSans-Bold.ttf", true);
-    m_context.fonts.sansSerif.bold = mergeFont("fonts/MPLUSU-ExtraBold.ttf", cjkRanges);
+    m_context.fonts.sansSerif.bold = mergeFont("fonts/NotoSansSC-Bold.otf", cjkRanges);
 
     m_context.fonts.monospace.regular = loadFont("SplineSansMono Medium", "fonts/SplineSansMono-Medium.ttf", false);
-    m_context.fonts.monospace.regular = mergeFont("fonts/MPLUSU-Bold.ttf", cjkRanges);
+    m_context.fonts.monospace.regular = mergeFont("fonts/NotoSansSC-Regular.otf", cjkRanges);
     m_context.fonts.monospace.bold = loadFont("SplineSansMono Bold", "fonts/SplineSansMono-Bold.ttf", false);
-    m_context.fonts.monospace.bold = mergeFont("fonts/MPLUSU-ExtraBold.ttf", cjkRanges);
+    m_context.fonts.monospace.bold = mergeFont("fonts/NotoSansSC-Bold.otf", cjkRanges);
 
     m_context.fonts.display = loadFont("ZenDots Regular", "fonts/ZenDots-Regular.ttf", false);
 
