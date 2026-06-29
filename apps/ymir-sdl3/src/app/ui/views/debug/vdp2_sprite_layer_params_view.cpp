@@ -35,7 +35,7 @@ void VDP2SpriteLayerParamsView::Display() {
         ImGui::TextUnformatted("格式");
 
         ImGui::TableNextColumn();
-        ImGui::Text("Type %u, ", spriteParams.type);
+        ImGui::Text("类型 %u, ", spriteParams.type);
         ImGui::SameLine(0, 0);
         if (spriteParams.mixedFormat) {
             ImGui::TextUnformatted("调色板/RGB");

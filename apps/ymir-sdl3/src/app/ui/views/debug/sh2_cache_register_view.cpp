@@ -33,19 +33,19 @@ void SH2CacheRegisterView::Display() {
 
     ImGui::SameLine();
     ImGui::Checkbox("CE", &cache.CCR.CE);
-    ImGui::SetItemTooltip("Cache Enable");
+    ImGui::SetItemTooltip("缓存使能");
 
     ImGui::SameLine();
     ImGui::Checkbox("ID", &cache.CCR.ID);
-    ImGui::SetItemTooltip("Instruction Replacement Disable");
+    ImGui::SetItemTooltip("指令替换禁用");
 
     ImGui::SameLine();
     ImGui::Checkbox("OD", &cache.CCR.OD);
-    ImGui::SetItemTooltip("Data Replacement Disable");
+    ImGui::SetItemTooltip("数据替换禁用");
 
     ImGui::SameLine();
     ImGui::Checkbox("TW", &cache.CCR.TW);
-    ImGui::SetItemTooltip("Two-Way Mode");
+    ImGui::SetItemTooltip("双路模式");
 
     ImGui::SameLine();
 
@@ -62,10 +62,10 @@ void SH2CacheRegisterView::Display() {
     ImGui::AlignTextToFramePadding();
     ImGui::TextUnformatted("W1-0");
     ImGui::EndGroup();
-    ImGui::SetItemTooltip("Way Select");
+    ImGui::SetItemTooltip("Way 选择");
 
     ImGui::SameLine();
-    if (ImGui::Button("Purge")) {
+    if (ImGui::Button("清除")) {
         cache.Purge();
     }
 }

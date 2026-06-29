@@ -31,26 +31,26 @@ void SH2DMAControllerRegistersView::Display() {
     ImGui::AlignTextToFramePadding();
     ImGui::TextUnformatted("DMAOR");
     ImGui::EndGroup();
-    ImGui::SetItemTooltip("DMA Operation Register");
+    ImGui::SetItemTooltip("DMA 操作寄存器");
 
     ImGui::SameLine();
     ImGui::Checkbox("PR", &dmaor.PR);
-    ImGui::SetItemTooltip("Priority Mode");
+    ImGui::SetItemTooltip("优先级模式");
 
     ImGui::SameLine();
     ImGui::Checkbox("AE", &dmaor.AE);
-    ImGui::SetItemTooltip("Address Error Flag");
+    ImGui::SetItemTooltip("地址错误标志");
 
     ImGui::SameLine();
     ImGui::Checkbox("NMIF", &dmaor.NMIF);
-    ImGui::SetItemTooltip("NMI Flag");
+    ImGui::SetItemTooltip("NMI 标志");
 
     ImGui::SameLine();
     ImGui::Checkbox("DME", &dmaor.DME);
-    ImGui::SetItemTooltip("DMA Master Enable");
+    ImGui::SetItemTooltip("DMA 主使能");
 
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Interrupts:");
+    ImGui::TextUnformatted("中断：");
     ImGui::SameLine();
     {
         ImGui::BeginGroup();
@@ -65,7 +65,7 @@ void SH2DMAControllerRegistersView::Display() {
         ImGui::SameLine();
         ImGui::TextUnformatted("VCRDMA0");
         ImGui::EndGroup();
-        ImGui::SetItemTooltip("DMA channel 0 transfer end vector");
+        ImGui::SetItemTooltip("DMA 通道 0 传输结束向量");
     }
     ImGui::SameLine();
     {
@@ -81,7 +81,7 @@ void SH2DMAControllerRegistersView::Display() {
         ImGui::SameLine();
         ImGui::TextUnformatted("VCRDMA1");
         ImGui::EndGroup();
-        ImGui::SetItemTooltip("DMA channel 1 transfer end vector");
+        ImGui::SetItemTooltip("DMA 通道 1 传输结束向量");
     }
     ImGui::SameLine();
     {
@@ -97,7 +97,7 @@ void SH2DMAControllerRegistersView::Display() {
         ImGui::SameLine();
         ImGui::TextUnformatted("IPRA.DMACIP3-0");
         ImGui::EndGroup();
-        ImGui::SetItemTooltip("DMA controller interrupt level");
+        ImGui::SetItemTooltip("DMA 控制器中断级别");
     }
 }
 

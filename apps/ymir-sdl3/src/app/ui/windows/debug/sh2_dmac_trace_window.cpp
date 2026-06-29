@@ -20,11 +20,11 @@ void SH2DMAControllerTraceWindow::DrawContents() {
     ImGui::SameLine();
     ImGui::TextDisabled("(?)");
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("You must also enable tracing in Debug > Enable tracing (F11)");
+        ImGui::TextUnformatted("你还必须在调试 > 启用跟踪 (F11) 中启用跟踪");
         ImGui::EndTooltip();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Clear all##trace")) {
+    if (ImGui::Button("全部清除##trace")) {
         m_tracer.dmaTransfers[0].Clear();
         m_tracer.dmaTransfers[1].Clear();
         m_tracer.dmaStats[0].Clear();

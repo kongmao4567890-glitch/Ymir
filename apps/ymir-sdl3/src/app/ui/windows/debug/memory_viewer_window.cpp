@@ -55,13 +55,13 @@ void MemoryViewerWindow::DrawContents() {
     ImGui::PopFont();
     ImGui::SameLine();
     ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("Region");
+    ImGui::TextUnformatted("区域");
 
-    if (ImGui::Button("Dump")) {
+    if (ImGui::Button("转储")) {
         m_context.EnqueueEvent(events::emu::DumpMemRegion(*m_memViewState));
     };
     ImGui::SameLine();
-    ImGui::Checkbox("Enable side-effects", &m_memViewState->enableSideEffects);
+    ImGui::Checkbox("启用副作用", &m_memViewState->enableSideEffects);
     if (currRegion.paramsFn) {
         currRegion.paramsFn(m_memViewState.get());
     }

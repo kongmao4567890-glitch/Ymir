@@ -74,15 +74,15 @@ bool DiscService::LoadDiscImage(std::filesystem::path path, bool showErrorModal)
             if (getenv("FLATPAK_ID") != nullptr) {
                 ImGui::Separator();
                 ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
-                ImGui::TextColored(m_context.colors.notice, "Flatpak restricts access to the filesystem by default.");
+                ImGui::TextColored(m_context.colors.notice, "Flatpak 默认限制对文件系统的访问。");
                 ImGui::TextColored(m_context.colors.notice,
-                                   "You must manually grant Ymir permission to access the directory.");
+                                   "你必须手动授予 Ymir 访问该目录的权限。");
                 ImGui::PopFont();
                 ImGui::TextUnformatted(
-                    "You can ignore this error if you already granted permission to read the files.\n"
-                    "In this case, the image is probably invalid or unsupported by Ymir.");
+                    "如果你已经授予了读取文件的权限，可以忽略此错误。\n"
+                    "这种情况下，镜像可能无效或不受 Ymir 支持。");
                 ImGui::NewLine();
-                ImGui::TextUnformatted("Learn more about Flatpak's sandbox system:");
+                ImGui::TextUnformatted("了解更多关于 Flatpak 沙盒系统的信息：");
                 ImGui::Bullet();
                 ImGui::TextLinkOpenURL("Flatpak - Sandbox permissions",
                                        R"(https://docs.flatpak.org/en/latest/sandbox-permissions.html)");

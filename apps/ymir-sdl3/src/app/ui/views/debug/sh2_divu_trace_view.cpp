@@ -17,13 +17,13 @@ void SH2DivisionUnitTraceView::Display() {
     ImGui::SameLine();
     ImGui::TextDisabled("(?)");
     if (ImGui::BeginItemTooltip()) {
-        ImGui::TextUnformatted("You must also enable tracing in Debug > Enable tracing (F11)");
+        ImGui::TextUnformatted("你还必须在调试 > 启用跟踪 (F11) 中启用跟踪");
         ImGui::EndTooltip();
     }
     ImGui::SameLine();
-    ImGui::Checkbox("Display numbers in hexadecimal", &m_showHex);
+    ImGui::Checkbox("以十六进制显示数字", &m_showHex);
     ImGui::SameLine();
-    if (ImGui::Button("Clear")) {
+    if (ImGui::Button("清除")) {
         m_tracer.divisions.Clear();
         m_tracer.divStats.Clear();
         m_tracer.ResetDivisionCounter();

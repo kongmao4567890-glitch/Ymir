@@ -18,7 +18,7 @@ void SCUTimersView::Display() {
     bool t1mode = probe.GetTimer1Mode();
 
     bool enable = probe.IsTimerEnabled();
-    if (ImGui::Checkbox("Enabled##timer", &enable)) {
+    if (ImGui::Checkbox("已启用##timer", &enable)) {
         probe.SetTimerEnabled(enable);
     }
 
@@ -27,7 +27,7 @@ void SCUTimersView::Display() {
         if (ImGui::TableNextColumn()) {
             ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Timer 0");
+            ImGui::TextUnformatted("定时器 0");
             ImGui::PopFont();
         }
         if (ImGui::TableNextColumn()) {
@@ -42,7 +42,7 @@ void SCUTimersView::Display() {
             ImGui::PopFont();
             ImGui::SameLine();
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Counter");
+            ImGui::TextUnformatted("计数器");
             ImGui::EndGroup();
         }
         if (ImGui::TableNextColumn()) {
@@ -55,7 +55,7 @@ void SCUTimersView::Display() {
             ImGui::PopFont();
             ImGui::SameLine();
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Compare");
+            ImGui::TextUnformatted("比较值");
             ImGui::EndGroup();
         }
 
@@ -63,7 +63,7 @@ void SCUTimersView::Display() {
         if (ImGui::TableNextColumn()) {
             ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.medium);
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Timer 1");
+            ImGui::TextUnformatted("定时器 1");
             ImGui::PopFont();
         }
         if (ImGui::TableNextColumn()) {
@@ -76,15 +76,15 @@ void SCUTimersView::Display() {
             ImGui::PopFont();
             ImGui::SameLine();
             ImGui::AlignTextToFramePadding();
-            ImGui::TextUnformatted("Reload");
+            ImGui::TextUnformatted("重载值");
             ImGui::EndGroup();
         }
         if (ImGui::TableNextColumn()) {
-            if (ImGui::RadioButton("Every line", !t1mode)) {
+            if (ImGui::RadioButton("每一行", !t1mode)) {
                 probe.SetTimer1Mode(false);
             }
             ImGui::SameLine();
-            if (ImGui::RadioButton("Timer 0 match", t1mode)) {
+            if (ImGui::RadioButton("定时器 0 匹配", t1mode)) {
                 probe.SetTimer1Mode(true);
             }
         }

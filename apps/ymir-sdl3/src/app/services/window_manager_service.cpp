@@ -99,7 +99,7 @@ void WindowManagerService::DrawGenericModal() {
 
         bool close = m_closeGenericModal;
         if (m_showOkButtonInGenericModal) {
-            if (ImGui::Button("OK", ImVec2(80 * m_context.displayScale, 0 * m_context.displayScale))) {
+            if (ImGui::Button("确定", ImVec2(80 * m_context.displayScale, 0 * m_context.displayScale))) {
                 close = true;
             }
         }
@@ -143,7 +143,7 @@ void WindowManagerService::OpenWelcomeModal(bool scanIPLROMs) {
         util::ROMLoadResult result;
     };
 
-    OpenGenericModal("Welcome", [=, this, nextScanDeadline = clk::now() + kScanInterval,
+    OpenGenericModal("欢迎", [=, this, nextScanDeadline = clk::now() + kScanInterval,
                                  lastROMCount = m_context.romManager.GetIPLROMs().size(),
                                  romSelectResult = ROMSelectResult{}]() mutable {
         bool doSelectRom = false;
@@ -163,37 +163,37 @@ void WindowManagerService::OpenWelcomeModal(bool scanIPLROMs) {
         ImGui::TextUnformatted("Ymir");
         ImGui::PopFont();
         ImGui::PushFont(m_context.fonts.sansSerif.regular, m_context.fontSizes.large);
-        ImGui::TextUnformatted("Welcome to Ymir!");
+        ImGui::TextUnformatted("欢迎使用 Ymir！");
         ImGui::PopFont();
         ImGui::NewLine();
-        ImGui::TextUnformatted("Ymir requires a valid IPL (BIOS) ROM to work.");
+        ImGui::TextUnformatted("Ymir 需要有效的 IPL (BIOS) ROM 才能运行。");
 
         ImGui::NewLine();
-        ImGui::TextUnformatted("Ymir will automatically load IPL ROMs placed in ");
+        ImGui::TextUnformatted("Ymir 会自动加载放置在以下目录中的 IPL ROM：");
         ImGui::SameLine(0, 0);
         auto romPath = m_context.profile.GetPath(ProfilePath::IPLROMImages);
         if (ImGui::TextLink(fmt::format("{}", romPath).c_str())) {
             SDL_OpenURL(fmt::format("file:///{}", romPath).c_str());
         }
-        ImGui::TextUnformatted("Alternatively, you can ");
+        ImGui::TextUnformatted("你也可以");
         ImGui::SameLine(0, 0);
-        if (ImGui::TextLink("manually select an IPL ROM")) {
+        if (ImGui::TextLink("手动选择 IPL ROM")) {
             doSelectRom = true;
         }
         ImGui::SameLine(0, 0);
-        ImGui::TextUnformatted(" or ");
+        ImGui::TextUnformatted("，或在");
         ImGui::SameLine(0, 0);
-        if (ImGui::TextLink("manage the ROM settings in Settings > IPL")) {
+        if (ImGui::TextLink("设置 > IPL 中管理 ROM 设置")) {
             doOpenSettings = true;
         }
         ImGui::SameLine(0, 0);
-        ImGui::TextUnformatted(".");
+        ImGui::TextUnformatted("。");
 
         if (!activeScanning) {
             ImGui::NewLine();
-            ImGui::TextUnformatted("Ymir is not currently scanning for IPL ROMs.");
-            ImGui::TextUnformatted("If you would like to actively scan for IPL ROMs, press the button below.");
-            if (ImGui::Button("Start active scanning")) {
+            ImGui::TextUnformatted("Ymir 当前未在扫描 IPL ROM。");
+            ImGui::TextUnformatted("如果你想主动扫描 IPL ROM，请点击下方按钮。");
+            if (ImGui::Button("开始主动扫描")) {
                 activeScanning = true;
             }
             ImGui::NewLine();
@@ -201,22 +201,22 @@ void WindowManagerService::OpenWelcomeModal(bool scanIPLROMs) {
 
         if (romSelectResult.hasResult && !romSelectResult.result.succeeded) {
             ImGui::NewLine();
-            ImGui::Text("The file %s does not contain a valid IPL ROM.",
+            ImGui::Text("文件 %s 不包含有效的 IPL ROM。",
                         fmt::format("{}", romSelectResult.path).c_str());
-            ImGui::Text("Reason: %s.", romSelectResult.result.errorMessage.c_str());
+            ImGui::Text("原因：%s。", romSelectResult.result.errorMessage.c_str());
         }
 
         ImGui::Separator();
 
-        if (ImGui::Button("Open IPL ROMs directory")) {
+        if (ImGui::Button("打开 IPL ROM 目录")) {
             SDL_OpenURL(fmt::format("file:///{}", m_context.profile.GetPath(ProfilePath::IPLROMImages)).c_str());
         }
         ImGui::SameLine();
-        if (ImGui::Button("Select IPL ROM...")) {
+        if (ImGui::Button("选择 IPL ROM...")) {
             doSelectRom = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Open IPL settings")) {
+        if (ImGui::Button("打开 IPL 设置")) {
             doOpenSettings = true;
         }
         ImGui::SameLine(); // this places the OK button next to these
@@ -226,7 +226,7 @@ void WindowManagerService::OpenWelcomeModal(bool scanIPLROMs) {
 
         if (doSelectRom && fileDialogService) {
             FileDialogParams params{
-                .dialogTitle = "Select IPL ROM",
+                .dialogTitle = "选择 IPL ROM",
                 .defaultPath = m_context.profile.GetPath(ProfilePath::IPLROMImages),
                 .filters = {{"ROM files (*.bin, *.rom)", "bin;rom"}, {"All files (*.*)", "*"}},
                 .userdata = &romSelectResult,
