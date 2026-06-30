@@ -496,6 +496,7 @@ struct Settings {
         struct Enhancements {
             util::Observable<bool> deinterlace;
             util::Observable<bool> transparentMeshes;
+            util::Observable<float> resolutionScale; // 渲染分辨率倍数 (1.0=原始, 2.0=2倍, 等)
         } enhancements;
     } video;
 

@@ -234,6 +234,42 @@ void VideoSettingsView::Display() {
     widgets::settings::video::enhancements::Deinterlace(m_context);
     widgets::settings::video::enhancements::TransparentMeshes(m_context);
 
+    // 渲染分辨率倍数
+    ImGui::AlignTextToFramePadding();
+    ImGui::TextUnformatted("渲染分辨率倍数");
+    ImGui::SameLine();
+    {
+        auto &resolutionScale = settings.enhancements.resolutionScale;
+        const float currentScale = resolutionScale.Get();
+        const char *scaleLabels[] = {"1x (原始)", "1.5x", "2x", "3x", "4x"};
+        const float scaleValues[] = {1.0f, 1.5f, 2.0f, 3.0f, 4.0f};
+        const int numOptions = 5;
+        int currentIndex = 0;
+        for (int i = 0; i < numOptions; i++) {
+            if (currentScale == scaleValues[i]) {
+                currentIndex = i;
+                break;
+            }
+        }
+        ImGui::SetNextItemWidth(200 * m_context.displayScale);
+        if (MakeDirty(ImGui::Combo("##ResolutionScale", &currentIndex, scaleLabels, numOptions))) {
+            resolutionScale = scaleValues[currentIndex];
+        }
+    }
+    widgets::ExplanationTooltip(
+        "提高渲染分辨率倍数可以通过超采样抗锯齿技术使3D游戏画面更平滑。\n"
+        "数值越高，画面越平滑，但GPU负载越大。\n"
+        "\n"
+        "- 1x: 原始分辨率，性能最佳\n"
+        "- 1.5x: 轻微提升画面质量\n"
+        "- 2x: 明显改善3D多边形边缘\n"
+        "- 3x: 高质量画面，需要较好的GPU\n"
+        "- 4x: 最高质量，需要高性能GPU\n"
+        "\n"
+        "注意：此选项在显示层面提升分辨率，通过更高分辨率的中间纹理进行缩放，"
+        "产生超采样抗锯齿效果。较高的倍数会增加显存使用和渲染开销。",
+        m_context.displayScale);
+
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
