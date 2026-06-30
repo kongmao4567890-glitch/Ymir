@@ -144,7 +144,6 @@ public:
     void VDP1EndFrame() override;
 
     void VDP2SetResolution(uint32 h, uint32 v, bool exclusive) override;
-    void SetVDP1ResolutionScale(uint32 scale) override;
     void VDP2SetField(bool odd) override;
     void VDP2LatchTVMD() override;
     void VDP2BeginFrame() override;
@@ -622,7 +621,6 @@ private:
     // VDP1
 
     uint16 m_VDP1doubleV;
-    uint32 m_vdp1Scale = 1; // VDP1 supersampling scale factor (1, 2, 3, 4)
 
     struct VDP1PixelParams {
         VDP1Command::DrawMode mode;
@@ -1065,14 +1063,6 @@ private:
     template <uint32 colorMode, bool altField, bool transparentMeshes, bool applyMesh>
     void VDP2DrawSpritePixel(uint32 x, const VDP2Regs &regs2, const SpriteParams &params, const SpriteFB &spriteFB,
                              uint32 spriteFBOffset);
-
-    // Samples a single VDP1 sprite pixel and extracts its RGB888 color for supersampling.
-    // Returns true if the pixel is non-transparent, false if transparent.
-    // If non-transparent, outColor contains the RGB888 color.
-    template <uint32 colorMode>
-    FORCE_INLINE bool VDP2SampleSpriteColor(const VDP2Regs &regs2, const SpriteParams &params,
-                                            const SpriteFB &spriteFB, uint32 spriteFBOffset,
-                                            Color888 &outColor);
 
     // Draws the current VDP2 scanline of the specified normal background layer.
     //

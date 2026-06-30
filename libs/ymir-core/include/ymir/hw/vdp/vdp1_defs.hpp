@@ -21,8 +21,8 @@ namespace ymir::vdp {
 inline constexpr uint32 kVDP1MinFBSizeH = 512;
 inline constexpr uint32 kVDP1MinFBSizeV = 256;
 
-inline constexpr uint32 kVDP1MaxFBSizeH = 4096; // 1024 * 4
-inline constexpr uint32 kVDP1MaxFBSizeV = 2048; // 512 * 4
+inline constexpr uint32 kVDP1MaxFBSizeH = 1024;
+inline constexpr uint32 kVDP1MaxFBSizeV = 512;
 
 inline constexpr uint32 kVDP1DefaultFBSizeH = 512;
 inline constexpr uint32 kVDP1DefaultFBSizeV = 256;
@@ -31,7 +31,7 @@ inline constexpr uint32 kVDP1DefaultFBSizeV = 256;
 // Memory
 
 inline constexpr std::size_t kVDP1VRAMSize = 512_KiB;
-inline constexpr std::size_t kVDP1FBRAMSize = 16_MiB; // Supports up to 4x scale of 1024x512 framebuffer
+inline constexpr std::size_t kVDP1FBRAMSize = 256_KiB;
 
 using SpriteFB = std::array<uint8, kVDP1FBRAMSize>;
 

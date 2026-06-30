@@ -257,7 +257,6 @@ struct SharedContext {
         uint32 scaleX;
         uint32 scaleY;
         uint32 fbScale = 1;
-        float renderScale = 1.0f; // 用户配置的渲染分辨率倍数
 
         double scale = 1.0;             // final computed display scale
         int dCenterX = 0, dCenterY = 0; // display position (center) on window

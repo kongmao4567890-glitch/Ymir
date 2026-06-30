@@ -311,14 +311,6 @@ int App::Run(const CommandLineOptions &options) {
             [&](bool value) { m_context.EnqueueEvent(events::emu::SetDeinterlace(value)); });
         videoSettings.enhancements.transparentMeshes.Observe(
             [&](bool value) { m_context.EnqueueEvent(events::emu::SetTransparentMeshes(value)); });
-        videoSettings.enhancements.resolutionScale.Observe(
-            [&](float value) {
-                uint32 scale = value > 1.0f ? (uint32)std::ceil(value) : 1u;
-                m_context.EnqueueEvent(events::emu::RunFunction(
-                    [scale](SharedContext &ctx) {
-                        ctx.saturn.instance->VDP.GetRenderer().SetVDP1ResolutionScale(scale);
-                    }));
-            });
     }
 
     // Profile priority:

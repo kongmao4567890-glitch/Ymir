@@ -234,41 +234,6 @@ void VideoSettingsView::Display() {
     widgets::settings::video::enhancements::Deinterlace(m_context);
     widgets::settings::video::enhancements::TransparentMeshes(m_context);
 
-    // 渲染分辨率倍数
-    ImGui::AlignTextToFramePadding();
-    ImGui::TextUnformatted("VDP1 渲染分辨率倍数");
-    ImGui::SameLine();
-    {
-        auto &resolutionScale = settings.enhancements.resolutionScale;
-        const float currentScale = resolutionScale.Get();
-        const char *scaleLabels[] = {"1x (原始)", "2x", "3x", "4x"};
-        const float scaleValues[] = {1.0f, 2.0f, 3.0f, 4.0f};
-        const int numOptions = 4;
-        int currentIndex = 0;
-        for (int i = 0; i < numOptions; i++) {
-            if (currentScale == scaleValues[i]) {
-                currentIndex = i;
-                break;
-            }
-        }
-        ImGui::SetNextItemWidth(200 * m_context.displayScale);
-        if (MakeDirty(ImGui::Combo("##ResolutionScale", &currentIndex, scaleLabels, numOptions))) {
-            resolutionScale = scaleValues[currentIndex];
-        }
-    }
-    widgets::ExplanationTooltip(
-        "提高 VDP1 渲染分辨率倍数可以让 3D 多边形以更高分辨率光栅化，\n"
-        "使多边形边缘更平滑、纹理更清晰，产生真正的超采样抗锯齿效果。\n"
-        "\n"
-        "- 1x: 原始分辨率 (512x256)，性能最佳\n"
-        "- 2x: 2倍分辨率 (1024x512)，明显改善3D画面质量\n"
-        "- 3x: 3倍分辨率 (1536x768)，高质量画面，需要较强CPU\n"
-        "- 4x: 4倍分辨率 (2048x1024)，最高质量，需要高性能CPU\n"
-        "\n"
-        "此选项直接提升 VDP1 3D 渲染器的内部分辨率，而非简单的显示缩放。\n"
-        "较高的倍数会显著增加 CPU 负载和内存使用。",
-        m_context.displayScale);
-
     // -----------------------------------------------------------------------------------------------------------------
 
     ImGui::PushFont(m_context.fonts.sansSerif.bold, m_context.fontSizes.large);
