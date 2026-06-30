@@ -31,7 +31,7 @@ inline constexpr uint32 kVDP1DefaultFBSizeV = 256;
 // Memory
 
 inline constexpr std::size_t kVDP1VRAMSize = 512_KiB;
-inline constexpr std::size_t kVDP1FBRAMSize = 4_MiB; // 256KiB * 4 * 4 = 4MB
+inline constexpr std::size_t kVDP1FBRAMSize = 16_MiB; // Supports up to 4x scale of 1024x512 framebuffer
 
 using SpriteFB = std::array<uint8, kVDP1FBRAMSize>;
 

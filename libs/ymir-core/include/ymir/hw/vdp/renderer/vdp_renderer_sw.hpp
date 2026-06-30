@@ -1066,6 +1066,14 @@ private:
     void VDP2DrawSpritePixel(uint32 x, const VDP2Regs &regs2, const SpriteParams &params, const SpriteFB &spriteFB,
                              uint32 spriteFBOffset);
 
+    // Samples a single VDP1 sprite pixel and extracts its RGB888 color for supersampling.
+    // Returns true if the pixel is non-transparent, false if transparent.
+    // If non-transparent, outColor contains the RGB888 color.
+    template <uint32 colorMode>
+    FORCE_INLINE bool VDP2SampleSpriteColor(const VDP2Regs &regs2, const SpriteParams &params,
+                                            const SpriteFB &spriteFB, uint32 spriteFBOffset,
+                                            Color888 &outColor);
+
     // Draws the current VDP2 scanline of the specified normal background layer.
     //
     // regs2 is a reference to the set of VDP2 registers to use

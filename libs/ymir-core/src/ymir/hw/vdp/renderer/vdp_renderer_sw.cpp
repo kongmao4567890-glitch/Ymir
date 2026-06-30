@@ -2610,6 +2610,45 @@ FORCE_INLINE void SoftwareVDPRenderer::VDP2DrawLineColorAndBackScreens(uint32 y,
     }
 }
 
+template <uint32 colorMode>
+FORCE_INLINE bool SoftwareVDPRenderer::VDP2SampleSpriteColor(const VDP2Regs &regs2, const SpriteParams &params,
+                                                              const SpriteFB &spriteFB, uint32 spriteFBOffset,
+                                                              Color888 &outColor) {
+    // Extract RGB888 color from a single VDP1 sprite pixel.
+    // Returns false if the pixel is transparent (no contribution to supersampling average).
+
+    if (params.mixedFormat) {
+        const uint16 spriteDataValue =
+            util::ReadBE<uint16>(&spriteFB[(spriteFBOffset * sizeof(uint16)) & ((kVDP1FBRAMSize - 1) & ~1)]);
+        if (bit::test<15>(spriteDataValue)) {
+            // RGB data - check transparency conditions matching VDP2DrawSpritePixel
+            if (params.type >= 8) {
+                if (bit::extract<0, 7>(spriteDataValue) == 0) {
+                    return false;
+                }
+            } else if (params.type >= 2) {
+                if (params.useSpriteWindow && bit::extract<0, 14>(spriteDataValue) == 0) {
+                    return false;
+                }
+            }
+            outColor = ConvertRGB555to888(Color555{spriteDataValue});
+            return true;
+        }
+    }
+
+    // Palette data
+    const SpriteData spriteData = VDP2FetchSpriteData<false>(regs2, spriteFB, spriteFBOffset);
+
+    // Transparent pixels don't contribute to the average
+    if (spriteData.special == SpriteData::Special::Transparent && !spriteData.shadowOrWindow) {
+        return false;
+    }
+
+    const uint32 colorIndex = params.colorDataOffset + spriteData.colorData;
+    outColor = VDP2FetchCRAMColor<colorMode>(0, colorIndex);
+    return true;
+}
+
 template <uint32 colorMode, bool rotate, bool altField, bool transparentMeshes>
 NO_INLINE void SoftwareVDPRenderer::VDP2DrawSpriteLayer(uint32 y, const VDP2Regs &regs2) {
     const VDP1Regs &regs1 = VDP1GetRegs();
@@ -2670,6 +2709,33 @@ NO_INLINE void SoftwareVDPRenderer::VDP2DrawSpriteLayer(uint32 y, const VDP2Regs
         }
 
         VDP2DrawSpritePixel<colorMode, altField, transparentMeshes, false>(xx, regs2, params, spriteFB, spriteFBOffset);
+
+        // Supersampling: when VDP1 resolution scale > 1, average N×N samples for true anti-aliased 3D quality.
+        // VDP1 renders at higher resolution, and we box-filter downsample to the VDP2 output resolution.
+        if (m_vdp1Scale > 1 && layerOut.pixels.priority[xx] > 0) {
+            const uint32 stride = regs1.fbSizeH * m_vdp1Scale;
+            uint32 rSum = 0, gSum = 0, bSum = 0, count = 0;
+
+            for (uint32 sy = 0; sy < m_vdp1Scale; sy++) {
+                for (uint32 sx = 0; sx < m_vdp1Scale; sx++) {
+                    const uint32 sampleOffset = spriteFBOffset + sx + sy * stride;
+                    Color888 sampleColor;
+                    if (VDP2SampleSpriteColor<colorMode>(regs2, params, spriteFB, sampleOffset, sampleColor)) {
+                        rSum += sampleColor.r;
+                        gSum += sampleColor.g;
+                        bSum += sampleColor.b;
+                        count++;
+                    }
+                }
+            }
+
+            if (count > 0) {
+                layerOut.pixels.color[xx].r = rSum / count;
+                layerOut.pixels.color[xx].g = gSum / count;
+                layerOut.pixels.color[xx].b = bSum / count;
+            }
+        }
+
         if (doubleResH) {
             layerOut.pixels.CopyPixel(xx, xx + 1);
             layerAttrs.CopyAttrs(xx, xx + 1);
