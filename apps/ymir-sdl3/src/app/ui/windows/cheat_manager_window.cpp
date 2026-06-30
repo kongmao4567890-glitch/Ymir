@@ -65,9 +65,9 @@ void CheatManagerWindow::DrawContents() {
                 std::memset(m_nameBuf, 0, sizeof(m_nameBuf));
                 std::memset(m_codeBuf, 0, sizeof(m_codeBuf));
 
-                m_context.DisplayMessage("金手指", "已添加: " + name + " (" + std::to_string(codes.size()) + " 条代码)");
+                m_context.DisplayMessage("[金手指] 已添加: " + name + " (" + std::to_string(codes.size()) + " 条代码)");
             } else {
-                m_context.DisplayMessage("金手指", "无法解析代码，请检查格式");
+                m_context.DisplayMessage("[金手指] 无法解析代码，请检查格式");
             }
         }
     }
@@ -163,7 +163,7 @@ void CheatManagerWindow::DrawContents() {
     ImGui::SameLine();
     if (ImGui::Button("清空全部", ImVec2(100 * m_context.displayScale, 0))) {
         m_cheatManager.ClearAll();
-        m_context.DisplayMessage("金手指", "已清空所有金手指");
+        m_context.DisplayMessage("[金手指] 已清空所有金手指");
     }
 
     ImGui::Spacing();
