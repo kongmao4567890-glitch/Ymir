@@ -14,6 +14,8 @@ add_executable(ymir-sdl3
     src/app/profile.hpp
     src/app/rewind_buffer.cpp
     src/app/rewind_buffer.hpp
+    src/app/cheat_manager.cpp
+    src/app/cheat_manager.hpp
     src/app/rom_manager.cpp
     src/app/rom_manager.hpp
     src/app/settings.cpp
@@ -280,6 +282,8 @@ add_executable(ymir-sdl3
     src/app/ui/windows/about_window.hpp
     src/app/ui/windows/backup_ram_manager_window.cpp
     src/app/ui/windows/backup_ram_manager_window.hpp
+    src/app/ui/windows/cheat_manager_window.cpp
+    src/app/ui/windows/cheat_manager_window.hpp
     src/app/ui/windows/message_history_window.cpp
     src/app/ui/windows/message_history_window.hpp
     src/app/ui/windows/peripheral_config_window.cpp

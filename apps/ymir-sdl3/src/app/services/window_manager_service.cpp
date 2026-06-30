@@ -11,11 +11,13 @@
 
 namespace app::services {
 
-WindowManagerService::WindowManagerService(SharedContext &context, Settings &settings)
+WindowManagerService::WindowManagerService(SharedContext &context, Settings &settings, CheatManager &cheatManager)
     : m_context(context)
     , m_settings(settings)
+    , m_cheatManager(cheatManager)
     , m_systemStateWindow(m_context)
     , m_bupMgrWindow(m_context)
+    , m_cheatManagerWindow(m_context, m_cheatManager)
     , m_masterSH2WindowSet(m_context, true)
     , m_slaveSH2WindowSet(m_context, false)
     , m_scuWindowSet(m_context)
@@ -39,6 +41,7 @@ WindowManagerService::WindowManagerService(SharedContext &context, Settings &set
 void WindowManagerService::DrawWindows() {
     m_systemStateWindow.Display();
     m_bupMgrWindow.Display();
+    m_cheatManagerWindow.Display();
 
     m_masterSH2WindowSet.DisplayAll();
     m_slaveSH2WindowSet.DisplayAll();

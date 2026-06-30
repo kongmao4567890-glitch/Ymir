@@ -8,6 +8,7 @@
 
 #include <app/ui/windows/about_window.hpp>
 #include <app/ui/windows/backup_ram_manager_window.hpp>
+#include <app/ui/windows/cheat_manager_window.hpp>
 #include <app/ui/windows/message_history_window.hpp>
 #include <app/ui/windows/peripheral_config_window.hpp>
 #include <app/ui/windows/settings_window.hpp>
@@ -28,7 +29,7 @@ namespace app::services {
 /// @brief Manages settings, debugger windows, and modal popups.
 class WindowManagerService {
 public:
-    explicit WindowManagerService(SharedContext &context, Settings &settings);
+    explicit WindowManagerService(SharedContext &context, Settings &settings, CheatManager &cheatManager);
     ~WindowManagerService() = default;
 
     WindowManagerService(const WindowManagerService &) = delete;
@@ -108,6 +109,9 @@ public:
     ui::AboutWindow &AboutWindow() {
         return m_aboutWindow;
     }
+    ui::CheatManagerWindow &CheatManagerWindow() {
+        return m_cheatManagerWindow;
+    }
     ui::UpdateOnboardingWindow &UpdateOnboardingWindow() {
         return m_updateOnboardingWindow;
     }
@@ -134,9 +138,11 @@ public:
 private:
     SharedContext &m_context;
     Settings &m_settings;
+    CheatManager &m_cheatManager;
 
     ui::SystemStateWindow m_systemStateWindow;
     ui::BackupMemoryManagerWindow m_bupMgrWindow;
+    ui::CheatManagerWindow m_cheatManagerWindow;
 
     ui::SH2WindowSet m_masterSH2WindowSet;
     ui::SH2WindowSet m_slaveSH2WindowSet;

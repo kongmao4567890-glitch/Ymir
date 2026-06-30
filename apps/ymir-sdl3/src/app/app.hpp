@@ -3,6 +3,7 @@
 #include "cmdline_opts.hpp"
 
 #include "settings.hpp"
+#include "cheat_manager.hpp"
 #include "shared_context.hpp"
 
 #include "services/disc_service.hpp"
@@ -41,6 +42,7 @@ private:
     services::ScreenshotService m_screenshotService;
     services::UpdateCheckerService m_updateCheckerService;
     Settings m_settings;
+    CheatManager m_cheatManager;
     services::MouseCaptureService m_mouseCaptureService;
     services::ROMService m_romService;
     services::DiscService m_discService;

@@ -158,7 +158,7 @@ App::App()
                     })
     , m_displayService(m_context, m_settings)
     , m_fileDialogService(m_context, m_settings)
-    , m_windowManagerService(m_context, m_settings)
+    , m_windowManagerService(m_context, m_settings, m_cheatManager)
     , m_inputService(m_context, m_settings,
                      {.openSettings =
                           [this]() {
@@ -2284,6 +2284,8 @@ void App::RunEmulator() {
                     }
                     ImGui::MenuItem("备份内存管理器", nullptr,
                                     &m_windowManagerService.BackupMemoryManagerWindow().Open);
+                    ImGui::MenuItem("金手指管理器", nullptr,
+                                    &m_windowManagerService.CheatManagerWindow().Open);
 
                     ImGui::Separator();
 
@@ -3402,6 +3404,8 @@ void App::EmulatorThread() {
 
             if (doRunFrame) [[likely]] {
                 m_context.saturn.instance->RunFrame();
+                // 每帧应用金手指
+                m_cheatManager.ApplyCheats(m_context);
             }
 
             if (rewindEnabled && !m_context.rewinding) {
