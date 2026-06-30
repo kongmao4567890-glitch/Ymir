@@ -144,6 +144,7 @@ public:
     void VDP1EndFrame() override;
 
     void VDP2SetResolution(uint32 h, uint32 v, bool exclusive) override;
+    void SetVDP1ResolutionScale(uint32 scale) override;
     void VDP2SetField(bool odd) override;
     void VDP2LatchTVMD() override;
     void VDP2BeginFrame() override;
@@ -621,6 +622,7 @@ private:
     // VDP1
 
     uint16 m_VDP1doubleV;
+    uint32 m_vdp1Scale = 1; // VDP1 supersampling scale factor (1, 2, 3, 4)
 
     struct VDP1PixelParams {
         VDP1Command::DrawMode mode;

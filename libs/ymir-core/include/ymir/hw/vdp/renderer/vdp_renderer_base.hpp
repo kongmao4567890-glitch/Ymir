@@ -184,6 +184,10 @@ public:
     /// @param[in] exclusive whether this is an exclusive monitor mode
     virtual void VDP2SetResolution(uint32 h, uint32 v, bool exclusive) = 0;
 
+    /// @brief Sets the VDP1 internal rendering resolution scale for supersampling.
+    /// @param[in] scale the supersampling scale factor (1, 2, 3 or 4)
+    virtual void SetVDP1ResolutionScale(uint32 scale) = 0;
+
     /// @brief Updates the even/odd field flag.
     /// @param[in] odd `true` for the odd field, `false` for the even field.
     virtual void VDP2SetField(bool odd) = 0;

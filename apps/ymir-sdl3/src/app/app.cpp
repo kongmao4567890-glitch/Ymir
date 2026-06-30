@@ -311,6 +311,14 @@ int App::Run(const CommandLineOptions &options) {
             [&](bool value) { m_context.EnqueueEvent(events::emu::SetDeinterlace(value)); });
         videoSettings.enhancements.transparentMeshes.Observe(
             [&](bool value) { m_context.EnqueueEvent(events::emu::SetTransparentMeshes(value)); });
+        videoSettings.enhancements.resolutionScale.Observe(
+            [&](float value) {
+                uint32 scale = value > 1.0f ? (uint32)std::ceil(value) : 1u;
+                m_context.EnqueueEvent(events::emu::RunFunction(
+                    [scale](SharedContext &ctx) {
+                        ctx.saturn.instance->VDP.GetRenderer().SetVDP1ResolutionScale(scale);
+                    }));
+            });
     }
 
     // Profile priority:
@@ -821,15 +829,7 @@ void App::RunEmulator() {
         const double dispScaleX = (double)targetWidth / dispWidth;
         const double dispScaleY = (double)targetHeight / dispHeight;
         const double dispScale = std::min(dispScaleX, dispScaleY);
-
-        // 获取用户配置的渲染分辨率倍数
-        const float userRenderScale = videoSettings.enhancements.resolutionScale.Get();
-        // 自动计算的缩放因子（基于窗口大小）
-        const uint32 autoScale = std::max(1u, (uint32)std::ceil(dispScale));
-        // 用户指定的缩放因子（向上取整为整数）
-        const uint32 userScale = userRenderScale > 1.0f ? (uint32)std::ceil(userRenderScale) : 1u;
-        // 取较大者：用户倍数可提升质量（超采样抗锯齿），但不会因用户设置而降低质量
-        const uint32 scale = std::max(autoScale, userScale);
+        const uint32 scale = std::max(1.0, ceil(dispScale));
 
         SDL_Renderer *renderer = m_graphicsService.GetRenderer();
 
@@ -850,19 +850,11 @@ void App::RunEmulator() {
         SDL_Texture *prevRenderTarget = SDL_GetRenderTarget(renderer);
 
         // Render scaled framebuffer into display texture
-        // 当用户倍数 > 1 时，使用线性插值获得更平滑的3D多边形边缘
         SDL_FRect srcRect{.x = 0.0f, .y = 0.0f, .w = (float)screen.width, .h = (float)screen.height};
         SDL_FRect dstRect{.x = 0.0f,
                           .y = 0.0f,
                           .w = (float)screen.width * screen.fbScale,
                           .h = (float)screen.height * screen.fbScale};
-
-        // 当用户指定了高分辨率倍数且大于自动缩放时，使用线性插值以获得超采样抗锯齿效果
-        if (userScale > autoScale) {
-            SDL_SetTextureScaleMode(m_graphicsService.GetSDLTexture(swFbTexture), SDL_SCALEMODE_LINEAR);
-        } else {
-            SDL_SetTextureScaleMode(m_graphicsService.GetSDLTexture(swFbTexture), SDL_SCALEMODE_NEAREST);
-        }
 
         SDL_SetRenderTarget(renderer, m_graphicsService.GetSDLTexture(dispTexture));
         SDL_RenderTexture(renderer, m_graphicsService.GetSDLTexture(swFbTexture), &srcRect, &dstRect);
